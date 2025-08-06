@@ -1,23 +1,51 @@
-import './App.css'
-import {BrowserRouter, Routes, Route} from "react-router";
-import Login from "./components/auth/Login";
-import Register from "./components/auth/Register";
-import {AuthLayout} from "./layouts/AuthLayout";
+import { BrowserRouter as Router, Routes, Route } from 'react-router';
+import AuthLayout from './layouts/AuthLayout';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import LobbyPage from './pages/LobbyPage';
+import { RequireAuth } from './components/auth/RequireAuth';
+import { RedirectIfAuthenticated } from './components/auth/RedirectIfAuthenticated';
 
-function App() {
+export default function App() {
     return (
-        <>
-            <BrowserRouter>
-                <Routes>
-                    <Route index element={<h1>Home</h1>}/>
-                    <Route element={<AuthLayout/>}>
-                        <Route path="login" element={<Login/>}/>
-                        <Route path="register" element={<Register/>}/>
-                    </Route>
-                </Routes>
-            </BrowserRouter>
-        </>
-    )
+        <Router >
+            <Routes>
+                <Route element={<AuthLayout />}>
+                    <Route
+                        path="/"
+                        element={
+                            <RequireAuth>
+                                <LobbyPage />
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="/login"
+                        element={
+                            <RedirectIfAuthenticated>
+                                <LoginPage />
+                            </RedirectIfAuthenticated>
+                        }
+                    />
+                    <Route
+                        path="/register"
+                        element={
+                            <RedirectIfAuthenticated>
+                                <RegisterPage />
+                            </RedirectIfAuthenticated>
+                        }
+                    />
+                    <Route
+                        path="/lobby"
+                        element={
+                            <RequireAuth>
+                                <LobbyPage />
+                            </RequireAuth>
+                        }
+                    />
+                    {/* Add other protected pages here */}
+                </Route>
+            </Routes>
+        </Router>
+    );
 }
-
-export default App

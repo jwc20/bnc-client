@@ -45,6 +45,10 @@ export type AuthResponse = {
      */
     token: string;
     /**
+     * Username
+     */
+    username: string;
+    /**
      * Expiry
      */
     expiry: string;
