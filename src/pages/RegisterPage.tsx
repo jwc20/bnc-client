@@ -14,7 +14,7 @@ export default function RegisterPage() {
             setToken(data.token);
             setUserName(data.username);
             // setExpiration(data.expiry);
-            navigate('/lobby'); // or '/' if preferred
+            navigate('/lobby');
         },
         onError: (error) => {
             console.error('Signup failed:', error);
@@ -30,7 +30,7 @@ export default function RegisterPage() {
         const username = form.username?.value;
 
         signupMutation.mutate({
-            body: { email, password, username }, // match your OpenAPI spec
+            body: { email, password, username },
         });
     };
 
