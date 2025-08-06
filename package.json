@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "generate:api": "swagger-typescript-api generate -p \"http://127.0.0.1:8000/api/openapi.json\" -r -o ./src/apis --modular -d --extract-request-body --extract-response-body --extract-response-error --extract-request-params --axios",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
