@@ -33,6 +33,9 @@
       "@/apis/*": [
         "./src/apis/*"
       ],
+      "@/*": [
+        "./src/*"
+      ]
     },
     "allowJs": true,
     "skipLibCheck": true,
