@@ -285,9 +285,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/openapi-ts@npm:0.80.3":
-  version: 0.80.3
-  resolution: "@hey-api/openapi-ts@npm:0.80.3"
+"@hey-api/openapi-ts@npm:0.80.4":
+  version: 0.80.4
+  resolution: "@hey-api/openapi-ts@npm:0.80.4"
   dependencies:
     "@hey-api/json-schema-ref-parser": "npm:1.0.6"
     ansi-colors: "npm:4.1.3"
@@ -301,7 +301,7 @@ __metadata:
     typescript: ^5.5.3
   bin:
     openapi-ts: bin/index.cjs
-  checksum: 10c0/af80c559a1f5f698efc12525f2d826090d5fc9c7f792823fb4f6e97eaba744de7dc121bc7bf367a2f17be6c416d46c44f795b9ff8b53536ff8868248e2854d2c
+  checksum: 10c0/a88716041b0215641fcb3afee781617e8f488e040402bec6d7e36135e11c2bf9a550d4440f79313ed8ef6a70cf405876e96904f3277851441fc97bdaace08c85
   languageName: node
   linkType: hard
 
@@ -1025,7 +1025,7 @@ __metadata:
   resolution: "bnc-client@workspace:."
   dependencies:
     "@eslint/js": "npm:^9.30.1"
-    "@hey-api/openapi-ts": "npm:0.80.3"
+    "@hey-api/openapi-ts": "npm:0.80.4"
     "@tanstack/react-query": "npm:^5.84.1"
     "@types/react": "npm:^19.1.8"
     "@types/react-dom": "npm:^19.1.6"

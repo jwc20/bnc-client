@@ -3,8 +3,8 @@ import AuthLayout from './layouts/AuthLayout';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import LobbyPage from './pages/LobbyPage';
-import { RequireAuth } from './components/auth/RequireAuth';
-import { RedirectIfAuthenticated } from './components/auth/RedirectIfAuthenticated';
+import { RequireAuth } from './auths/RequireAuth';
+import { RedirectIfAuthenticated } from './auths/RedirectIfAuthenticated';
 
 export default function App() {
     return (
