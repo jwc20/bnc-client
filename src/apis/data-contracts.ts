@@ -10,11 +10,36 @@
  * ---------------------------------------------------------------
  */
 
-export interface BncapiUrlsAddParams {
-  /** A */
-  a: number;
-  /** B */
-  b: number;
+/** UserLogin */
+export interface UserLogin {
+  /**
+   * Email
+   * @format email
+   */
+  email: string;
+  /** Password */
+  password: string;
 }
 
-export type BncapiUrlsAddData = any;
+/** UserCreate */
+export interface UserCreate {
+  /**
+   * Email
+   * @format email
+   */
+  email: string;
+  /** Username */
+  username: string;
+  /** Password */
+  password: string;
+}
+
+export type UserapiMe35509697Data = any;
+
+export type UserapiUsers647A14F4Data = any;
+
+export type UserapiUser99C6D643Data = any;
+
+export type UserapiLoginEmail78908Aa9Data = any;
+
+export type UserapiSignup02308B8FData = any;
