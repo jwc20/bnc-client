@@ -4,175 +4,170 @@
  * MeResponse
  */
 export type MeResponse = {
-  /**
-   * Id
-   */
-  id: number;
-  /**
-   * Email
-   */
-  email: string;
-  /**
-   * Username
-   */
-  username: string;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Email
+     */
+    email: string;
+    /**
+     * Username
+     */
+    username: string;
 };
 
 /**
  * UserResponse
  */
 export type UserResponse = {
-  /**
-   * Id
-   */
-  id: number;
-  /**
-   * Email
-   */
-  email: string;
-  /**
-   * Username
-   */
-  username: string;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Email
+     */
+    email: string;
+    /**
+     * Username
+     */
+    username: string;
 };
 
 /**
  * AuthResponse
  */
 export type AuthResponse = {
-  /**
-   * Token
-   */
-  token: string;
-  /**
-   * Expiry
-   */
-  expiry: string;
+    /**
+     * Token
+     */
+    token: string;
+    /**
+     * Expiry
+     */
+    expiry: string;
 };
 
 /**
  * UserLogin
  */
 export type UserLogin = {
-  /**
-   * Email
-   */
-  email: string;
-  /**
-   * Password
-   */
-  password: string;
+    /**
+     * Email
+     */
+    email: string;
+    /**
+     * Password
+     */
+    password: string;
 };
 
 /**
  * UserCreate
  */
 export type UserCreate = {
-  /**
-   * Email
-   */
-  email: string;
-  /**
-   * Username
-   */
-  username: string;
-  /**
-   * Password
-   */
-  password: string;
-};
-
-export type UserapiMeAf7Faa18Data = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/users/me";
-};
-
-export type UserapiMeAf7Faa18Responses = {
-  /**
-   * OK
-   */
-  200: MeResponse;
-};
-
-export type UserapiMeAf7Faa18Response =
-  UserapiMeAf7Faa18Responses[keyof UserapiMeAf7Faa18Responses];
-
-export type UserapiListUsers0Fc0C8F4Data = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/users/";
-};
-
-export type UserapiListUsers0Fc0C8F4Responses = {
-  /**
-   * Response
-   * OK
-   */
-  200: Array<UserResponse>;
-};
-
-export type UserapiListUsers0Fc0C8F4Response =
-  UserapiListUsers0Fc0C8F4Responses[keyof UserapiListUsers0Fc0C8F4Responses];
-
-export type UserapiGetUser026Ba149Data = {
-  body?: never;
-  path: {
     /**
-     * User Id
+     * Email
      */
-    user_id: number;
-  };
-  query?: never;
-  url: "/api/users/{user_id}";
+    email: string;
+    /**
+     * Username
+     */
+    username: string;
+    /**
+     * Password
+     */
+    password: string;
 };
 
-export type UserapiGetUser026Ba149Responses = {
-  /**
-   * OK
-   */
-  200: UserResponse;
+export type UsersApiMeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/users/me';
 };
 
-export type UserapiGetUser026Ba149Response =
-  UserapiGetUser026Ba149Responses[keyof UserapiGetUser026Ba149Responses];
-
-export type AuthapiLogin0E3Fda03Data = {
-  body: UserLogin;
-  path?: never;
-  query?: never;
-  url: "/api/auth/login";
+export type UsersApiMeResponses = {
+    /**
+     * OK
+     */
+    200: MeResponse;
 };
 
-export type AuthapiLogin0E3Fda03Responses = {
-  /**
-   * OK
-   */
-  200: AuthResponse;
+export type UsersApiMeResponse = UsersApiMeResponses[keyof UsersApiMeResponses];
+
+export type UsersApiListUsersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/users/';
 };
 
-export type AuthapiLogin0E3Fda03Response =
-  AuthapiLogin0E3Fda03Responses[keyof AuthapiLogin0E3Fda03Responses];
-
-export type AuthapiSignup359681EdData = {
-  body: UserCreate;
-  path?: never;
-  query?: never;
-  url: "/api/auth/signup";
+export type UsersApiListUsersResponses = {
+    /**
+     * Response
+     * OK
+     */
+    200: Array<UserResponse>;
 };
 
-export type AuthapiSignup359681EdResponses = {
-  /**
-   * OK
-   */
-  200: AuthResponse;
+export type UsersApiListUsersResponse = UsersApiListUsersResponses[keyof UsersApiListUsersResponses];
+
+export type UsersApiGetUserData = {
+    body?: never;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: number;
+    };
+    query?: never;
+    url: '/api/users/{user_id}';
 };
 
-export type AuthapiSignup359681EdResponse =
-  AuthapiSignup359681EdResponses[keyof AuthapiSignup359681EdResponses];
+export type UsersApiGetUserResponses = {
+    /**
+     * OK
+     */
+    200: UserResponse;
+};
+
+export type UsersApiGetUserResponse = UsersApiGetUserResponses[keyof UsersApiGetUserResponses];
+
+export type UsersApiLoginData = {
+    body: UserLogin;
+    path?: never;
+    query?: never;
+    url: '/api/auth/login';
+};
+
+export type UsersApiLoginResponses = {
+    /**
+     * OK
+     */
+    200: AuthResponse;
+};
+
+export type UsersApiLoginResponse = UsersApiLoginResponses[keyof UsersApiLoginResponses];
+
+export type UsersApiSignupData = {
+    body: UserCreate;
+    path?: never;
+    query?: never;
+    url: '/api/auth/signup';
+};
+
+export type UsersApiSignupResponses = {
+    /**
+     * OK
+     */
+    200: AuthResponse;
+};
+
+export type UsersApiSignupResponse = UsersApiSignupResponses[keyof UsersApiSignupResponses];
 
 export type ClientOptions = {
-  baseUrl: string;
+    baseUrl: string;
 };
