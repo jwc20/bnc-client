@@ -8,7 +8,7 @@ import { RedirectIfAuthenticated } from './components/auth/RedirectIfAuthenticat
 
 export default function App() {
     return (
-        <Router >
+        <Router>
             <Routes>
                 <Route element={<AuthLayout />}>
                     <Route
