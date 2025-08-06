@@ -1,27 +1,12 @@
-import { defineConfig } from '@hey-api/openapi-ts';
-
-export default defineConfig({
-  input:
-      'http://127.0.0.1:8000/api/openapi.json',
-  output: {
-    format: 'prettier',
-    lint: 'eslint',
-    path: './src/client',
-  },
+export default {
+  input: 'http://localhost:8000/api/openapi.json',
+  output: './src/apis',
+  client: '@hey-api/client-axios',
   plugins: [
-    '@hey-api/schemas',
+    '@hey-api/typescript',
+    '@hey-api/client-fetch',
     {
-      dates: true,
-      name: '@hey-api/transformers',
-    },
-    {
-      enums: 'javascript',
-      name: '@hey-api/typescript',
-    },
-    {
-      name: '@hey-api/sdk',
-      transformer: true,
-    },
-    '@tanstack/react-query',
-  ],
-});
+      name: '@tanstack/react-query',
+    }
+  ]
+}
