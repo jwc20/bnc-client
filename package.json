@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "generate:api": "swagger-typescript-api generate -p \"http://127.0.0.1:8000/api/docs?format=openapi\" -r -o ./src/apis --modular -d --extract-request-body --extract-response-body --extract-response-error --extract-request-params --axios",
+    "generate:api": "openapi --input http://127.0.0.1:8000/api/openapi.json --output ./src/apis --client axios --name ApiClient --useOptions --useUnionTypes --exportCore true --exportServices true --exportModels true --exportSchemas false --indent 2 --postfixServices Service",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -13,11 +13,11 @@
   "dependencies": {
     "@tanstack/react-query": "^5.84.1",
     "axios": "^1.11.0",
+    "openapi-typescript-codegen": "^0.29.0",
     "process": "^0.11.10",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router": "^7.7.1",
-    "swagger-typescript-api": "^13.2.7"
+    "react-router": "^7.7.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
