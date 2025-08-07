@@ -1,18 +1,18 @@
-import {Routes, Route} from "react-router";
-import {AuthProvider} from "./auths/AuthProvider";
-import {RequireAuth} from "./auths/RequireAuth";
-import {Layout} from "./layouts/Layout.jsx";
-import {LoginPage} from "./pages/LoginPage";
-import {LobbyPage} from "./pages/LobbyPage";
-import {RegisterPage} from "./pages/RegisterPage";
-import {RoomPage} from "./pages/RoomPage";
+import { Routes, Route } from "react-router";
+import { AuthProvider } from "./auths/AuthProvider";
+import { RequireAuth } from "./auths/RequireAuth";
+import { Layout } from "./layouts/Layout.jsx";
+import { LoginPage } from "./pages/LoginPage";
+import { LobbyPage } from "./pages/LobbyPage";
+import { RegisterPage } from "./pages/RegisterPage";
+import { RoomPage } from "./pages/RoomPage";
 
-
-import {client} from "./api/client.gen";
+import { client } from "./api/client.gen";
 import "./App.css";
 
 client.setConfig({
-    baseUrl: import.meta.env.VITE_API_URL || "http://localhost:8000/",
+    // baseUrl: import.meta.env.VITE_API_URL || "http://localhost:8000/",
+    baseUrl: "https://bncapi.onrender.com", // :^O
     headers: {
         "Content-Type": "application/json",
     },
@@ -30,14 +30,14 @@ export default function App() {
     return (
         <AuthProvider>
             <Routes>
-                <Route element={<Layout/>}>
-                    <Route path="/login" element={<LoginPage/>}/>
-                    <Route path="/register" element={<RegisterPage/>}/>
+                <Route element={<Layout />}>
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
                     <Route
                         path="/"
                         element={
                             <RequireAuth>
-                                <LobbyPage/>
+                                <LobbyPage />
                             </RequireAuth>
                         }
                     />
@@ -45,7 +45,7 @@ export default function App() {
                         path="/lobby"
                         element={
                             <RequireAuth>
-                                <LobbyPage/>
+                                <LobbyPage />
                             </RequireAuth>
                         }
                     />
@@ -53,11 +53,10 @@ export default function App() {
                         path="/room/:roomId"
                         element={
                             <RequireAuth>
-                                <RoomPage/>
+                                <RoomPage />
                             </RequireAuth>
                         }
                     />
-
 
                     {/*<Route*/}
                     {/*    path="/user"*/}
