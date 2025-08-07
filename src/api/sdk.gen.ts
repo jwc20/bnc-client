@@ -243,7 +243,7 @@ export const gamesApiCreateRandomSingleplayerRoom = <
         type: "http",
       },
     ],
-    url: "/api/games/quick-play",
+    url: "/api/games/rooms/quick-play",
     ...options,
     headers: {
       "Content-Type": "application/json",
