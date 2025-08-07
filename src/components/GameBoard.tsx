@@ -1,7 +1,7 @@
 import {useState} from 'react';
-import InputCode from '../InputCode';
-import type {CheckBullsCowsRequest, CheckBullsCowsResponse} from '../../api/types.gen';
-import {gamesApiCheckGame} from '../../api/sdk.gen';
+import InputCode from './InputCode.tsx';
+import type {CheckBullsCowsRequest, CheckBullsCowsResponse} from '../api/types.gen.ts';
+import {gamesApiCheckGame} from '../api/sdk.gen.ts';
 
 const COLORS = [
     {value: 'red', label: 'Red', color: '#ff4444'},
@@ -25,7 +25,6 @@ const GameColorPeg = ({color}) => (
 );
 
 const GameFeedBackPegs = ({bulls, cows}: { bulls?: number, cows?: number }) => {
-    // If feedback not available, show 4 X's
     if (bulls === undefined && cows === undefined) {
         return (
             <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
