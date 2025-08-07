@@ -86,6 +86,16 @@ export type UserCreate = {
     password: string;
 };
 
+/**
+ * RoomSchema
+ */
+export type RoomSchema = {
+    /**
+     * Name
+     */
+    name: string;
+};
+
 export type UsersApiMeData = {
     body?: never;
     path?: never;
@@ -171,6 +181,60 @@ export type UsersApiSignupResponses = {
 };
 
 export type UsersApiSignupResponse = UsersApiSignupResponses[keyof UsersApiSignupResponses];
+
+export type GamesApiListRoomsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/games/rooms';
+};
+
+export type GamesApiListRoomsResponses = {
+    /**
+     * Response
+     * OK
+     */
+    200: Array<RoomSchema>;
+};
+
+export type GamesApiListRoomsResponse = GamesApiListRoomsResponses[keyof GamesApiListRoomsResponses];
+
+export type GamesApiCreateRoomData = {
+    body: RoomSchema;
+    path?: never;
+    query?: never;
+    url: '/api/games/rooms';
+};
+
+export type GamesApiCreateRoomResponses = {
+    /**
+     * OK
+     */
+    200: RoomSchema;
+};
+
+export type GamesApiCreateRoomResponse = GamesApiCreateRoomResponses[keyof GamesApiCreateRoomResponses];
+
+export type GamesApiGetRoomData = {
+    body?: never;
+    path: {
+        /**
+         * Room Id
+         */
+        room_id: number;
+    };
+    query?: never;
+    url: '/api/games/rooms/{room_id}';
+};
+
+export type GamesApiGetRoomResponses = {
+    /**
+     * OK
+     */
+    200: RoomSchema;
+};
+
+export type GamesApiGetRoomResponse = GamesApiGetRoomResponses[keyof GamesApiGetRoomResponses];
 
 export type ClientOptions = {
     baseUrl: string;
