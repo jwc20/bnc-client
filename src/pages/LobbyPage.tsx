@@ -1,27 +1,48 @@
+import {useEffect, useState} from "react";
+import {Outlet, Link, useLocation, useNavigate} from "react-router";
+import {gamesApiListRooms} from "../api/sdk.gen";
+import type {GamesApiListRoomsResponses, RoomSchema} from "../api/types.gen";
 export function LobbyPage() {
-    // const [rooms, setRooms] = useState([]);
+    const [rooms, setRooms] = useState([]);
 
-    // useEffect(() => {
-    //     const fetchRooms = async () => {
-    //         const { data } = await gamesApiListRoomsOptions().queryFn({ queryKey: gamesApiListRoomsQueryKey() });
-    //         console.log(data);
-    //         setRooms(data);
-    //     };
-    //     fetchRooms();
-    // }, []);
+    // const onFetchRooms = async () => {
+    //     const {rooms: any} = await gamesApiListRooms();
+    //     setRooms(rooms);
+    // };
+
+    useEffect(() => {
+        const fetchRooms = async () => {
+            const rooms = await gamesApiListRooms();
+            console.log(rooms);
+            setRooms(rooms.data);
+        };
+        fetchRooms();
+    }, []);
+
 
     return (
         <div>
 
             <h1>Lobby</h1>
-            {/*<ul>*/}
-            {/*    {rooms.map((room) => (*/}
-            {/*        <li key={room.id}>*/}
-            {/*            <a href={`/room/${room.id}`}>{room.name}</a>*/}
-            {/*        </li>*/}
-            {/*    ))}*/}
-            {/*</ul>*/}
-
+            <table>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Room</th>
+                </tr>
+                </thead>
+                <tbody>
+                {rooms.map((room: RoomSchema) => (
+                    <tr key={room.id}>
+                        <td>{room.id}</td>
+                        <td>
+                            <Link to={`/room/${room.id}`}>{room.name}</Link>
+                        </td>
+                        {/*<td>{room.players.length}</td>*/}
+                    </tr>
+                ))}
+                </tbody>
+            </table>
         </div>
     );
 };
