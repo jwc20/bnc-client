@@ -54,7 +54,7 @@ export function RoomPage() {
         };
 
         loadRoom();
-    }, [roomId]);
+    }, [roomId, game]);
 
     if (loading) {
         return <div>Loading room...</div>;
