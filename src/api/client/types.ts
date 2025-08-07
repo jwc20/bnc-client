@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import type { Auth } from "../core/auth";
 import type { Client as CoreClient, Config as CoreConfig } from "../core/types";
 import type { Middleware } from "./utils";

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import type { Client, Config, RequestOptions } from "./types";
 import {
   buildUrl,

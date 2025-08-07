@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Link, useNavigate} from "react-router";
+import {Outlet, Link, useLocation, useNavigate} from "react-router";
 import {gamesApiListRooms} from "../api/sdk.gen";
 import type {RoomSchema} from "../api/types.gen";
 import {useGame} from "../stores/singlePlayerGameStore.ts";

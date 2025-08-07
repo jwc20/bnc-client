@@ -1,10 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { useState, useEffect, useCallback } from "react";
-import type { ReactNode } from "react";
+import { useState, useEffect, useCallback, ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router";
-import { AuthContext} from "./AuthContext";
-import type { User } from "./AuthContext";
+import { AuthContext, User } from "./AuthContext";
 import { client } from "../api/client.gen";
 import {
     usersApiLogin,
@@ -45,7 +41,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                     });
 
                     // validate token with backend
-                    await validateToken();
+                    await validateToken(storedToken);
                 }
             } catch (error) {
                 console.error("Auth initialization error:", error);
@@ -58,7 +54,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         initAuth();
     }, []);
 
-    const validateToken = async () => {
+    const validateToken = async (token: string) => {
         try {
             const response = await usersApiMe({
                 throwOnError: true,
@@ -230,7 +226,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }, [navigate]);
 
     useEffect(() => {
-        const interceptorId = client.interceptors.response.use(async (response, request) => {
+        const interceptorId = client.interceptors.response.use(async (response, request, options) => {
             // If we get a 401, redirect to login
             if (response.status === 401 && !request.url.includes("/auth/")) {
                 console.log("401 Unauthorized - redirecting to login");

@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import type {
     RoomResponse,
     CreateRandomSingleplayerRoomRequest,
     CheckBullsCowsRequest,
+    CheckBullsCowsResponse
 } from '../api/types.gen';
 import {
     gamesApiCreateRandomSingleplayerRoom,
@@ -13,11 +12,11 @@ import {
     gamesApiGetRoom
 } from '../api/sdk.gen';
 
-// export interface ApiError {
-//     detail?: string;
-//     message?: string;
-//     error?: string;
-// }
+export interface ApiError {
+    detail?: string;
+    message?: string;
+    error?: string;
+}
 
 export interface GameGuess {
     guess: string;

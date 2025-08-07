@@ -1,8 +1,10 @@
-import {Outlet, Link, useLocation} from "react-router";
+import {Outlet, Link, useLocation, useNavigate} from "react-router";
 import {useAuth} from "../auths/AuthContext";
+import {useState, useEffect} from "react";
 
 export function Layout() {
     const location = useLocation();
+    const navigate = useNavigate();
     const auth = useAuth();
 
     const handleLogout = () => {
