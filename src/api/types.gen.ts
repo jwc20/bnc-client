@@ -100,6 +100,66 @@ export type RoomSchema = {
   name: string;
 };
 
+/**
+ * RoomResponse
+ */
+export type RoomResponse = {
+  /**
+   * Id
+   */
+  id: number;
+  /**
+   * Name
+   */
+  name: string;
+};
+
+/**
+ * CreateRandomSingleplayerRoomRequest
+ */
+export type CreateRandomSingleplayerRoomRequest = {
+  /**
+   * Code Length
+   */
+  code_length?: number | null;
+  /**
+   * Num Of Colors
+   */
+  num_of_colors?: number | null;
+  /**
+   * Num Of Guesses
+   */
+  num_of_guesses?: number | null;
+};
+
+/**
+ * CheckBullsCowsResponse
+ */
+export type CheckBullsCowsResponse = {
+  /**
+   * Bulls
+   */
+  bulls: number;
+  /**
+   * Cows
+   */
+  cows: number;
+};
+
+/**
+ * CheckBullsCowsRequest
+ */
+export type CheckBullsCowsRequest = {
+  /**
+   * Room Id
+   */
+  room_id: number;
+  /**
+   * Guess
+   */
+  guess: string;
+};
+
 export type UsersApiMeData = {
   body?: never;
   path?: never;
@@ -246,6 +306,40 @@ export type GamesApiGetRoomResponses = {
 
 export type GamesApiGetRoomResponse =
   GamesApiGetRoomResponses[keyof GamesApiGetRoomResponses];
+
+export type GamesApiCreateRandomSingleplayerRoomData = {
+  body: CreateRandomSingleplayerRoomRequest;
+  path?: never;
+  query?: never;
+  url: "/api/games/rooms/singleplayer/random";
+};
+
+export type GamesApiCreateRandomSingleplayerRoomResponses = {
+  /**
+   * OK
+   */
+  200: RoomResponse;
+};
+
+export type GamesApiCreateRandomSingleplayerRoomResponse =
+  GamesApiCreateRandomSingleplayerRoomResponses[keyof GamesApiCreateRandomSingleplayerRoomResponses];
+
+export type GamesApiCheckGameData = {
+  body: CheckBullsCowsRequest;
+  path?: never;
+  query?: never;
+  url: "/api/games/game/check";
+};
+
+export type GamesApiCheckGameResponses = {
+  /**
+   * OK
+   */
+  200: CheckBullsCowsResponse;
+};
+
+export type GamesApiCheckGameResponse =
+  GamesApiCheckGameResponses[keyof GamesApiCheckGameResponses];
 
 export type ClientOptions = {
   baseUrl: string;

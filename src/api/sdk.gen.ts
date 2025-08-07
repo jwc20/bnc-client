@@ -18,6 +18,10 @@ import type {
   GamesApiCreateRoomResponses,
   GamesApiGetRoomData,
   GamesApiGetRoomResponses,
+  GamesApiCreateRandomSingleplayerRoomData,
+  GamesApiCreateRandomSingleplayerRoomResponses,
+  GamesApiCheckGameData,
+  GamesApiCheckGameResponses,
 } from "./types.gen";
 import { client as _heyApiClient } from "./client.gen";
 import {
@@ -217,5 +221,59 @@ export const gamesApiGetRoom = <ThrowOnError extends boolean = false>(
     ],
     url: "/api/games/rooms/{room_id}",
     ...options,
+  });
+};
+
+/**
+ * Create a new singleplayer room
+ */
+export const gamesApiCreateRandomSingleplayerRoom = <
+  ThrowOnError extends boolean = false
+>(
+  options: Options<GamesApiCreateRandomSingleplayerRoomData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    GamesApiCreateRandomSingleplayerRoomResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/api/games/rooms/singleplayer/random",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+};
+
+/**
+ * Check Game
+ */
+export const gamesApiCheckGame = <ThrowOnError extends boolean = false>(
+  options: Options<GamesApiCheckGameData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    GamesApiCheckGameResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/api/games/game/check",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
   });
 };

@@ -114,3 +114,94 @@ export const RoomSchemaSchema = {
   title: "RoomSchema",
   type: "object",
 } as const;
+
+export const RoomResponseSchema = {
+  properties: {
+    id: {
+      title: "Id",
+      type: "integer",
+    },
+    name: {
+      title: "Name",
+      type: "string",
+    },
+  },
+  required: ["id", "name"],
+  title: "RoomResponse",
+  type: "object",
+} as const;
+
+export const CreateRandomSingleplayerRoomRequestSchema = {
+  properties: {
+    code_length: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      default: 4,
+      title: "Code Length",
+    },
+    num_of_colors: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      default: 6,
+      title: "Num Of Colors",
+    },
+    num_of_guesses: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      default: 10,
+      title: "Num Of Guesses",
+    },
+  },
+  title: "CreateRandomSingleplayerRoomRequest",
+  type: "object",
+} as const;
+
+export const CheckBullsCowsResponseSchema = {
+  properties: {
+    bulls: {
+      title: "Bulls",
+      type: "integer",
+    },
+    cows: {
+      title: "Cows",
+      type: "integer",
+    },
+  },
+  required: ["bulls", "cows"],
+  title: "CheckBullsCowsResponse",
+  type: "object",
+} as const;
+
+export const CheckBullsCowsRequestSchema = {
+  properties: {
+    room_id: {
+      title: "Room Id",
+      type: "integer",
+    },
+    guess: {
+      title: "Guess",
+      type: "string",
+    },
+  },
+  required: ["room_id", "guess"],
+  title: "CheckBullsCowsRequest",
+  type: "object",
+} as const;
