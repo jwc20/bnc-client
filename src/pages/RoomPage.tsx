@@ -1,3 +1,3 @@
-export const RoomPage = () => {
+export const RoomPage = ( {}) => {
     return <div>RoomPage</div>;
 };
