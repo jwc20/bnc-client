@@ -319,7 +319,7 @@ export type GamesApiCreateRandomSingleplayerRoomData = {
   body: CreateRandomSingleplayerRoomRequest;
   path?: never;
   query?: never;
-  url: "/api/games/rooms/quick-play";
+  url: "/api/games/quick-play";
 };
 
 export type GamesApiCreateRandomSingleplayerRoomResponses = {
