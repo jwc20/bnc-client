@@ -47,13 +47,13 @@ const GameRow = ({ row = [] }) => (
     </div>
 );
 
-export const GameBoard = () => {
+export const GameBoard = ({roomId}) => {
     const [gameState, setGameState] = useState({});
     const [currentRow, setCurrentRow] = useState(0);
     const [loading, setLoading] = useState(false);
     const [inputCodeStr, setInputCodeStr] = useState('');
     const [data, setData] = useState<CheckBullsCowsResponse>();
-    const [roomId, setRoomId] = useState(1);
+    // const [roomId, setRoomId] = useState(roomId);
 
 
     const handleSubmitCode = async (codeStr) => {
@@ -65,10 +65,10 @@ export const GameBoard = () => {
         }
 
         const pegColors = digits.map(d => COLORS[d - 1]);
-
+        console.log(roomId, codeStr);
         const { data: data}  = await gamesApiCheckGame({
             body: {
-                room_id: 1,
+                room_id: roomId,
                 guess: codeStr
             }
         });

@@ -22,20 +22,15 @@ export function LobbyPage() {
     }, []);
 
     const onCreateSinglePlayerGameRoom = async () => {
-        const { room: room } = await gamesApiCreateRandomSingleplayerRoom({
+        const room = await gamesApiCreateRandomSingleplayerRoom({
             body: {
                 code_length: 4,
                 num_of_colors: 6,
                 num_of_guesses: 10,
             },
         });
-        console.log(room);
-        if ('data' in room) {
-            setRoom(room.data);
-            navigate(`/room/random/${room.data.id}`);
-        } else {
-            console.log(room);
-        }
+        setRoom(room.data);
+        navigate(`/room/random/${room.data.id}`);
     };
 
     return (
