@@ -101,12 +101,16 @@ export const UserCreateSchema = {
 
 export const RoomSchemaSchema = {
   properties: {
+    id: {
+      title: "Id",
+      type: "integer",
+    },
     name: {
       title: "Name",
       type: "string",
     },
   },
-  required: ["name"],
+  required: ["id", "name"],
   title: "RoomSchema",
   type: "object",
 } as const;

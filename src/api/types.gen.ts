@@ -91,6 +91,10 @@ export type UserCreate = {
  */
 export type RoomSchema = {
   /**
+   * Id
+   */
+  id: number;
+  /**
    * Name
    */
   name: string;
