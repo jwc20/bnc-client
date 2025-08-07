@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import InputCode from '../InputCode';
+import type {  CheckBullsCowsRequest, CheckBullsCowsResponse} from '../../api/types.gen';
+import { gamesApiCheckGame } from '../../api/sdk.gen';
 
 const COLORS = [
     { value: 'red', label: 'Red', color: '#ff4444' },
@@ -50,9 +52,11 @@ export const GameBoard = () => {
     const [currentRow, setCurrentRow] = useState(0);
     const [loading, setLoading] = useState(false);
     const [inputCodeStr, setInputCodeStr] = useState('');
+    const [data, setData] = useState<CheckBullsCowsResponse>();
+    const [roomId, setRoomId] = useState(1);
 
 
-    const handleSubmitCode = (codeStr) => {
+    const handleSubmitCode = async (codeStr) => {
         if (loading) return;
         const digits = codeStr.split('').map(Number);
         if (digits.some(d => d < 1 || d > COLORS.length)) {
@@ -61,6 +65,17 @@ export const GameBoard = () => {
         }
 
         const pegColors = digits.map(d => COLORS[d - 1]);
+
+        const { data: data}  = await gamesApiCheckGame({
+            body: {
+                room_id: 1,
+                guess: codeStr
+            }
+        });
+
+        setData(data);
+
+
 
         setGameState(prev => ({
             ...prev,

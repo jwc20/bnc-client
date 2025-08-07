@@ -51,7 +51,7 @@ export default function App() {
                             </RequireAuth>
                         }
                     />
-                    <Route path="/room/random" element={
+                    <Route path="/room/random/:roomId" element={
                         <RequireAuth>
                             <SinglePlayerGamePage />
                         </RequireAuth>
