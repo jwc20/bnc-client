@@ -225,7 +225,7 @@ export const gamesApiGetRoom = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Create a new singleplayer room
+ * Create a new singleplayer room with random secret code
  */
 export const gamesApiCreateRandomSingleplayerRoom = <
   ThrowOnError extends boolean = false
@@ -243,7 +243,7 @@ export const gamesApiCreateRandomSingleplayerRoom = <
         type: "http",
       },
     ],
-    url: "/api/games/rooms/singleplayer/random",
+    url: "/api/games/rooms/quick-play",
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -253,7 +253,7 @@ export const gamesApiCreateRandomSingleplayerRoom = <
 };
 
 /**
- * Check Game
+ * Check guess for bulls and cows
  */
 export const gamesApiCheckGame = <ThrowOnError extends boolean = false>(
   options: Options<GamesApiCheckGameData, ThrowOnError>
@@ -269,7 +269,7 @@ export const gamesApiCheckGame = <ThrowOnError extends boolean = false>(
         type: "http",
       },
     ],
-    url: "/api/games/game/check",
+    url: "/api/games/rooms/check",
     ...options,
     headers: {
       "Content-Type": "application/json",

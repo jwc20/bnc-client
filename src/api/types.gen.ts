@@ -112,6 +112,10 @@ export type RoomResponse = {
    * Name
    */
   name: string;
+  /**
+   * Type
+   */
+  type: number;
 };
 
 /**
@@ -130,6 +134,10 @@ export type CreateRandomSingleplayerRoomRequest = {
    * Num Of Guesses
    */
   num_of_guesses?: number | null;
+  /**
+   * Type
+   */
+  type?: number;
 };
 
 /**
@@ -301,7 +309,7 @@ export type GamesApiGetRoomResponses = {
   /**
    * OK
    */
-  200: RoomSchema;
+  200: RoomResponse;
 };
 
 export type GamesApiGetRoomResponse =
@@ -311,7 +319,7 @@ export type GamesApiCreateRandomSingleplayerRoomData = {
   body: CreateRandomSingleplayerRoomRequest;
   path?: never;
   query?: never;
-  url: "/api/games/rooms/singleplayer/random";
+  url: "/api/games/rooms/quick-play";
 };
 
 export type GamesApiCreateRandomSingleplayerRoomResponses = {
@@ -328,7 +336,7 @@ export type GamesApiCheckGameData = {
   body: CheckBullsCowsRequest;
   path?: never;
   query?: never;
-  url: "/api/games/game/check";
+  url: "/api/games/rooms/check";
 };
 
 export type GamesApiCheckGameResponses = {
