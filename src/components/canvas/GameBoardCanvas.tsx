@@ -23,11 +23,18 @@ const BoardCanvas = (props) => {
     return (
         <canvas
             ref={canvasRef}
+            className="boardCanvas"
             style={{
-                display: "block",
-                width: "100vw",
-                height: "10vh",
-                position: "fixed",
+                boxSizing: 'content-box',
+                minInlineSize: '60ch',
+                maxInlineSize: '60ch',
+                marginInline: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                // width: "50vw",
+                height: "70vh",
+                position: "inherit",
                 top: 0,
                 left: 0,
                 zIndex: -1,
@@ -37,5 +44,6 @@ const BoardCanvas = (props) => {
         />
     );
 };
+
 
 export default BoardCanvas;
