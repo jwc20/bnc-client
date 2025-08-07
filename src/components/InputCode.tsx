@@ -1,10 +1,20 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
+import type { ChangeEvent, KeyboardEvent } from "react";
 
-const InputCode = ({ length, label, loading, onSubmit }) => {
-    const [code, setCode] = useState(Array(length).fill(""));
-    const inputs = useRef([]);
 
-    const processInput = (e, slot) => {
+interface InputCodeProps {
+    length: number;
+    label: string;
+    loading: boolean;
+    onSubmit: (code: string) => void;
+}
+
+const InputCode = ({ length, label, loading, onSubmit }: InputCodeProps) => {
+    const [code, setCode] = useState<string[]>(Array(length).fill(""));
+    const inputs = useRef<(HTMLInputElement | null)[]>([]);
+
+
+    const processInput = (e: ChangeEvent<HTMLInputElement>, slot: number) => {
         const val = e.target.value;
         if (/[^0-9]/.test(val)) return;
 
@@ -17,7 +27,7 @@ const InputCode = ({ length, label, loading, onSubmit }) => {
         }
     };
 
-    const onKeyUp = (e, slot) => {
+    const onKeyUp = (e: KeyboardEvent<HTMLInputElement>, slot: number) => {
         if (e.key === "Backspace" && !code[slot] && slot > 0) {
             const newCode = [...code];
             newCode[slot - 1] = "";
@@ -52,16 +62,18 @@ const InputCode = ({ length, label, loading, onSubmit }) => {
                         value={num}
                         autoFocus={!code[0] && idx === 0}
                         readOnly={loading}
-                        onChange={e => processInput(e, idx)}
-                        onKeyUp={e => onKeyUp(e, idx)}
-                        ref={ref => inputs.current[idx] = ref}
+                        onChange={(e) => processInput(e, idx)}
+                        onKeyUp={(e) => onKeyUp(e, idx)}
+                        ref={(ref) => {
+                            inputs.current[idx] = ref;
+                        }}
                         style={{
                             width: 40,
                             height: 40,
                             textAlign: "center",
                             fontSize: 24,
                             border: "2px solid #000",
-                            borderRadius: 6
+                            borderRadius: 6,
                         }}
                     />
                 ))}
@@ -77,7 +89,7 @@ const InputCode = ({ length, label, loading, onSubmit }) => {
                     color: "#fff",
                     border: "2px solid #000",
                     borderRadius: 4,
-                    cursor: "pointer"
+                    cursor: "pointer",
                 }}
             >
                 Submit

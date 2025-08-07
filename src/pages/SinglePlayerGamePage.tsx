@@ -1,9 +1,14 @@
-import {GameBoard} from "../components/GameBoard.tsx";
+import { GameBoard } from "../components/GameBoard.tsx";
 
-export const SinglePlayerGamePage = ({roomId}) => {
+type SinglePlayerGamePageProps = {
+    roomId: number;
+};
+
+export const SinglePlayerGamePage = ({ roomId }: SinglePlayerGamePageProps) => {
+    console.log(roomId);
     return (
         <div>
-            <GameBoard roomId={roomId}/>
+            <GameBoard />
         </div>
-    )
+    );
 };

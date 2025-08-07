@@ -5,7 +5,7 @@ import type {RoomSchema} from "../api/types.gen";
 import {useGame} from "../stores/singlePlayerGameStore.ts";
 
 export function LobbyPage() {
-    const [rooms, setRooms] = useState([]);
+    const [rooms, setRooms] = useState<RoomSchema[]>([]);
     const navigate = useNavigate();
     const game = useGame();
 
@@ -14,7 +14,7 @@ export function LobbyPage() {
             try {
                 const rooms = await gamesApiListRooms();
                 console.log(rooms);
-                setRooms(rooms.data);
+                setRooms(rooms.data ?? []);
             } catch (error) {
                 console.error('Failed to fetch rooms:', error);
             }

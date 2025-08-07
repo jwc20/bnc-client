@@ -3,15 +3,25 @@ import InputCode from './InputCode.tsx';
 import { useGame } from '../stores/singlePlayerGameStore.ts';
 
 const COLORS = [
-    {value: 'red', label: 'Red', color: '#ff4444'},
-    {value: 'blue', label: 'Blue', color: '#4444ff'},
-    {value: 'green', label: 'Green', color: '#44ff44'},
-    {value: 'yellow', label: 'Yellow', color: '#ffff44'},
-    {value: 'purple', label: 'Purple', color: '#ff44ff'},
-    {value: 'orange', label: 'Orange', color: '#ff8844'}
+    { value: 'red', label: 'Red', color: '#ff4444' },
+    { value: 'blue', label: 'Blue', color: '#4444ff' },
+    { value: 'green', label: 'Green', color: '#44ff44' },
+    { value: 'yellow', label: 'Yellow', color: '#ffff44' },
+    { value: 'purple', label: 'Purple', color: '#ff44ff' },
+    { value: 'orange', label: 'Orange', color: '#ff8844' }
 ];
 
-const GameColorPeg = ({color}) => (
+type ColorOption = {
+    value: string;
+    label: string;
+    color: string;
+};
+
+type GameState = { [index: number]: ColorOption[] };
+type FeedbackState = { [index: number]: { bulls: number; cows: number } };
+
+const GameColorPeg = ({ color }: { color?: ColorOption }) => (
+
     <div
         className="game-color-peg"
         style={{
@@ -20,7 +30,7 @@ const GameColorPeg = ({color}) => (
     />
 );
 
-const GameFeedBackPegs = ({bulls, cows}: { bulls?: number, cows?: number }) => {
+const GameFeedBackPegs = ({ bulls, cows }: { bulls?: number, cows?: number }) => {
     if (bulls === undefined && cows === undefined) {
         return (
             <div className="feedback-pegs-container">
@@ -73,10 +83,22 @@ const GameFeedBackPegs = ({bulls, cows}: { bulls?: number, cows?: number }) => {
     );
 };
 
-const GameRow = ({row = []}) => (
+// const GameRow = ({ row = [] }) => (
+//     <div className="game-row">
+//         {Array.from({ length: 4 }).map((_, i) => (
+//             <GameColorPeg key={i} color={row[i]} />
+//         ))}
+//     </div>
+// );
+
+type GameRowProps = {
+    row?: ColorOption[];
+};
+
+const GameRow = ({ row = [] }: GameRowProps) => (
     <div className="game-row">
-        {Array.from({length: 4}).map((_, i) => (
-            <GameColorPeg key={i} color={row[i]}/>
+        {Array.from({ length: 4 }).map((_, i) => (
+            <GameColorPeg key={i} color={row[i]} />
         ))}
     </div>
 );
@@ -90,16 +112,28 @@ export const GameBoard = () => {
     };
 
     // create gameState object from store guesses
-    const gameState = game.guesses.reduce((acc, guess, index) => {
+    // const gameState: GameState = game.guesses.reduce((acc, guess, index) => {
+    //     acc[index] = convertGuessToRow(guess.guess);
+    //     return acc;
+    // }, {} as { [index: number]: ColorOption[] });
+    const gameState: GameState = game.guesses.reduce<GameState>((acc, guess, index) => {
         acc[index] = convertGuessToRow(guess.guess);
         return acc;
     }, {});
 
+
+
     // create feedbackState object from store guesses
-    const feedbackState = game.guesses.reduce((acc, guess, index) => {
+    // const feedbackState: FeedbackState = game.guesses.reduce((acc, guess, index) => {
+    //     acc[index] = { bulls: guess.bulls, cows: guess.cows };
+    //     return acc;
+    // }, {});
+    const feedbackState = game.guesses.reduce<FeedbackState>((acc, guess, index) => {
         acc[index] = { bulls: guess.bulls, cows: guess.cows };
         return acc;
     }, {});
+
+
 
     const handleSubmitCode = async (codeStr: string) => {
         if (game.isLoading) return;
@@ -128,7 +162,7 @@ export const GameBoard = () => {
         <div className="game-board-container">
             <div className="game-board">
                 <div className="game-rows-container">
-                    {Array.from({length: 10}).map((_, i) => {
+                    {Array.from({ length: 10 }).map((_, i) => {
                         const rowIndex = 9 - i;
                         const row = gameState[rowIndex];
                         const isCurrentRow = rowIndex === game.currentRow;
@@ -142,7 +176,7 @@ export const GameBoard = () => {
                                 <div className={`row-number ${isCurrentRow ? 'current' : ''}`}>
                                     {rowIndex + 1}
                                 </div>
-                                <GameRow row={row}/>
+                                <GameRow row={row} />
                                 <div className="feedback-section">
                                     <GameFeedBackPegs
                                         bulls={feedbackState[rowIndex]?.bulls}

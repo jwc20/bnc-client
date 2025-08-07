@@ -59,25 +59,49 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }, []);
 
     
+    // const validateToken = async (validationToken: string) => {
+    //     try {
+    //         // TODO: check if token is valid
+    //         console.log("Validating token:", validationToken);
+    //         const response = await usersApiMe({
+    //             throwOnError: true,
+    //         });
+    //         console.log("Token validation successful:", response);
+    //         if (response.data) {
+    //             console.log("Token validation successful:", response.data);
+    //             setUser(response.data);
+    //             localStorage.setItem(USER_KEY, JSON.stringify(response.data));
+    //             return true;
+    //         }
+    //     } catch (error) {
+    //         console.error("Token validation failed:", error);
+    //         throw error;
+    //     }
+    // };
     const validateToken = async (validationToken: string) => {
-        try {
-            // TODO: check if token is valid
-            console.log("Validating token:", validationToken);
-            const response = await usersApiMe({
-                throwOnError: true,
-            });
-            console.log("Token validation successful:", response);
-            if (response.data) {
-                console.log("Token validation successful:", response.data);
-                setUser(response.data);
-                localStorage.setItem(USER_KEY, JSON.stringify(response.data));
-                return true;
-            }
-        } catch (error) {
-            console.error("Token validation failed:", error);
-            throw error;
+    try {
+        console.log("Validating token:", validationToken);
+        const response = await usersApiMe({
+            throwOnError: true,
+        });
+
+        if (response.data) {
+            const userData: User = {
+                id: String(response.data.id), // Convert number to string
+                email: response.data.email,
+                username: response.data.username,
+            };
+
+            setUser(userData);
+            localStorage.setItem(USER_KEY, JSON.stringify(userData));
+            return true;
         }
-    };
+    } catch (error) {
+        console.error("Token validation failed:", error);
+        throw error;
+    }
+};
+
 
     const clearAuth = () => {
         localStorage.removeItem(TOKEN_KEY);
