@@ -1,4 +1,4 @@
-import {GameBoard} from "../components/board/GameBoard";
+import {GameBoard} from "../components/GameBoard.tsx";
 import {useParams} from "react-router";
 
 export const SinglePlayerGamePage = () => {

@@ -1,69 +1,81 @@
 import { useEffect, useState } from "react";
 import { Outlet, Link, useLocation, useNavigate } from "react-router";
-import { gamesApiListRooms, gamesApiCreateRandomSingleplayerRoom } from "../api/sdk.gen";
-import type { GamesApiListRoomsResponses, RoomSchema } from "../api/types.gen";
+import { gamesApiListRooms } from "../api/sdk.gen";
+import type { RoomSchema } from "../api/types.gen";
+import { useGame } from "../stores/singlePlayerGameStore.ts";
+
 export function LobbyPage() {
     const [rooms, setRooms] = useState([]);
-    const [room, setRoom] = useState<RoomSchema>();
     const navigate = useNavigate();
-
-    // const onFetchRooms = async () => {
-    //     const {rooms: any} = await gamesApiListRooms();
-    //     setRooms(rooms);
-    // };
+    const game = useGame();
 
     useEffect(() => {
         const fetchRooms = async () => {
-            const rooms = await gamesApiListRooms();
-            console.log(rooms);
-            setRooms(rooms.data);
+            try {
+                const rooms = await gamesApiListRooms();
+                console.log(rooms);
+                setRooms(rooms.data);
+            } catch (error) {
+                console.error('Failed to fetch rooms:', error);
+            }
         };
         fetchRooms();
     }, []);
 
     const onCreateSinglePlayerGameRoom = async () => {
-        const room = await gamesApiCreateRandomSingleplayerRoom({
-            body: {
-                code_length: 4,
-                num_of_colors: 6,
-                num_of_guesses: 10,
-            },
+        const success = await game.createRandomRoom({
+            code_length: 4,
+            num_of_colors: 6,
+            num_of_guesses: 10,
         });
-        setRoom(room.data);
-        navigate(`/room/random/${room.data.id}`);
+
+        if (success && game.room) {
+            navigate(`/room/random/${game.room.id}`);
+        } else if (game.error) {
+            alert(`Failed to create room: ${game.error}`);
+            game.clearError();
+        }
     };
 
     return (
         <div>
             <h1>Lobby</h1>
             <div>
-                <button onClick={() => onCreateSinglePlayerGameRoom()}>quick play</button>
+                <button
+                    onClick={onCreateSinglePlayerGameRoom}
+                    disabled={game.isLoading}
+                >
+                    {game.isLoading ? 'Creating...' : 'Quick Play'}
+                </button>
             </div>
-            {/* <div>
-                <Link to="/room/random">play random single player game</Link>
-            </div> */}
+
+            {game.error && (
+                <div style={{color: 'red', margin: '10px 0'}}>
+                    Error: {game.error}
+                    <button onClick={game.clearError} style={{marginLeft: 8}}>✕</button>
+                </div>
+            )}
+
             <div>
                 <table>
                     <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Room</th>
-                        </tr>
+                    <tr>
+                        <th>#</th>
+                        <th>Room</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {rooms.map((room: RoomSchema) => (
-                            <tr key={room.id}>
-                                <td>{room.id}</td>
-                                <td>
-                                    <Link to={`/room/${room.id}`}>{room.name}</Link>
-                                </td>
-                                {/*<td>{room.players.length}</td>*/}
-                            </tr>
-                        ))}
+                    {rooms.map((room: RoomSchema) => (
+                        <tr key={room.id}>
+                            <td>{room.id}</td>
+                            <td>
+                                <Link to={`/room/${room.id}`}>{room.name}</Link>
+                            </td>
+                        </tr>
+                    ))}
                     </tbody>
                 </table>
             </div>
-
         </div>
     );
 };
