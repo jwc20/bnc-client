@@ -9,8 +9,10 @@ import {createJSONStorage, persist} from 'zustand/middleware';
 import type {
     UserLogin as LoginCredentials,
     UserResponse as User,
-    AuthResponse as LoginResponse
+    AuthResponse as LoginResponse,
+    MeResponse
 } from '../api/types.gen';
+import { usersApiLogin, usersApiMe } from '../api/sdk.gen';
 
 interface UserState {
     token: string | null;
@@ -24,38 +26,12 @@ interface UserState {
     setError: (error: string | null) => void;
 
     login: (credentials: LoginCredentials) => Promise<boolean>;
+    fetchProfile: () => Promise<boolean>;
 
     isAuthenticated: () => boolean;
 
     clearAuth: () => void;
 }
-
-// const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
-const API_BASE_URL = 'http://localhost:8000/api';
-
-const apiCall = async (endpoint: string, options: RequestInit = {}) => {
-    const store = useUserStore.getState();
-    const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-        ...options.headers,
-    };
-
-    // if (store.token && !endpoint.includes('/auth/login')) {
-    //     headers['Bearer'] = store.token;
-    // }
-
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-        ...options,
-        headers,
-    });
-
-    if (!response.ok) {
-        const errorData: ApiError = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || errorData.message || errorData.error || 'Request failed');
-    }
-
-    return response.json();
-};
 
 export const useUserStore = create<UserState>()(
     persist(
@@ -74,31 +50,66 @@ export const useUserStore = create<UserState>()(
                 set({isLoading: true, error: null});
 
                 try {
-                    const response: LoginResponse = await apiCall('/auth/login', {
-                        method: 'POST',
-                        body: JSON.stringify(credentials),
+                    const response = await usersApiLogin({
+                        body: credentials,
                     });
 
-                    set({
-                        token: response.token,
-                        user: {
-                            id: response.user_id,
-                            username: response.username,
-                            email: '',
-                        },
-                        isLoading: false,
-                        error: null,
-                    });
-                    localStorage.setItem('user-storage', JSON.stringify({token: response.token}));
-                    // await get().fetchProfile();
+                    if (response.data) {
+                        set({
+                            token: response.data.token,
+                            user: {
+                                id: 0, // Will be populated by fetchProfile
+                                username: response.data.username,
+                                email: '',
+                            },
+                            isLoading: false,
+                            error: null,
+                        });
 
-                    return true;
-                } catch (error) {
-                    const errorMessage = error instanceof Error ? error.message : 'Login failed';
+                        // Fetch full profile after login
+                        await get().fetchProfile();
+                        return true;
+                    } else {
+                        throw new Error('No response data received');
+                    }
+                } catch (error: any) {
+                    const errorMessage = error?.message || error?.detail || 'Login failed';
                     set({
                         token: null,
                         user: null,
                         isLoading: false,
+                        error: errorMessage,
+                    });
+                    return false;
+                }
+            },
+
+            fetchProfile: async (): Promise<boolean> => {
+                const { token } = get();
+                if (!token) {
+                    set({ error: 'No authentication token' });
+                    return false;
+                }
+
+                try {
+                    const response = await usersApiMe({
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+
+                    if (response.data) {
+                        set({
+                            user: response.data,
+                            error: null,
+                        });
+                        return true;
+                    } else {
+                        throw new Error('No profile data received');
+                    }
+                } catch (error: any) {
+                    const errorMessage = error?.message || error?.detail || 'Failed to fetch profile';
+                    set({
                         error: errorMessage,
                     });
                     return false;
@@ -128,13 +139,14 @@ export const useUserStore = create<UserState>()(
                 user: state.user,
             }),
 
-            // onRehydrateStorage: () => (state) => {
-            //     // if (state?.token && state?.user) {
-            //     //     state.fetchProfile().catch(() => {
-            //     //         state.clearAuth();
-            //     //     });
-            //     // }
-            // },
+            onRehydrateStorage: () => (state) => {
+                if (state?.token && state?.user) {
+                    // Optionally refresh profile on rehydration
+                    state.fetchProfile().catch(() => {
+                        state.clearAuth();
+                    });
+                }
+            },
         }
     )
 );
@@ -147,17 +159,24 @@ export const useAuth = () => {
         user: store.user,
         error: store.error,
         login: store.login,
+        fetchProfile: store.fetchProfile,
         clearError: () => store.setError(null),
+        logout: store.clearAuth,
     };
 };
 
 export const useAuthenticatedApi = () => {
     const token = useUserStore((state) => state.token);
 
-    return async (endpoint: string, options: RequestInit = {}) => {
-        if (!token) {
-            throw new Error('No authentication token available');
-        }
-        return apiCall(endpoint, options);
+    return {
+        getAuthHeaders: () => {
+            if (!token) {
+                throw new Error('No authentication token available');
+            }
+            return {
+                Authorization: `Bearer ${token}`
+            };
+        },
+        isAuthenticated: !!token
     };
 };
