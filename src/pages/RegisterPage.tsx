@@ -61,10 +61,6 @@ export function RegisterPage() {
             return;
         }
 
-        if (!agreedToTerms) {
-            setServerError("You must agree to the terms and conditions");
-            return;
-        }
 
         setIsSubmitting(true);
 
