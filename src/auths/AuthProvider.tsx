@@ -1,7 +1,10 @@
-import { useState, useEffect, useCallback, ReactNode } from "react";
+import { useState, useEffect, useCallback } from "react";
+import type { ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router";
-import { AuthContext, User } from "./AuthContext";
+import { AuthContext } from "./AuthContext";
+import type { User } from "./AuthContext";
 import { client } from "../api/client.gen";
+import type { Config } from "../api/client";
 import {
     usersApiLogin,
     usersApiSignup,
@@ -12,6 +15,7 @@ interface AuthProviderProps {
     children: ReactNode;
 }
 
+// TODO: move to env
 const TOKEN_KEY = "auth_token";
 const USER_KEY = "user_data";
 
@@ -38,7 +42,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                         headers: {
                             Authorization: `Bearer ${storedToken}`,
                         },
-                    });
+                    } as Config);
 
                     // validate token with backend
                     await validateToken(storedToken);
@@ -54,8 +58,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         initAuth();
     }, []);
 
-    const validateToken = async (token: string) => {
+    
+    const validateToken = async (validationToken: string) => {
         try {
+            // TODO: check if token is valid
+            console.log("Validating token:", validationToken);
             const response = await usersApiMe({
                 throwOnError: true,
             });
@@ -81,7 +88,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         client.setConfig({
             auth: undefined,
             headers: {},
-        });
+        } as Config);
     };
 
     const login = useCallback(async (email: string, password: string) => {
@@ -127,14 +134,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 headers: {
                     Authorization: `Bearer ${authToken}`,
                 },
-            });
+            } as Config);
 
 
             const from = location.state?.from?.pathname || "/lobby";
             navigate(from, { replace: true });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Login error:", error);
-            const errorMessage = error?.error?.message || error?.message || "Login failed";
+            const errorMessage = 
+                (error as { error?: { message?: string } })?.error?.message || 
+                (error as Error)?.message || 
+                "Login failed";
             throw new Error(errorMessage);
         } finally {
             setIsLoading(false);
@@ -189,12 +199,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 headers: {
                     Authorization: `Bearer ${authToken}`,
                 },
-            });
+            } as Config);
 
             navigate("/lobby");
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Registration error:", error);
-            const errorMessage = error?.error?.message || error?.message || "Registration failed";
+            const errorMessage = 
+                (error as { error?: { message?: string } })?.error?.message || 
+                (error as Error)?.message || 
+                "Registration failed";
             throw new Error(errorMessage);
         } finally {
             setIsLoading(false);
@@ -226,7 +239,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }, [navigate]);
 
     useEffect(() => {
-        const interceptorId = client.interceptors.response.use(async (response, request, options) => {
+        const interceptorId = client.interceptors.response.use(async (response, request) => {
             // If we get a 401, redirect to login
             if (response.status === 401 && !request.url.includes("/auth/")) {
                 console.log("401 Unauthorized - redirecting to login");

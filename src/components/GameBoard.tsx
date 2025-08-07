@@ -81,7 +81,7 @@ const GameRow = ({row = []}) => (
     </div>
 );
 
-export const GameBoard = ({roomId}) => {
+export const GameBoard = () => {
     const game = useGame();
 
     // convert guesses to the format expected by GameRow

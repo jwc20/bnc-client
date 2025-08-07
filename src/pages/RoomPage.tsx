@@ -3,13 +3,16 @@ import {useParams, useNavigate} from "react-router";
 
 import {SinglePlayerGamePage} from "./SinglePlayerGamePage";
 import {MultiPlayerGamePage} from "./MultiPlayerGamePage";
-import {useGame} from "../stores/SinglePlayerGameStore";
+import {useGame} from "../stores/singlePlayerGameStore";
 import {gamesApiGetRoom} from "../api/sdk.gen";
 
 export function RoomPage() {
     const {roomId} = useParams();
     const navigate = useNavigate();
     const game = useGame();
+    
+    // Destructure only the methods and properties we need
+    const { loadExistingRoom, error: gameError } = game;
 
     const [room, setRoom] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -37,9 +40,9 @@ export function RoomPage() {
                     setRoom(response.data);
 
                     if (response.data.type === 0) {
-                        const success = await game.loadExistingRoom(Number(roomId));
-                        if (!success && game.error) {
-                            setError(game.error);
+                        const success = await loadExistingRoom(Number(roomId));
+                        if (!success && gameError) {
+                            setError(gameError);
                         }
                     }
                 } else {
@@ -54,7 +57,7 @@ export function RoomPage() {
         };
 
         loadRoom();
-    }, [roomId]);
+    }, [roomId, loadExistingRoom, gameError]);
 
     if (loading) {
         return <div>Loading room...</div>;

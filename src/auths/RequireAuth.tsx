@@ -1,4 +1,4 @@
-import {ReactNode} from "react";
+import type {ReactNode} from "react";
 import {Navigate, useLocation} from "react-router";
 import {useAuth} from "./AuthContext";
 
@@ -31,7 +31,8 @@ export function RequireAuth({
     }
 
     if (allowedRoles && allowedRoles.length > 0) {
-        const userRole = (auth.user as any).role || (auth.user as any).roles?.[0];
+        const userWithRole = auth.user as { role?: string; roles?: string[] };
+        const userRole = userWithRole.role || userWithRole.roles?.[0];
 
         if (!userRole || !allowedRoles.includes(userRole)) {
             return <Navigate to="/unauthorized" replace/>;

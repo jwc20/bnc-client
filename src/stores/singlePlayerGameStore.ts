@@ -4,7 +4,6 @@ import type {
     RoomResponse,
     CreateRandomSingleplayerRoomRequest,
     CheckBullsCowsRequest,
-    CheckBullsCowsResponse
 } from '../api/types.gen';
 import {
     gamesApiCreateRandomSingleplayerRoom,
@@ -144,8 +143,11 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                     } else {
                         throw new Error('No room data received');
                     }
-                } catch (error: any) {
-                    const errorMessage = error?.message || error?.detail || 'Failed to create room';
+                } catch (error: unknown) {
+                    const errorMessage = 
+                        (error as ApiError)?.message || 
+                        (error as ApiError)?.detail || 
+                        'Failed to create room';
                     set({
                         isLoading: false,
                         error: errorMessage,
@@ -175,8 +177,11 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                     } else {
                         throw new Error('No room data received');
                     }
-                } catch (error: any) {
-                    const errorMessage = error?.message || error?.detail || 'Failed to load room';
+                } catch (error: unknown) {
+                    const errorMessage = 
+                        (error as ApiError)?.message || 
+                        (error as ApiError)?.detail || 
+                        'Failed to load room';
                     set({
                         isLoading: false,
                         error: errorMessage,
@@ -240,8 +245,11 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                     } else {
                         throw new Error('No response data received');
                     }
-                } catch (error: any) {
-                    const errorMessage = error?.message || error?.detail || 'Failed to submit guess';
+                } catch (error: unknown) {
+                    const errorMessage = 
+                        (error as ApiError)?.message || 
+                        (error as ApiError)?.detail || 
+                        'Failed to submit guess';
                     set({
                         isLoading: false,
                         error: errorMessage,

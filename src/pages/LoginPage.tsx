@@ -22,8 +22,11 @@ export function LoginPage() {
 
         try {
             await auth.login(email, password);
-        } catch (err: any) {
-            setError(err.message || "Invalid email or password. Please try again.");
+        } catch (err: unknown) {
+            const errorMessage =
+                (err as { message?: string })?.message ||
+                "Invalid email or password. Please try again.";
+            setError(errorMessage);
         } finally {
             setIsSubmitting(false);
         }

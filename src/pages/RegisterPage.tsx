@@ -66,8 +66,11 @@ export function RegisterPage() {
 
         try {
             await auth.register(email, password, username);
-        } catch (err: any) {
-            setServerError(err.message || "Registration failed. Please try again.");
+        } catch (err: unknown) {
+            const errorMessage = 
+                (err as { message?: string })?.message || 
+                "Registration failed. Please try again.";
+            setServerError(errorMessage);
         } finally {
             setIsSubmitting(false);
         }

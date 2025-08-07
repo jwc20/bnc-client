@@ -9,8 +9,6 @@ import {createJSONStorage, persist} from 'zustand/middleware';
 import type {
     UserLogin as LoginCredentials,
     UserResponse as User,
-    AuthResponse as LoginResponse,
-    MeResponse
 } from '../api/types.gen';
 import { usersApiLogin, usersApiMe } from '../api/sdk.gen';
 
@@ -72,8 +70,11 @@ export const useUserStore = create<UserState>()(
                     } else {
                         throw new Error('No response data received');
                     }
-                } catch (error: any) {
-                    const errorMessage = error?.message || error?.detail || 'Login failed';
+                } catch (error: unknown) {
+                    const errorMessage = 
+                        (error as ApiError)?.message || 
+                        (error as ApiError)?.detail || 
+                        'Login failed';
                     set({
                         token: null,
                         user: null,
@@ -107,8 +108,11 @@ export const useUserStore = create<UserState>()(
                     } else {
                         throw new Error('No profile data received');
                     }
-                } catch (error: any) {
-                    const errorMessage = error?.message || error?.detail || 'Failed to fetch profile';
+                } catch (error: unknown) {
+                    const errorMessage = 
+                        (error as ApiError)?.message || 
+                        (error as ApiError)?.detail || 
+                        'Failed to fetch profile';
                     set({
                         error: errorMessage,
                     });
