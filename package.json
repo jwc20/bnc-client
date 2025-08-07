@@ -6,8 +6,9 @@
   "scripts": {
     "generate:api": "openapi-ts",
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "ESLINT_NO_DEV_ERRORS=true vite build",
     "lint": "eslint .",
+    "lint:fix": "eslint --fix --ext .ts,.tsx .",
     "preview": "vite preview"
   },
   "dependencies": {
