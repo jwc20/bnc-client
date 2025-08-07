@@ -3,11 +3,13 @@ import {useParams, useNavigate} from "react-router";
 
 import {SinglePlayerGamePage} from "./SinglePlayerGamePage";
 import {MultiPlayerGamePage} from "./MultiPlayerGamePage";
+import {useGame} from "../stores/singlePlayerGameStore";
 import {gamesApiGetRoom} from "../api/sdk.gen";
 
 export function RoomPage() {
     const {roomId} = useParams();
     const navigate = useNavigate();
+    const game = useGame();
 
     const [room, setRoom] = useState(null);
     const [loading, setLoading] = useState(true);
