@@ -1,18 +1,18 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import InputCode from '../InputCode';
-import type {  CheckBullsCowsRequest, CheckBullsCowsResponse} from '../../api/types.gen';
-import { gamesApiCheckGame } from '../../api/sdk.gen';
+import type {CheckBullsCowsRequest, CheckBullsCowsResponse} from '../../api/types.gen';
+import {gamesApiCheckGame} from '../../api/sdk.gen';
 
 const COLORS = [
-    { value: 'red', label: 'Red', color: '#ff4444' },
-    { value: 'blue', label: 'Blue', color: '#4444ff' },
-    { value: 'green', label: 'Green', color: '#44ff44' },
-    { value: 'yellow', label: 'Yellow', color: '#ffff44' },
-    { value: 'purple', label: 'Purple', color: '#ff44ff' },
-    { value: 'orange', label: 'Orange', color: '#ff8844' }
+    {value: 'red', label: 'Red', color: '#ff4444'},
+    {value: 'blue', label: 'Blue', color: '#4444ff'},
+    {value: 'green', label: 'Green', color: '#44ff44'},
+    {value: 'yellow', label: 'Yellow', color: '#ffff44'},
+    {value: 'purple', label: 'Purple', color: '#ff44ff'},
+    {value: 'orange', label: 'Orange', color: '#ff8844'}
 ];
 
-const GameColorPeg = ({ color }) => (
+const GameColorPeg = ({color}) => (
     <div
         style={{
             width: 36,
@@ -24,37 +24,111 @@ const GameColorPeg = ({ color }) => (
     />
 );
 
-const GameFeedBackPegs = () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-        <div style={{ display: 'flex', gap: 4 }}>
-            {[0, 1].map(i => (
-                <div key={i} style={{ width: 12, height: 12, border: '1px solid #000', borderRadius: '50%', background: '#fff' }}></div>
-            ))}
-        </div>
-        <div style={{ display: 'flex', gap: 4 }}>
-            {[2, 3].map(i => (
-                <div key={i} style={{ width: 12, height: 12, border: '1px solid #000', borderRadius: '50%', background: '#fff' }}></div>
-            ))}
-        </div>
-    </div>
-);
+const GameFeedBackPegs = ({bulls, cows}: { bulls?: number, cows?: number }) => {
+    // If feedback not available, show 4 X's
+    if (bulls === undefined && cows === undefined) {
+        return (
+            <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+                <div style={{display: 'flex', gap: 4}}>
+                    {[0, 1].map(i => (
+                        <div key={i} style={{
+                            width: 12,
+                            height: 12,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontFamily: 'Arial',
+                            fontWeight: 'bold',
+                            fontSize: 14,
+                            border: '1px solid #000',
+                            borderRadius: '50%',
+                            background: 'gray',
+                            color: '#fff'
+                        }}>X</div>
+                    ))}
+                </div>
+                <div style={{display: 'flex', gap: 4}}>
+                    {[2, 3].map(i => (
+                        <div key={i} style={{
+                            width: 12,
+                            height: 12,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontFamily: 'Arial',
+                            fontWeight: 'bold',
+                            fontSize: 14,
+                            border: '1px solid #000',
+                            borderRadius: '50%',
+                            background: 'gray',
+                            color: '#fff'
+                        }}>X</div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+    const pegs = [];
+    for (let i = 0; i < (bulls || 0); i++) pegs.push('black');
+    for (let i = 0; i < (cows || 0); i++) pegs.push('white');
+    while (pegs.length < 4) pegs.push('empty');
 
-const GameRow = ({ row = [] }) => (
-    <div style={{ display: 'flex', gap: 12 }}>
-        {Array.from({ length: 4 }).map((_, i) => (
-            <GameColorPeg key={i} color={row[i]} />
+    return (
+        <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+            <div style={{display: 'flex', gap: 4}}>
+                {pegs.slice(0, 2).map((color, i) => (
+                    <div key={i} style={{
+                        width: 12,
+                        height: 12,
+                        border: '1px solid #000',
+                        borderRadius: '50%',
+                        background: color === 'black' ? '#000' : color === 'white' ? '#fff' : '#fafafa',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontFamily: 'Arial',
+                        fontWeight: 'bold',
+                        fontSize: 13,
+                        color: color === 'empty' ? 'black' : 'inherit'
+                    }}>{color === 'empty' ? 'X' : ''}</div>
+                ))}
+            </div>
+            <div style={{display: 'flex', gap: 4}}>
+                {pegs.slice(2, 4).map((color, i) => (
+                    <div key={i} style={{
+                        width: 12,
+                        height: 12,
+                        border: '1px solid #000',
+                        borderRadius: '50%',
+                        background: color === 'black' ? '#000' : color === 'white' ? '#fff' : '#fafafa',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontFamily: 'Arial',
+                        fontWeight: 'bold',
+                        fontSize: 13,
+                        color: color === 'empty' ? 'black' : 'inherit'
+                    }}>{color === 'empty' ? 'X' : ''}</div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+const GameRow = ({row = []}) => (
+    <div style={{display: 'flex', gap: 12}}>
+        {Array.from({length: 4}).map((_, i) => (
+            <GameColorPeg key={i} color={row[i]}/>
         ))}
     </div>
 );
 
 export const GameBoard = ({roomId}) => {
     const [gameState, setGameState] = useState({});
+    const [feedbackState, setFeedbackState] = useState({});
     const [currentRow, setCurrentRow] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [inputCodeStr, setInputCodeStr] = useState('');
     const [data, setData] = useState<CheckBullsCowsResponse>();
-    // const [roomId, setRoomId] = useState(roomId);
-
 
     const handleSubmitCode = async (codeStr) => {
         if (loading) return;
@@ -66,7 +140,7 @@ export const GameBoard = ({roomId}) => {
 
         const pegColors = digits.map(d => COLORS[d - 1]);
         console.log(roomId, codeStr);
-        const { data: data}  = await gamesApiCheckGame({
+        const {data: data} = await gamesApiCheckGame({
             body: {
                 room_id: roomId,
                 guess: codeStr
@@ -74,51 +148,26 @@ export const GameBoard = ({roomId}) => {
         });
 
         setData(data);
-
-
+        console.log(data);
 
         setGameState(prev => ({
             ...prev,
             [currentRow]: pegColors
         }));
+        setFeedbackState(prev => ({
+            ...prev,
+            [currentRow]: {bulls: data.bulls, cows: data.cows}
+        }));
 
-        setInputCodeStr(''); // clear input
         setCurrentRow(prev => prev + 1);
     };
 
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 40 }}>
-            <div style={{ fontWeight: 'bold', fontSize: 40, textDecoration: 'underline', marginBottom: 20 }}>
-                Mastermind
-            </div>
-            <div style={{ border: '2px solid #000', background: '#eee', width: 500, padding: 24 }}>
-                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
-                    {Array.from({ length: 4 }).map((_, i) => (
-                        <div
-                            key={i}
-                            style={{
-                                width: 36,
-                                height: 36,
-                                border: '2px solid #000',
-                                borderRadius: '50%',
-                                margin: '0 8px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                fontWeight: 'bold',
-                                fontSize: 20,
-                                background: '#333',
-                                color: '#fff'
-                            }}
-                        >
-                            ?
-                        </div>
-                    ))}
-                </div>
-                {/* Rows */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    {Array.from({ length: 10 }).map((_, i) => {
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 40}}>
+            <div style={{border: '2px solid #000', width: 500, padding: 24}}>
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8}}>
+                    {Array.from({length: 10}).map((_, i) => {
                         const rowIndex = 9 - i;
                         const row = gameState[rowIndex];
 
@@ -132,8 +181,7 @@ export const GameBoard = ({roomId}) => {
                                 <div style={{
                                     width: 32,
                                     height: 32,
-                                    background: rowIndex === currentRow ? '#90EE90' : '#cce0f7',
-                                    color: '#222',
+                                    background: rowIndex === currentRow ? '#90EE90' : 'white',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -144,9 +192,12 @@ export const GameBoard = ({roomId}) => {
                                 }}>
                                     {rowIndex + 1}
                                 </div>
-                                <GameRow row={row} />
-                                <div style={{ marginLeft: 16 }}>
-                                    <GameFeedBackPegs />
+                                <GameRow row={row}/>
+                                <div style={{marginLeft: 16}}>
+                                    <GameFeedBackPegs
+                                        bulls={feedbackState[rowIndex]?.bulls}
+                                        cows={feedbackState[rowIndex]?.cows}
+                                    />
                                 </div>
                             </div>
                         );
@@ -154,34 +205,17 @@ export const GameBoard = ({roomId}) => {
                 </div>
             </div>
 
-            {/* Input */}
             {currentRow < 10 ? (
-                <div style={{ marginTop: 24 }}>
+                <div style={{marginTop: 24}}>
                     <InputCode
                         length={4}
                         label="Enter code (1-6)"
                         loading={loading}
-                        onComplete={(val) => setInputCodeStr(val)}
+                        onSubmit={handleSubmitCode}
                     />
-                    <button
-                        style={{
-                            marginTop: 8,
-                            padding: '8px 16px',
-                            fontWeight: 'bold',
-                            background: '#4444ff',
-                            color: '#fff',
-                            border: '2px solid #000',
-                            borderRadius: 4,
-                            cursor: 'pointer'
-                        }}
-                        disabled={inputCodeStr.length !== 4}
-                        onClick={() => handleSubmitCode(inputCodeStr)}
-                    >
-                        Submit
-                    </button>
                 </div>
             ) : (
-                <div style={{ marginTop: 24, fontStyle: 'italic' }}>
+                <div style={{marginTop: 24, fontStyle: 'italic'}}>
                     Game over!
                 </div>
             )}
