@@ -30,7 +30,7 @@ export function LobbyPage() {
         });
 
         if (success && game.room) {
-            navigate(`/room/random/${game.room.id}`);
+            navigate(`/room/${game.room.id}`);
         } else if (game.error) {
             alert(`Failed to create room: ${game.error}`);
             game.clearError();

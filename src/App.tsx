@@ -51,11 +51,11 @@ export default function App() {
                             </RequireAuth>
                         }
                     />
-                    <Route path="/room/random/:roomId" element={
-                        <RequireAuth>
-                            <SinglePlayerGamePage />
-                        </RequireAuth>
-                    }/>
+                    {/*<Route path="/room/random/:roomId" element={*/}
+                    {/*    <RequireAuth>*/}
+                    {/*        <SinglePlayerGamePage />*/}
+                    {/*    </RequireAuth>*/}
+                    {/*}/>*/}
                     <Route
                         path="/room/:roomId"
                         element={
