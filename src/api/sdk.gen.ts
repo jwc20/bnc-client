@@ -269,7 +269,7 @@ export const gamesApiCheckGame = <ThrowOnError extends boolean = false>(
         type: "http",
       },
     ],
-    url: "/api/games/rooms/check",
+    url: "/api/games/check",
     ...options,
     headers: {
       "Content-Type": "application/json",

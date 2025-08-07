@@ -336,7 +336,7 @@ export type GamesApiCheckGameData = {
   body: CheckBullsCowsRequest;
   path?: never;
   query?: never;
-  url: "/api/games/rooms/check";
+  url: "/api/games/check";
 };
 
 export type GamesApiCheckGameResponses = {

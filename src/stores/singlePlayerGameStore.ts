@@ -8,7 +8,8 @@ import type {
 } from '../api/types.gen';
 import {
     gamesApiCreateRandomSingleplayerRoom,
-    gamesApiCheckGame
+    gamesApiCheckGame,
+    gamesApiGetRoom
 } from '../api/sdk.gen';
 
 export interface ApiError {
@@ -31,7 +32,6 @@ export interface GameState {
     error: string | null;
     gameWon: boolean;
     gameOver: boolean;
-
     codeLength: number;
     numOfColors: number;
     numOfGuesses: number;
@@ -45,11 +45,10 @@ interface SinglePlayerGameStore extends GameState {
     addGuess: (guess: GameGuess) => void;
     setGameWon: (won: boolean) => void;
     setGameOver: (over: boolean) => void;
-
     createRandomRoom: (config?: CreateRandomSingleplayerRoomRequest) => Promise<boolean>;
     submitGuess: (guess: string) => Promise<boolean>;
+    loadExistingRoom: (roomId: number) => Promise<boolean>;
     resetGame: () => void;
-
     getCurrentRow: () => number;
     isValidGuess: (guess: string) => boolean;
     getRemainingGuesses: () => number;
@@ -87,7 +86,22 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
             numOfColors: 6,
             numOfGuesses: 10,
 
-            setRoom: (room: RoomResponse) => set({ room }),
+            setRoom: (room: RoomResponse) => {
+                set((state) => {
+                    const isNewRoom = !state.room || state.room.id !== room.id;
+                    return {
+                        room,
+                        ...(isNewRoom ? {
+                            guesses: [],
+                            currentGuess: '',
+                            gameWon: false,
+                            gameOver: false,
+                            error: null,
+                        } : {})
+                    };
+                });
+            },
+
             setCurrentGuess: (currentGuess: string) => set({ currentGuess }),
             setLoading: (isLoading: boolean) => set({ isLoading }),
             setError: (error: string | null) => set({ error }),
@@ -132,6 +146,37 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                     }
                 } catch (error: any) {
                     const errorMessage = error?.message || error?.detail || 'Failed to create room';
+                    set({
+                        isLoading: false,
+                        error: errorMessage,
+                    });
+                    return false;
+                }
+            },
+
+            loadExistingRoom: async (roomId: number): Promise<boolean> => {
+                set({ isLoading: true, error: null });
+
+                try {
+                    const response = await gamesApiGetRoom({
+                        path: { room_id: roomId },
+                        headers: getAuthHeaders()
+                    });
+
+                    if (response.data) {
+                        get().setRoom(response.data);
+
+                        set({
+                            isLoading: false,
+                            error: null,
+                        });
+
+                        return true;
+                    } else {
+                        throw new Error('No room data received');
+                    }
+                } catch (error: any) {
+                    const errorMessage = error?.message || error?.detail || 'Failed to load room';
                     set({
                         isLoading: false,
                         error: errorMessage,
@@ -205,14 +250,17 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                 }
             },
 
-            resetGame: (): void => {
+            resetGame: () => {
                 set({
+                    room: null,
                     guesses: [],
                     currentGuess: '',
-                    isLoading: false,
-                    error: null,
                     gameWon: false,
-                    gameOver: false
+                    gameOver: false,
+                    error: null,
+                    codeLength: 4,
+                    numOfColors: 6,
+                    numOfGuesses: 10,
                 });
             },
 
@@ -236,7 +284,6 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
         {
             name: 'singleplayer-game-storage',
             storage: createJSONStorage(() => localStorage),
-
             partialize: (state) => ({
                 room: state.room,
                 guesses: state.guesses,
@@ -263,13 +310,13 @@ export const useGame = () => {
         codeLength: store.codeLength,
         numOfColors: store.numOfColors,
         numOfGuesses: store.numOfGuesses,
-
         currentRow: store.getCurrentRow(),
         remainingGuesses: store.getRemainingGuesses(),
-
         createRandomRoom: store.createRandomRoom,
+        loadExistingRoom: store.loadExistingRoom,
         submitGuess: store.submitGuess,
         setCurrentGuess: store.setCurrentGuess,
+        setRoom: store.setRoom,
         resetGame: store.resetGame,
         isValidGuess: store.isValidGuess,
         clearError: () => store.setError(null),
