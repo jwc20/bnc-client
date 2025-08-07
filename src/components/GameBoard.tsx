@@ -1,3 +1,5 @@
+ 
+
 import { useEffect } from 'react';
 import InputCode from './InputCode.tsx';
 import { useGame } from '../stores/singlePlayerGameStore.ts';
@@ -11,7 +13,7 @@ const COLORS = [
     {value: 'orange', label: 'Orange', color: '#ff8844'}
 ];
 
-const GameColorPeg = ({color}) => (
+const GameColorPeg = ({color: color}) => (
     <div
         className="game-color-peg"
         style={{
@@ -81,7 +83,7 @@ const GameRow = ({row = []}) => (
     </div>
 );
 
-export const GameBoard = ({roomId}) => {
+export const GameBoard = () => {
     const game = useGame();
 
     // convert guesses to the format expected by GameRow

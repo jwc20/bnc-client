@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useState, useEffect } from "react";
 import type { FormEvent } from 'react';
 import { Link, useNavigate, useLocation } from "react-router";

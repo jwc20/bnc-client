@@ -6,7 +6,6 @@ import {LoginPage} from "./pages/LoginPage";
 import {LobbyPage} from "./pages/LobbyPage";
 import {RegisterPage} from "./pages/RegisterPage";
 import {RoomPage} from "./pages/RoomPage";
-import {SinglePlayerGamePage} from "./pages/SinglePlayerGamePage";
 // import { UserPage } from "./pages/UserPage";
 // import GridCanvas from "./components/Canvas/GridCanvas.jsx";
 
@@ -22,7 +21,7 @@ client.setConfig({
 });
 
 if (import.meta.env.DEV) {
-    client.interceptors.request.use((request, options) => {
+    client.interceptors.request.use((request) => {
         console.log("API Request:", request.method, request.url);
         return request;
     });

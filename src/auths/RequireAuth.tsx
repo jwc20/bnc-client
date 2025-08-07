@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {ReactNode} from "react";
 import {Navigate, useLocation} from "react-router";
 import {useAuth} from "./AuthContext";
