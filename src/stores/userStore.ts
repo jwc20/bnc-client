@@ -1,55 +1,163 @@
+export interface ApiError {
+    detail?: string;
+    message?: string;
+    error?: string;
+}
+
 import {create} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
+import type {
+    UserLogin as LoginCredentials,
+    UserResponse as User,
+    AuthResponse as LoginResponse
+} from '../api/types.gen';
 
-const useUserStore = create(
+interface UserState {
+    token: string | null;
+    user: User | null;
+    isLoading: boolean;
+    error: string | null;
+
+    setToken: (token: string) => void;
+    setUser: (user: User) => void;
+    setLoading: (loading: boolean) => void;
+    setError: (error: string | null) => void;
+
+    login: (credentials: LoginCredentials) => Promise<boolean>;
+
+    isAuthenticated: () => boolean;
+
+    clearAuth: () => void;
+}
+
+// const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+const API_BASE_URL = 'http://localhost:8000/api';
+
+const apiCall = async (endpoint: string, options: RequestInit = {}) => {
+    const store = useUserStore.getState();
+    const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...options.headers,
+    };
+
+    // if (store.token && !endpoint.includes('/auth/login')) {
+    //     headers['Bearer'] = store.token;
+    // }
+
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        ...options,
+        headers,
+    });
+
+    if (!response.ok) {
+        const errorData: ApiError = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || errorData.message || errorData.error || 'Request failed');
+    }
+
+    return response.json();
+};
+
+export const useUserStore = create<UserState>()(
     persist(
         (set, get) => ({
             token: null,
-            setToken: (token) => set({token}),
+            user: null,
+            isLoading: false,
+            error: null,
 
-            username: null,
-            setUserName: (username) => set({username}),
+            setToken: (token: string) => set({token}),
+            setUser: (user: User) => set({user}),
+            setLoading: (isLoading: boolean) => set({isLoading}),
+            setError: (error: string | null) => set({error}),
 
-            isAuthenticated: () => {
-                const {token} = get();
-                return !!token;
-            },
+            login: async (credentials: LoginCredentials): Promise<boolean> => {
+                set({isLoading: true, error: null});
 
-            clearAuth: () => set({
-                token: null,
-                username: null,
-            }),
-
-            signOut: async () => {
                 try {
-                    set({
-                        token: null,
-                        username: null,
+                    const response: LoginResponse = await apiCall('/auth/login', {
+                        method: 'POST',
+                        body: JSON.stringify(credentials),
                     });
-                    localStorage.removeItem('user-storage');
+
+                    set({
+                        token: response.token,
+                        user: {
+                            id: response.user_id,
+                            username: response.username,
+                            email: '',
+                        },
+                        isLoading: false,
+                        error: null,
+                    });
+                    localStorage.setItem('user-storage', JSON.stringify({token: response.token}));
+                    // await get().fetchProfile();
+
+                    return true;
                 } catch (error) {
-                    console.error('Error signing out:', error);
+                    const errorMessage = error instanceof Error ? error.message : 'Login failed';
                     set({
                         token: null,
-                        username: null,
+                        user: null,
+                        isLoading: false,
+                        error: errorMessage,
                     });
+                    return false;
                 }
             },
 
+            isAuthenticated: (): boolean => {
+                const {token, user} = get();
+                return !!(token && user);
+            },
 
-
-
-            // TODO
-            // shouldRefreshToken: () => {},
+            clearAuth: () => {
+                set({
+                    token: null,
+                    user: null,
+                    error: null,
+                });
+                localStorage.removeItem('user-storage');
+            },
         }),
         {
             name: 'user-storage',
             storage: createJSONStorage(() => localStorage),
 
-            // TODO
-            // onRehydrateStorage: () => (state) => {},
+            partialize: (state) => ({
+                token: state.token,
+                user: state.user,
+            }),
+
+            // onRehydrateStorage: () => (state) => {
+            //     // if (state?.token && state?.user) {
+            //     //     state.fetchProfile().catch(() => {
+            //     //         state.clearAuth();
+            //     //     });
+            //     // }
+            // },
         }
     )
 );
 
-export {useUserStore};
+export const useAuth = () => {
+    const store = useUserStore();
+    return {
+        isAuthenticated: store.isAuthenticated(),
+        isLoading: store.isLoading,
+        user: store.user,
+        error: store.error,
+        login: store.login,
+        clearError: () => store.setError(null),
+    };
+};
+
+export const useAuthenticatedApi = () => {
+    const token = useUserStore((state) => state.token);
+
+    return async (endpoint: string, options: RequestInit = {}) => {
+        if (!token) {
+            throw new Error('No authentication token available');
+        }
+        return apiCall(endpoint, options);
+    };
+};
