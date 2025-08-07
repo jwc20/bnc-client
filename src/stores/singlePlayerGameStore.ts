@@ -252,7 +252,6 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
 
             resetGame: () => {
                 set({
-                    room: null,
                     guesses: [],
                     currentGuess: '',
                     gameWon: false,

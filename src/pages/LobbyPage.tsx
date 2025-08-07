@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { Outlet, Link, useLocation, useNavigate } from "react-router";
-import { gamesApiListRooms } from "../api/sdk.gen";
-import type { RoomSchema } from "../api/types.gen";
-import { useGame } from "../stores/singlePlayerGameStore.ts";
+import {useEffect, useState} from "react";
+import {Outlet, Link, useLocation, useNavigate} from "react-router";
+import {gamesApiListRooms} from "../api/sdk.gen";
+import type {RoomSchema} from "../api/types.gen";
+import {useGame} from "../stores/singlePlayerGameStore.ts";
 
 export function LobbyPage() {
     const [rooms, setRooms] = useState([]);
@@ -56,7 +56,7 @@ export function LobbyPage() {
                 </div>
             )}
 
-            <div>
+            <div className="room-list">
                 <table>
                     <thead>
                     <tr>
@@ -76,6 +76,20 @@ export function LobbyPage() {
                     </tbody>
                 </table>
             </div>
+            <style>{styles}</style>
         </div>
     );
 };
+
+const styles = `
+    .room-list {
+        margin-top: 20px;
+        box-sizing: content-box;
+        margin-inline: auto;
+        text-align: center;
+        max-inline-size: var(--measure);
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+    }
+`
