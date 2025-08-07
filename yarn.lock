@@ -708,18 +708,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@szhsin/react-menu@npm:^4.4.1":
-  version: 4.4.1
-  resolution: "@szhsin/react-menu@npm:4.4.1"
-  dependencies:
-    react-transition-state: "npm:^2.3.1"
-  peerDependencies:
-    react: ">=16.14.0"
-    react-dom: ">=16.14.0"
-  checksum: 10c0/9598c8387f292b03b190c0378f3931a900ad39070651cb48cad5ac4df846fc5e1014db3978193c07493c1534c3f5cdb102c7fb9b9ae6227a98096af790a1bb3d
-  languageName: node
-  linkType: hard
-
 "@tanstack/query-core@npm:5.83.1":
   version: 5.83.1
   resolution: "@tanstack/query-core@npm:5.83.1"
@@ -1038,7 +1026,6 @@ __metadata:
   dependencies:
     "@eslint/js": "npm:^9.30.1"
     "@hey-api/openapi-ts": "npm:0.80.4"
-    "@szhsin/react-menu": "npm:^4.4.1"
     "@tanstack/react-query": "npm:^5.84.1"
     "@types/react": "npm:^19.1.8"
     "@types/react-dom": "npm:^19.1.6"
@@ -2834,16 +2821,6 @@ __metadata:
     react-dom:
       optional: true
   checksum: 10c0/e55fe74a2947939526c79e496ab1fc501fd8e89a191a20157d94cfe712d4d9d84f68627811cf1d477a36b98250fcad958bf1237fc41ff0a8b2de00ddc8c53e3b
-  languageName: node
-  linkType: hard
-
-"react-transition-state@npm:^2.3.1":
-  version: 2.3.1
-  resolution: "react-transition-state@npm:2.3.1"
-  peerDependencies:
-    react: ">=16.8.0"
-    react-dom: ">=16.8.0"
-  checksum: 10c0/145f20e45c53d570f9db5fe749e0fd794b62bdf464c67c594c454df44f31fa58c16ccec705f9fdccf4c5250a309e4f7da5bd2e85cd686ba52d6b79e1c22b811f
   languageName: node
   linkType: hard
 
