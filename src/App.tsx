@@ -6,9 +6,7 @@ import {LoginPage} from "./pages/LoginPage";
 import {LobbyPage} from "./pages/LobbyPage";
 import {RegisterPage} from "./pages/RegisterPage";
 import {RoomPage} from "./pages/RoomPage";
-import {SinglePlayerGamePage} from "./pages/SinglePlayerGamePage";
-// import { UserPage } from "./pages/UserPage";
-// import GridCanvas from "./components/Canvas/GridCanvas.jsx";
+
 
 import {client} from "./api/client.gen";
 import "./App.css";
@@ -23,7 +21,7 @@ client.setConfig({
 
 if (import.meta.env.DEV) {
     client.interceptors.request.use((request, options) => {
-        console.log("API Request:", request.method, request.url);
+        console.log("API Request:", request.method, request.url, options);
         return request;
     });
 }
@@ -51,11 +49,6 @@ export default function App() {
                             </RequireAuth>
                         }
                     />
-                    {/*<Route path="/room/random/:roomId" element={*/}
-                    {/*    <RequireAuth>*/}
-                    {/*        <SinglePlayerGamePage />*/}
-                    {/*    </RequireAuth>*/}
-                    {/*}/>*/}
                     <Route
                         path="/room/:roomId"
                         element={
