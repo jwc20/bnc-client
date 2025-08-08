@@ -109,29 +109,13 @@ export const RoomSchemaSchema = {
       title: "Name",
       type: "string",
     },
+    game_type: {
+      title: "Game Type",
+      type: "integer",
+    },
   },
-  required: ["id", "name"],
+  required: ["id", "name", "game_type"],
   title: "RoomSchema",
-  type: "object",
-} as const;
-
-export const RoomResponseSchema = {
-  properties: {
-    id: {
-      title: "Id",
-      type: "integer",
-    },
-    name: {
-      title: "Name",
-      type: "string",
-    },
-    type: {
-      title: "Type",
-      type: "integer",
-    },
-  },
-  required: ["id", "name", "type"],
-  title: "RoomResponse",
   type: "object",
 } as const;
 
@@ -173,9 +157,9 @@ export const CreateRandomSingleplayerRoomRequestSchema = {
       default: 10,
       title: "Num Of Guesses",
     },
-    type: {
+    game_type: {
       default: 0,
-      title: "Type",
+      title: "Game Type",
       type: "integer",
     },
   },

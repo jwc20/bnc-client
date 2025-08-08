@@ -98,24 +98,10 @@ export type RoomSchema = {
    * Name
    */
   name: string;
-};
-
-/**
- * RoomResponse
- */
-export type RoomResponse = {
   /**
-   * Id
+   * Game Type
    */
-  id: number;
-  /**
-   * Name
-   */
-  name: string;
-  /**
-   * Type
-   */
-  type: number;
+  game_type: number;
 };
 
 /**
@@ -135,9 +121,9 @@ export type CreateRandomSingleplayerRoomRequest = {
    */
   num_of_guesses?: number | null;
   /**
-   * Type
+   * Game Type
    */
-  type?: number;
+  game_type?: number;
 };
 
 /**
@@ -309,7 +295,7 @@ export type GamesApiGetRoomResponses = {
   /**
    * OK
    */
-  200: RoomResponse;
+  200: RoomSchema;
 };
 
 export type GamesApiGetRoomResponse =
@@ -326,7 +312,7 @@ export type GamesApiCreateRandomSingleplayerRoomResponses = {
   /**
    * OK
    */
-  200: RoomResponse;
+  200: RoomSchema;
 };
 
 export type GamesApiCreateRandomSingleplayerRoomResponse =

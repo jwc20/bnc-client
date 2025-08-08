@@ -155,7 +155,7 @@ export const usersApiSignup = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * List Rooms
+ * List all rooms
  */
 export const gamesApiListRooms = <ThrowOnError extends boolean = false>(
   options?: Options<GamesApiListRoomsData, ThrowOnError>
