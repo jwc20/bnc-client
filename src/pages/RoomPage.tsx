@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 
 import { SinglePlayerGamePage } from "./SinglePlayerGamePage";
+import { MultiPlayerSingleBoardGamePage } from "./MultiPlayerSingleBoardGamePage";
 import { MultiPlayerGamePage } from "./MultiPlayerGamePage";
 import { TestWebSocket } from "../components/TestWebSocket";
 import { useGame } from "../stores/singlePlayerGameStore";
@@ -43,7 +44,7 @@ export function RoomPage() {
                 if (response.data) {
                     setRoom(response.data);
 
-                    if (response.data.type === 0) {
+                    if (response.data.game_type === 0) {
                         const success = await loadExistingRoom(roomId);
                         if (!success && gameError) {
                             setError(gameError);
@@ -94,16 +95,18 @@ export function RoomPage() {
         );
     }
 
-    if (room?.type === 0) {
+    if (room?.game_type === 0) {
         return <SinglePlayerGamePage roomId={roomId} />;
-    } else if (room?.type === 1) {
+    } else if (room?.game_type === 1) {
         return <TestWebSocket roomId={roomId} />;
         // return <MultiPlayerGamePage roomId={roomId} />;
+    } else if (room?.game_type === 2) {
+        return <MultiPlayerSingleBoardGamePage roomId={roomId} />;
     }
 
     return (
         <div>
-            <div>Unknown room type: {room?.type}</div>
+            <div>Unknown game type: {room?.game_type}</div>
             <button onClick={() => navigate('/lobby')}>
                 Back to Lobby
             </button>
