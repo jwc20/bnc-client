@@ -1,143 +1,164 @@
-import { Subject } from "rxjs";
-import { retryWhen, tap, delay } from "rxjs/operators";
-import { webSocket } from "rxjs/webSocket";
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 
-const URL = "ws://localhost:8000";
+interface WebSocketMessage {
+  type: string
+  state?: GameState
+  payload?: any
+}
 
-//https://stackoverflow.com/questions/47552174/rxjs-observable-websocket-get-access-to-onopen-onclose?rq=1
-export const openEvents$ = new Subject<Event>();
-export const closeEvents$ = new Subject<Event>();
-export const messages$ = new Subject();
+interface GameState {
+  moves: any[]
+  [key: string]: any
+}
 
-export const connection$ = webSocket({
-    url: URL,
-    openObserver: openEvents$,
-    deserializer: (e: MessageEvent) => {
-        return e.data;
+export const useRoomWebSocket = (roomId: string, autoConnect = true) => {
+  const [connectionStatus, setConnectionStatus] = useState<
+    'connecting' | 'connected' | 'disconnected' | 'error'
+  >('disconnected')
+  const [gameState, setGameState] = useState<GameState | null>(null)
+  const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  const wsRef = useRef<WebSocket | null>(null)
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout>()
+  const reconnectAttemptsRef = useRef(0)
+  const MAX_RECONNECT_ATTEMPTS = 5
+  const RECONNECT_DELAY = 3000
+
+  const connect = useCallback(() => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      console.log('WebSocket already connected')
+      return
+    }
+
+    try {
+      setConnectionStatus('connecting')
+      setError(null)
+
+      // Construct WebSocket URL
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+      const host = '127.0.0.1:8000'
+      const wsUrl = `${protocol}//${host}/ws/game/${roomId}/`
+
+      console.log('Connecting to WebSocket:', wsUrl)
+
+      const ws = new WebSocket(wsUrl)
+      wsRef.current = ws
+
+      ws.onopen = () => {
+        console.log('WebSocket connected')
+        setConnectionStatus('connected')
+        reconnectAttemptsRef.current = 0
+        setError(null)
+      }
+
+      ws.onmessage = event => {
+        try {
+          const data: WebSocketMessage = JSON.parse(event.data)
+          console.log('Received message:', data)
+          setLastMessage(data)
+
+          if (data.type === 'update' && data.state) {
+            setGameState(data.state)
+          }
+        } catch (err) {
+          console.error('Error parsing WebSocket message:', err)
+          setError('Failed to parse server message')
+        }
+      }
+
+      ws.onerror = event => {
+        console.error('WebSocket error:', event)
+        setError('WebSocket connection error')
+        setConnectionStatus('error')
+      }
+
+      ws.onclose = event => {
+        console.log('WebSocket closed:', event.code, event.reason)
+        setConnectionStatus('disconnected')
+        wsRef.current = null
+
+        // Auto-reconnect logic
+        if (
+          autoConnect &&
+          reconnectAttemptsRef.current < MAX_RECONNECT_ATTEMPTS
+        ) {
+          reconnectAttemptsRef.current++
+          console.log(
+            `Reconnecting... Attempt ${reconnectAttemptsRef.current}/${MAX_RECONNECT_ATTEMPTS}`
+          )
+
+          reconnectTimeoutRef.current = setTimeout(() => {
+            connect()
+          }, RECONNECT_DELAY)
+        } else if (reconnectAttemptsRef.current >= MAX_RECONNECT_ATTEMPTS) {
+          setError('Max reconnection attempts reached')
+        }
+      }
+    } catch (err) {
+      console.error('Error creating WebSocket:', err)
+      setError('Failed to create WebSocket connection')
+      setConnectionStatus('error')
+    }
+  }, [roomId, autoConnect])
+
+  const disconnect = useCallback(() => {
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current)
+    }
+
+    if (wsRef.current) {
+      wsRef.current.close(1000, 'User disconnected')
+      wsRef.current = null
+    }
+
+    setConnectionStatus('disconnected')
+    reconnectAttemptsRef.current = 0
+  }, [])
+
+  const sendMessage = useCallback((type: string, payload?: any) => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      const message = JSON.stringify({ type, payload })
+      console.log('Sending message:', message)
+      wsRef.current.send(message)
+      return true
+    } else {
+      console.error('WebSocket not connected')
+      setError('Cannot send message: WebSocket not connected')
+      return false
+    }
+  }, [])
+
+  const makeMove = useCallback(
+    (moveData: any) => {
+      return sendMessage('make_move', moveData)
     },
-    closeObserver: closeEvents$
-});
+    [sendMessage]
+  )
 
-export const processor$ = connection$.pipe(
-    tap((msg) => {
-        messages$.next(msg);
-    }),
-    retryWhen((errors) =>
-        errors.pipe(
-            tap((err) => {
-                console.error("Got error", err);
-            }),
-            delay(5000)
-        )
-    )
-);
+  // Auto-connect on mount if enabled
+  useEffect(() => {
+    if (autoConnect) {
+      connect()
+    }
 
-// import {useEffect, useRef, useState} from "react";
+    return () => {
+      disconnect()
+    }
+  }, [roomId]) // Only re-run if roomId changes
 
+  return {
+    // State
+    connectionStatus,
+    gameState,
+    lastMessage,
+    error,
+    isConnected: connectionStatus === 'connected',
 
-// // const WEBSOCKET_URL = import.meta.env.VITE_WEBSOCKET_URL;
-// const WEBSOCKET_URL = "ws://localhost:8000";
-
-
-// export function useRoomWebSocket(roomId, user, setMessages) {
-//     const wsRef = useRef(null);
-//     const [shouldRedirect, setShouldRedirect] = useState(false);
-//     const [gameState, setGameState] = useState({
-//         players: [],
-//         bots: [],
-//         kickedPlayers: [],
-//     });
-
-//     // Function to send game actions to the WebSocket
-//     const sendGameAction = (actionType, payload = {}) => {
-//         if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-//             const message = {
-//                 type: actionType,
-//                 payload: payload
-//             };
-//             wsRef.current.send(JSON.stringify(message));
-//         }
-//     };
-
-//     // Helper function to make a move
-//     const makeMove = (action) => {
-//         sendGameAction("make_move", {
-//             player: user?.username,
-//             action: action,
-//             room_code: roomId
-//         });
-//     };
-
-//     const handleDisconnect = () => {
-//         wsRef.current.close();
-//         wsRef.current = null;
-//     }
-
-//     useEffect(() => {
-//         if (!roomId) return;
-//         let isCleaningUp = false;
-//         const token = tokenManager.getToken();
-//         const ws = new WebSocket(
-//             `${WEBSOCKET_URL}/ws/${roomId}?token=${token}`
-//         );
-//         wsRef.current = ws;
-//         // ws.onopen = () => {
-//         //     // if (!isCleaningUp) {
-//         //     //     // console.log(`Connected to room ${roomId}`);
-//         //     //     // setConnectionStatus('connected');
-//         //     // }
-//         // };
-
-//         ws.onmessage = (event) => {
-//             if (isCleaningUp) return;
-
-//             let parsed;
-//             try {
-//                 parsed = JSON.parse(event.data);
-//             } catch {
-//                 parsed = {type: 'message', message: event.data};
-//             }
-
-//             switch (parsed.type) {
-//                 case "update":
-//                     // Handle game state updates from GameConsumer
-//                     if (parsed.state) {
-//                         setGameState((prev) => ({
-//                             ...prev,
-//                             ...parsed.state
-//                         }));
-//                     }
-//                     break;
-
-//                 default:
-//                     console.log("Unknown message type:", parsed.type);
-//             }
-//         };
-
-//         ws.onclose = (event) => {
-//             if (!isCleaningUp) {
-//                 console.log(`Disconnected from room ${roomId}`);
-//                 if (event.code === 4001) {
-//                     setShouldRedirect(true);
-//                 }
-
-//                 handleDisconnect();
-//                 // setConnectionStatus('disconnected');
-//             }
-//         };
-
-//         ws.onerror = (err) => {
-//             if (!isCleaningUp && ws.readyState !== WebSocket.CLOSING) {
-//                 console.error("WebSocket error:", err);
-//                 // setConnectionStatus('error');
-//             }
-//         };
-
-//         return () => {
-//             isCleaningUp = true;
-//             ws.close();
-//         };
-//     }, [roomId, user?.username, setMessages]);
-
-//     return {wsRef, gameState, setGameState, shouldRedirect, sendGameAction, makeMove};
-// }
+    // Actions
+    connect,
+    disconnect,
+    sendMessage,
+    makeMove
+  }
+}
