@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router";
 
 import { SinglePlayerGamePage } from "./SinglePlayerGamePage";
 import { MultiPlayerGamePage } from "./MultiPlayerGamePage";
+import { TestWebSocket } from "../components/TestWebSocket";
 import { useGame } from "../stores/singlePlayerGameStore";
 import { gamesApiGetRoom } from "../api/sdk.gen";
 import type { RoomResponse } from "../api/types.gen";
@@ -96,7 +97,8 @@ export function RoomPage() {
     if (room?.type === 0) {
         return <SinglePlayerGamePage roomId={roomId} />;
     } else if (room?.type === 1) {
-        return <MultiPlayerGamePage roomId={roomId} />;
+        return <TestWebSocket roomId={roomId} />;
+        // return <MultiPlayerGamePage roomId={roomId} />;
     }
 
     return (
