@@ -46,15 +46,14 @@ export function LoginPage() {
             <div className="login-container">
                 <div className="login-card">
                     <div className="login-header">
-                        <h1>Welcome Back</h1>
-                        <p>Sign in to your account to continue</p>
+                        <h2>Login</h2>
                     </div>
 
-                    {location.state?.from && (
+                    {/* {location.state?.from && (
                         <div className="info-message">
                             You need to log in to access {from}
                         </div>
-                    )}
+                    )} */}
 
                     {error && (
                         <div className="error-message">
@@ -64,35 +63,42 @@ export function LoginPage() {
                     )}
 
                     <form onSubmit={handleSubmit} className="login-form">
-                        <div className="form-group">
-                            <label htmlFor="email">Email</label>
-                            <input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter your email"
-                                required
-                                disabled={isSubmitting}
-                                autoComplete="email"
-                                autoFocus
-                            />
-                        </div>
+                        <table className="form-table">
+                            <tr>
+                                <td>email</td>
+                                <td>
+                                    <input
+                                        id="email"
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="Enter your email"
+                                        required
+                                        disabled={isSubmitting}
+                                        autoComplete="email"
+                                        autoFocus
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>password</td>
+                                <td>
+                                    <input
+                                        id="password"
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="Enter your password"
+                                        required
+                                        disabled={isSubmitting}
+                                        autoComplete="current-password"
+                                        minLength={6}
+                                    />
+                                </td>
+                            </tr>
+                        </table>
 
-                        <div className="form-group">
-                            <label htmlFor="password">Password</label>
-                            <input
-                                id="password"
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Enter your password"
-                                required
-                                disabled={isSubmitting}
-                                autoComplete="current-password"
-                                minLength={6}
-                            />
-                        </div>
+
 
                         <div className="form-actions">
                             <button
@@ -104,11 +110,11 @@ export function LoginPage() {
                             </button>
                         </div>
 
-                        <div className="form-footer">
+                        {/* <div className="form-footer">
                             <Link to="/forgot-password" className="link-text">
                                 Forgot your password?
                             </Link>
-                        </div>
+                        </div> */}
                     </form>
 
                     <div className="divider">
@@ -117,14 +123,57 @@ export function LoginPage() {
 
                     <div className="alternative-actions">
                         <p>
-                            Don't have an account?{" "}
+
                             <Link to="/register" className="link-primary">
-                                Sign up
+                                Don't have an account?
                             </Link>
                         </p>
                     </div>
                 </div>
             </div>
+            <style>{styles}</style>
         </div>
     );
 }
+
+const styles = `
+    .login-header {
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+    .login-form {
+      display: flex;
+      font-size: 0.7rem;
+      flex-direction: column;
+      align-items: center;
+    }
+    .form-table {
+      border-collapse: collapse;
+    }
+    .form-table td {
+      padding: 0.5rem;
+    }
+    .form-table td:first-child {
+      text-align: right;
+    }
+    .form-table td:last-child {
+      text-align: left;
+    }
+    .form-table input {
+      width: 100%;
+    }
+    .divider {
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .form-actions {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .alternative-actions {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.6rem;
+    }
+`

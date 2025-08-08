@@ -67,8 +67,8 @@ export function RegisterPage() {
         try {
             await auth.register(email, password, username);
         } catch (err: unknown) {
-            const errorMessage = 
-                (err as { message?: string })?.message || 
+            const errorMessage =
+                (err as { message?: string })?.message ||
                 "Registration failed. Please try again.";
             setServerError(errorMessage);
         } finally {
@@ -81,13 +81,12 @@ export function RegisterPage() {
         navigate("/lobby", { replace: true });
         return null;
     }
-
     return (
         <div className="register-page">
             <div className="register-container">
                 <div className="register-card">
                     <div className="register-header">
-                        <h1>Sign Up</h1>
+                        <h2>Sign Up</h2>
                     </div>
 
                     {serverError && (
@@ -98,97 +97,105 @@ export function RegisterPage() {
                     )}
 
                     <form onSubmit={handleSubmit} className="register-form">
-                        <div className="form-group">
-                            <label htmlFor="username">Username</label>
-                            <input
-                                id="username"
-                                type="text"
-                                value={username}
-                                onChange={(e) => {
-                                    setUsername(e.target.value);
-                                    if (errors.username) {
-                                        setErrors({ ...errors, username: undefined });
-                                    }
-                                }}
-                                placeholder="Choose a username"
-                                required
-                                disabled={isSubmitting}
-                                autoComplete="username"
-                                autoFocus
-                            />
-                            {errors.username && (
-                                <span className="field-error">{errors.username}</span>
-                            )}
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="email">Email</label>
-                            <input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={(e) => {
-                                    setEmail(e.target.value);
-                                    if (errors.email) {
-                                        setErrors({ ...errors, email: undefined });
-                                    }
-                                }}
-                                placeholder="Enter your email"
-                                required
-                                disabled={isSubmitting}
-                                autoComplete="email"
-                            />
-                            {errors.email && (
-                                <span className="field-error">{errors.email}</span>
-                            )}
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="password">Password</label>
-                            <input
-                                id="password"
-                                type="password"
-                                value={password}
-                                onChange={(e) => {
-                                    setPassword(e.target.value);
-                                    if (errors.password) {
-                                        setErrors({ ...errors, password: undefined });
-                                    }
-                                }}
-                                placeholder="Create a password"
-                                required
-                                disabled={isSubmitting}
-                                autoComplete="new-password"
-                            />
-                            {errors.password && (
-                                <span className="field-error">{errors.password}</span>
-                            )}
-                            <small className="field-hint">
-                                Must be at least 6 characters
-                            </small>
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="confirmPassword">Confirm Password</label>
-                            <input
-                                id="confirmPassword"
-                                type="password"
-                                value={confirmPassword}
-                                onChange={(e) => {
-                                    setConfirmPassword(e.target.value);
-                                    if (errors.confirmPassword) {
-                                        setErrors({ ...errors, confirmPassword: undefined });
-                                    }
-                                }}
-                                placeholder="Confirm your password"
-                                required
-                                disabled={isSubmitting}
-                                autoComplete="new-password"
-                            />
-                            {errors.confirmPassword && (
-                                <span className="field-error">{errors.confirmPassword}</span>
-                            )}
-                        </div>
+                        <table className="form-table">
+                            <tr>
+                                <td>username</td>
+                                <td>
+                                    <input
+                                        id="username"
+                                        type="text"
+                                        value={username}
+                                        onChange={(e) => {
+                                            setUsername(e.target.value);
+                                            if (errors.username) {
+                                                setErrors({ ...errors, username: undefined });
+                                            }
+                                        }}
+                                        placeholder="Choose a username"
+                                        required
+                                        disabled={isSubmitting}
+                                        autoComplete="username"
+                                        autoFocus
+                                    />
+                                    {errors.username && (
+                                        <div className="field-error">{errors.username}</div>
+                                    )}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>email</td>
+                                <td>
+                                    <input
+                                        id="email"
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => {
+                                            setEmail(e.target.value);
+                                            if (errors.email) {
+                                                setErrors({ ...errors, email: undefined });
+                                            }
+                                        }}
+                                        placeholder="Enter your email"
+                                        required
+                                        disabled={isSubmitting}
+                                        autoComplete="email"
+                                    />
+                                    {errors.email && (
+                                        <div className="field-error">{errors.email}</div>
+                                    )}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>password</td>
+                                <td>
+                                    <input
+                                        id="password"
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => {
+                                            setPassword(e.target.value);
+                                            if (errors.password) {
+                                                setErrors({ ...errors, password: undefined });
+                                            }
+                                        }}
+                                        placeholder="Create a password"
+                                        required
+                                        disabled={isSubmitting}
+                                        autoComplete="new-password"
+                                        minLength={6}
+                                    />
+                                    {errors.password && (
+                                        <div className="field-error">{errors.password}</div>
+                                    )}
+                                    <small className="field-hint">
+                                        Must be at least 6 characters
+                                    </small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>confirm password</td>
+                                <td>
+                                    <input
+                                        id="confirmPassword"
+                                        type="password"
+                                        value={confirmPassword}
+                                        onChange={(e) => {
+                                            setConfirmPassword(e.target.value);
+                                            if (errors.confirmPassword) {
+                                                setErrors({ ...errors, confirmPassword: undefined });
+                                            }
+                                        }}
+                                        placeholder="Confirm your password"
+                                        required
+                                        disabled={isSubmitting}
+                                        autoComplete="new-password"
+                                    />
+                                    {errors.confirmPassword && (
+                                        <div className="field-error">{errors.confirmPassword}</div>
+                                    )}
+                                </td>
+                            </tr>
+                        </table>
 
                         <div className="form-actions">
                             <button
@@ -207,17 +214,74 @@ export function RegisterPage() {
                         </div>
                     </form>
 
+                    <div className="divider">
+                        <span>or</span>
+                    </div>
 
                     <div className="alternative-actions">
                         <p>
-                            Already have an account?{" "}
                             <Link to="/login" className="link-primary">
-                                Sign in
+                                Already have an account?
                             </Link>
                         </p>
                     </div>
                 </div>
             </div>
+            <style>{styles}</style>
         </div>
     );
 }
+
+const styles = `
+    .register-header {
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+    .register-form {
+      display: flex;
+      font-size: 0.7rem;
+      flex-direction: column;
+      align-items: center;
+    }
+    .form-table {
+      border-collapse: collapse;
+    }
+    .form-table td {
+      padding: 0.5rem;
+      vertical-align: top;
+    }
+    .form-table td:first-child {
+      text-align: right;
+    }
+    .form-table td:last-child {
+      text-align: left;
+    }
+    .form-table input {
+      width: 100%;
+    }
+    .field-error {
+      display: block;
+      color: #e74c3c;
+      font-size: 0.6rem;
+      margin-top: 0.2rem;
+    }
+    .field-hint {
+      display: block;
+      color: #666;
+      font-size: 0.4rem;
+      margin-top: 0.2rem;
+    }
+    .divider {
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .form-actions {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .alternative-actions {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.6rem;
+    }
+`

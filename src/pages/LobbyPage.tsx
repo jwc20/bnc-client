@@ -39,7 +39,7 @@ export function LobbyPage() {
 
     return (
         <div>
-            <h1>Lobby</h1>
+            <h4>Lobby</h4>
             <div>
                 <button
                     onClick={onCreateSinglePlayerGameRoom}
