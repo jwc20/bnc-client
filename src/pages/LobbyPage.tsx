@@ -57,11 +57,12 @@ export function LobbyPage() {
             )}
 
             <div className="room-list">
-                <table>
+                <table className="room-list-table">
                     <thead>
                     <tr>
                         <th>#</th>
                         <th>Room</th>
+                        <th>Game Type</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -71,6 +72,7 @@ export function LobbyPage() {
                             <td>
                                 <Link to={`/room/${room.id}`}>{room.name}</Link>
                             </td>
+                            <td>{room.game_type}</td>
                         </tr>
                     ))}
                     </tbody>
@@ -91,5 +93,20 @@ const styles = `
         display:flex;
         flex-direction: column;
         align-items: center;
+    }
+    
+    .room-list-table {
+        border-collapse: collapse;
+        align-items: center;
+    }
+    
+    .room-list-table th, .room-list-table td {
+        padding: 8px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .room-list-table tr:hover {
+        background-color: #f5f5f5;
     }
 `
