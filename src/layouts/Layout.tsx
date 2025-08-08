@@ -1,5 +1,5 @@
-import {Outlet, Link, useLocation} from "react-router";
-import {useAuth} from "../auths/AuthContext";
+import { Outlet, Link, useLocation } from "react-router";
+import { useAuth } from "../auths/AuthContext";
 
 export function Layout() {
     const location = useLocation();
@@ -36,11 +36,16 @@ export function Layout() {
                                             <span>another link</span>
                                         </Link>
                                     )}
-                                </div>
-                                <div className="nav-right">
-                                    <button onClick={handleLogout} className="logout-btn">
-                                        <span>Sign Out</span>
-                                    </button>
+                                    <div className="nav-right">
+                                        <div className="username">
+                                            <span>{auth.user.username}</span>
+                                        </div>
+                                        <div className="logout">
+                                            <button onClick={handleLogout} className="logout-btn">
+                                                <span>Sign Out</span>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </>
                         )}
@@ -50,7 +55,7 @@ export function Layout() {
 
             <main className="layout-main">
                 <div className="main-container">
-                    <Outlet/>
+                    <Outlet />
                 </div>
             </main>
             <style>{styles}</style>
@@ -70,8 +75,6 @@ const styles = `
         top: 0;
         left: 0;
         right: 0;
-        background: white;
-        border-bottom: 1px solid #ddd;
         z-index: 1000;
     }
 
@@ -83,7 +86,7 @@ const styles = `
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1rem 2rem;
+        padding: 1.7rem 0;
         max-width: 100%;
         position: relative;
     }
@@ -92,10 +95,28 @@ const styles = `
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
     }
 
     .nav-right {
-        margin-left: auto;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        position: absolute;
+        right: 0;
+        padding-right: 1rem;
+    }
+
+    .username {
+        font-size: 0.65rem;
+        margin-right: 1rem;
+    }
+
+    .logout {
+        align-items: center;
     }
 
     .nav-link {
