@@ -86,7 +86,15 @@ const GameRow = ({ row = [] }) => (
     </div>
 );
 
-
+interface WebSocketStore {
+    gameState: any;
+    isConnected: boolean;
+    connect: (roomId: string) => void;
+    disconnect: () => void;
+    submitGuess: (guess: string) => void;
+    resetGame: () => void;
+    clearError: () => void;
+}
 
 export const SingleBoard = ({ roomId }) => {
     const {
@@ -97,7 +105,7 @@ export const SingleBoard = ({ roomId }) => {
         submitGuess,
         resetGame,
         clearError
-    } = useWebSocketStore();
+    } = useWebSocketStore() as WebSocketStore;
 
     useEffect(() => {
         if (roomId) {
