@@ -5,15 +5,57 @@ import {useGameStore} from '../../stores/gameStore';
 import {GameRow} from '../board/GameRow.tsx';
 import {GameFeedBackPegs} from "../board/GameFeedBackPegs.tsx";
 
+
+// total 26 colors available for alphabet
 const COLORS = [
-    {value: 'red', label: 'Red', color: '#ff4444'},
-    {value: 'blue', label: 'Blue', color: '#4444ff'},
-    {value: 'green', label: 'Green', color: '#44ff44'},
-    {value: 'yellow', label: 'Yellow', color: '#ffff44'},
-    {value: 'purple', label: 'Purple', color: '#ff44ff'},
-    {value: 'orange', label: 'Orange', color: '#ff8844'}
+   {value: 'red', label: 'Red', color: '#ff4444'},
+   {value: 'blue', label: 'Blue', color: '#4444ff'},
+   {value: 'green', label: 'Green', color: '#44ff44'},
+   {value: 'yellow', label: 'Yellow', color: '#ffff44'},
+   {value: 'purple', label: 'Purple', color: '#ff44ff'},
+   {value: 'orange', label: 'Orange', color: '#ff8844'},
+   {value: 'pink', label: 'Pink', color: '#ff88cc'},
+   {value: 'cyan', label: 'Cyan', color: '#44ffff'},
+   {value: 'lime', label: 'Lime', color: '#88ff44'},
+   {value: 'indigo', label: 'Indigo', color: '#4444aa'},
+   {value: 'teal', label: 'Teal', color: '#44aa88'},
+   {value: 'maroon', label: 'Maroon', color: '#aa4444'},
+   {value: 'navy', label: 'Navy', color: '#444488'},
+   {value: 'olive', label: 'Olive', color: '#888844'},
+   {value: 'coral', label: 'Coral', color: '#ff6644'},
+   {value: 'violet', label: 'Violet', color: '#aa44ff'},
+   {value: 'turquoise', label: 'Turquoise', color: '#44ddaa'},
+   {value: 'gold', label: 'Gold', color: '#ffcc44'},
+   {value: 'crimson', label: 'Crimson', color: '#cc4444'},
+   {value: 'salmon', label: 'Salmon', color: '#ff8866'},
+   {value: 'brown', label: 'Brown', color: '#aa6644'},
+   {value: 'silver', label: 'Silver', color: '#aaaaaa'},
+   {value: 'magenta', label: 'Magenta', color: '#ff4488'},
+   {value: 'aqua', label: 'Aqua', color: '#44aaff'},
+   {value: 'tan', label: 'Tan', color: '#cc9966'},
+   {value: 'lavender', label: 'Lavender', color: '#aa88ff'}
 ];
 
+const ColorLegend = ({numOfColors}) => {
+    const availableColors = COLORS.slice(0, numOfColors);
+    
+    return (
+        <div className="color-legend">
+            <div className="legend-title">Color Codes</div>
+            <div className="legend-items">
+                {availableColors.map((color, index) => (
+                    <div key={color.value} className="legend-item">
+                        <div 
+                            className="legend-color-peg" 
+                            style={{backgroundColor: color.color}}
+                        ></div>
+                        <span className="legend-code">:{index + 1}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
 
 export const SingleBoard = ({roomId}) => {
     const {gameState} = useGameStore()
@@ -42,17 +84,17 @@ export const SingleBoard = ({roomId}) => {
 
     const handleSubmitCode = (codeStr) => {
         if (gameState.isLoading || !isConnected) return;
+        
 
         const digits = codeStr.split('').map(Number);
-        if (digits.some(d => d < 1 || d > COLORS.length)) {
-            alert('Invalid input. Use digits 1-6 only.');
+        if (digits.some(d => d < 1 || d > gameState.config.num_of_colors)) {
+            alert('Invalid input. Use digits 1-' + gameState.config.num_of_colors + ' only.');
             return;
         }
 
         submitGuess(codeStr);
     };
 
-    // Show connection status
     if (readyState === ReadyState.UNINSTANTIATED) {
         return (
             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
@@ -105,41 +147,44 @@ export const SingleBoard = ({roomId}) => {
                 {connectionStatus}
             </div>
 
-            <div className="game-board">
+            <div className="game-main-layout">
+                <ColorLegend numOfColors={gameState.config.num_of_colors} />
+                
+                <div className="game-board">
+                    <div className="game-rows-container">
+                        {Array.from({length: gameState.config.num_of_guesses}).map((_, i) => {
+                            const rowIndex = 9 - i;
+                            const row = gameRows[rowIndex];
+                            const isCurrentRow = rowIndex === gameState.current_row;
+                            const isActiveRow = rowIndex <= gameState.current_row;
 
-                <div className="game-rows-container">
-                    {Array.from({length: 10}).map((_, i) => {
-                        const rowIndex = 9 - i;
-                        const row = gameRows[rowIndex];
-                        const isCurrentRow = rowIndex === gameState.current_row;
-                        const isActiveRow = rowIndex <= gameState.current_row;
-
-                        return (
-                            <div
-                                key={rowIndex}
-                                className={`game-board-row ${isActiveRow ? 'active' : 'inactive'}`}
-                            >
-                                <div className={`row-number ${isCurrentRow ? 'current' : ''}`}>
-                                    {rowIndex + 1}
+                            return (
+                                <div
+                                    key={rowIndex}
+                                    className={`game-board-row ${isActiveRow ? 'active' : 'inactive'}`}
+                                >
+                                    <div className={`row-number ${isCurrentRow ? 'current' : ''}`}>
+                                        {rowIndex + 1}
+                                    </div>
+                                    <GameRow row={row}/>
+                                    <div className="feedback-section">
+                                        <GameFeedBackPegs
+                                            bulls={feedbackState[rowIndex]?.bulls}
+                                            cows={feedbackState[rowIndex]?.cows}
+                                        />
+                                    </div>
                                 </div>
-                                <GameRow row={row}/>
-                                <div className="feedback-section">
-                                    <GameFeedBackPegs
-                                        bulls={feedbackState[rowIndex]?.bulls}
-                                        cows={feedbackState[rowIndex]?.cows}
-                                    />
-                                </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
 
             {!gameState.game_over ? (
                 <div className="input-section">
                     <InputCode
-                        length={4}
-                        label="Enter code (1-6)"
+                        length={gameState.config.code_length}
+                        numOfColors={gameState.config.num_of_colors}
                         loading={gameState.isLoading || !isConnected}
                         onSubmit={handleSubmitCode}
                     />
@@ -182,6 +227,54 @@ const styles = `
         flex-direction: column;
         align-items: center;
         margin-top: 40px;
+    }
+
+    .game-main-layout {
+        display: flex;
+        align-items: flex-start;
+        gap: 32px;
+    }
+
+    .color-legend {
+        border: 2px solid #000;
+        padding: 16px;
+        background: white;
+        width: 120px;
+    }
+
+    .legend-title {
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 12px;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 8px;
+    }
+
+    .legend-items {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .legend-color-peg {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #000;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .legend-code {
+        font-size: 14px;
+        font-weight: 500;
+        min-width: 20px;
     }
 
     .game-board {
