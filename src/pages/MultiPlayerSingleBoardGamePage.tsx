@@ -14,7 +14,6 @@ const COLORS = [
     { value: 'orange', label: 'Orange', color: '#ff8844' },
     { value: 'pink', label: 'Pink', color: '#ff88cc' },
     { value: 'cyan', label: 'Cyan', color: '#44ffff' },
-    { value: 'lime', label: 'Lime', color: '#88ff44' },
     { value: 'indigo', label: 'Indigo', color: '#4444aa' },
     { value: 'teal', label: 'Teal', color: '#44aa88' },
     { value: 'maroon', label: 'Maroon', color: '#aa4444' },
@@ -38,12 +37,13 @@ export const MultiPlayerSingleBoardGamePage = ({ roomId }) => {
     const { gameState } = useGameStore()
     const {
         submitGuess,
+        resetGame,
         isConnected,
         isConnecting,
         readyState,
         connectionStatus
     } = useGameWebSocket(roomId)
-
+    
 
     if (readyState === ReadyState.UNINSTANTIATED) {
         return (
