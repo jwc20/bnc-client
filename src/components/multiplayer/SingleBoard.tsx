@@ -1,5 +1,5 @@
 import {ReadyState} from 'react-use-websocket';
-import {InputCode} from './InputCode.tsx';
+import {InputCode} from '../board/InputCode.tsx';
 import {useGameWebSocket} from '../../hooks/useGameWebSocket';
 import {useGameStore} from '../../stores/gameStore';
 import {GameRow} from '../board/GameRow.tsx';
