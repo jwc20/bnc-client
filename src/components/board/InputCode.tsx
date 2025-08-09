@@ -12,12 +12,11 @@ interface ColorOption {
 interface InputCodeProps {
     length: number;
     colors: ColorOption[];
-    numOfColors: number;
     loading: boolean;
     onSubmit: (code: string) => void;
 }
 
-export const InputCode = ({ length, colors, numOfColors, loading, onSubmit }: InputCodeProps) => {
+export const InputCode = ({ length, numOfColors, colors, loading, onSubmit }: InputCodeProps) => {
     const [code, setCode] = useState<string[]>(Array(length).fill(""));
     const inputs = useRef<(HTMLInputElement | null)[]>([]);
 

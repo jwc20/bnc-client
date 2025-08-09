@@ -59,9 +59,9 @@ export const useGameWebSocket = (roomId) => {
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',
-    [ReadyState.OPEN]: 'Open',
+    [ReadyState.OPEN]: 'Connected',
     [ReadyState.CLOSING]: 'Closing',
-    [ReadyState.CLOSED]: 'Closed',
+    [ReadyState.CLOSED]: 'Disconnected',
     [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
   }[readyState]
 
