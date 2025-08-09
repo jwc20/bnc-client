@@ -11,7 +11,7 @@ interface GameState {
   [key: string]: any
 }
 
-export const useRoomWebSocket = (roomId: string, autoConnect = true) => {
+export const useWebSocketStore= (roomId: string, autoConnect = true) => {
   const [connectionStatus, setConnectionStatus] = useState<
     'connecting' | 'connected' | 'disconnected' | 'error'
   >('disconnected')
