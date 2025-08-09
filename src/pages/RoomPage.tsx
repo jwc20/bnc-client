@@ -95,12 +95,23 @@ export function RoomPage() {
     }
 
     if (room?.game_type === 0) {
-        return <SinglePlayerGamePage roomId={roomId} />;
+        return (
+            <div className="center">
+                <SinglePlayerGamePage roomId={roomId} />
+                <style>{style}</style>
+            </div>
+        )
     } else if (room?.game_type === 1) {
         return <h1>TODO Multiplayer Game</h1>;
         // return <MultiPlayerGamePage roomId={roomId} />;
     } else if (room?.game_type === 2) {
-        return <MultiPlayerSingleBoardGamePage roomId={roomId} />;
+        return (
+            <div className="center">
+                <MultiPlayerSingleBoardGamePage roomId={roomId} />
+                <style>{style}</style>
+            </div>
+            
+        ) 
     }
 
     return (
@@ -112,3 +123,12 @@ export function RoomPage() {
         </div>
     );
 }
+
+const style =`
+    .center {
+        position: absolute;
+        inset-block-start: 50%;
+        inset-inline-start: 50%;
+        transform: translate(-50%, -50%);
+    }
+`
