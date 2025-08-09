@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Staatliches:wght@400&display=swap');
 
 @font-face {
-  font-family: 'templeos'; /* Choose a descriptive name for your font */
-  src: url('./assets/fonts/templeos_font.ttf') format('truetype'); /* Adjust path and filename */
-  font-weight: normal; /* Specify font weight if applicable */
-  font-style: normal; /* Specify font style if applicable */
+  font-family: 'templeos';
+  src: url('./assets/fonts/templeos_font.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
 }
 
 :root {
@@ -14,7 +14,7 @@
   /* --family-special: 'Staatliches', Impact, serif; */
   color: var(--color-dark);
   scroll-behavior: smooth;
-  /* font-size: calc(1rem + 0.5vw); */
+  font-size: calc(1rem + 0.5vw);
   font-family: var(--family-normal);
   line-height: 1.4;
 }
@@ -28,7 +28,7 @@
 
 body {
   min-height: 100vh;
-  padding: 2rem;
+  /* padding: 2rem; */
   background-color: var(--color-light);
   display: flex;
   flex-direction: column;
@@ -36,118 +36,6 @@ body {
   align-items: center;
 }
 
-/* Tic-tac-toe Grid */
-.tic-tac-toe-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 3px;
-  width: min(90vw, 90vh, 600px);
-  height: min(90vw, 90vh, 600px);
-  background-color: var(--color-dark);
-  margin-bottom: 2rem;
-}
-
-.grid-cell {
-  background-color: var(--color-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: clamp(0.5rem, 2vw, 1.5rem);
-  transition: background-color 0.3s ease;
-  min-height: 0;
-  min-width: 0;
-}
-
-.grid-cell:hover {
-  background-color: #f0f0f0;
-}
-
-/* Diagonal content cells */
-.cell-1 {
-  grid-row: 1;
-  grid-column: 1;
-}
-
-.cell-5 {
-  grid-row: 2;
-  grid-column: 2;
-}
-
-.cell-9 {
-  grid-row: 3;
-  grid-column: 3;
-}
-
-/* Content styling */
-.cell-content h2 {
-  font-family: var(--family-special);
-  font-size: clamp(0.1rem, 4vmin, 1rem);
-  font-weight: 400;
-  line-height: 1;
-  text-transform: uppercase;
-  margin-bottom: clamp(0.3rem, 1.5vmin, 1rem);
-}
-
-.cell-content p {
-  font-size: clamp(0.3rem, 2.5vmin, 0.51rem);
-  line-height: 1.4;
-  max-width: 20ch;
-}
-
-.cell-content a {
-  color: var(--color-dark);
-  text-decoration: underline;
-  transition: opacity 0.3s ease;
-}
-
-.cell-content a:hover {
-  opacity: 0.7;
-}
-
-/* Portrait cell styling */
-.portrait-cell {
-  background-color: var(--color-dark);
-  color: var(--color-light);
-}
-
-.portrait-placeholder {
-  width: 80%;
-  height: 80%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: clamp(0.5rem, 2.5vmin, 1.2rem);
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-.portrait-img {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
-  height: 90%;
-  object-fit: contain;
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
-}
-.portrait-cell:hover .portrait-img {
-  opacity: 1;
-}
-
-/* Footer */
-footer {
-  text-align: center;
-  font-size: clamp(0.6rem, 1.5vmin, 0.9rem);
-  color: #666;
-  margin-top: 2rem;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
   body {
     padding: 1rem;
