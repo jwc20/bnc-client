@@ -190,6 +190,7 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                 }
             },
 
+            
             submitGuess: async (guess: string): Promise<boolean> => {
                 const state = get();
 
@@ -246,10 +247,16 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                         throw new Error('No response data received');
                     }
                 } catch (error: unknown) {
-                    const errorMessage =
-                        (error as ApiError)?.message ||
-                        (error as ApiError)?.detail ||
-                        'Failed to submit guess';
+                    
+                    let errorMessage = 'Failed to submit guess';
+
+                    if (error instanceof Error) {
+                        errorMessage = error.message;
+                    } else if (typeof error === 'object' && error !== null) {
+                        const apiError = error as ApiError;
+                        errorMessage = apiError.message || apiError.detail || apiError.error || errorMessage;
+                    }
+
                     set({
                         isLoading: false,
                         error: errorMessage,
