@@ -1,22 +1,9 @@
-import { ReadyState } from 'react-use-websocket';
-import { InputCode } from '../board/InputCode.tsx';
-import { useGameWebSocket } from '../../hooks/useGameWebSocket';
-// import {useGameStore} from '../../stores/gameStore';
 import { GameRow } from '../board/GameRow.tsx';
 import { GameFeedBackPegs } from "../board/GameFeedBackPegs.tsx";
 
 
 
 export const SingleBoard = ({ roomId, colors, gameState }) => {
-    // const {gameState} = useGameStore()
-    const {
-        submitGuess,
-        resetGame,
-        isConnected,
-        isConnecting,
-        readyState
-    } = useGameWebSocket(roomId)
-
     const convertGuessToRow = (guess) => {
         return guess.split('').map(digit => colors[parseInt(digit) - 1]);
     };
@@ -66,43 +53,6 @@ export const SingleBoard = ({ roomId, colors, gameState }) => {
                     </div>
                 </div>
             </div>
-
-            {/* {!gameState.game_over ? (
-                <div className="input-section">
-                    <InputCode
-                        length={gameState.config.code_length}
-                        numOfColors={gameState.config.num_of_colors}
-                        colors={colors}
-                        loading={gameState.isLoading || !isConnected}
-                        onSubmit={handleSubmitCode}
-                    />
-                    <div className="remaining-guesses">
-                        Remaining guesses: {gameState.remaining_guesses}
-                    </div>
-                </div>
-            ) : (
-                <div className="game-over-section">
-                    <div className="game-over-text">game over</div>
-                    {gameState.game_won ? (
-                        <div className="win-message">you won</div>
-                    ) : (
-                        <div className="lose-message">you lost</div>
-                    )}
-                    {gameState.secret_code && (
-                        <div style={{ marginTop: '8px', fontSize: '0.5rem', color: '#666' }}>
-                            Secret code was: {gameState.secret_code}
-                        </div>
-                    )}
-                    <button
-                        onClick={resetGame}
-                        disabled={!isConnected}
-                        className="play-again-button"
-                    >
-                        Play Again
-                    </button>
-                </div>
-            )} */}
-
             <style>{styles}</style>
         </div>
     );
