@@ -147,3 +147,25 @@ export function twoWayDecAes(key: string, value: string): string {
         return '';
     }
 }
+
+
+export function textToBase64Modern(text: string): string {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    return btoa(String.fromCharCode(...data));
+}
+
+export function base64ToTextModern(base64String: string): string {
+    try {
+        const binaryString = atob(base64String);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        const decoder = new TextDecoder();
+        return decoder.decode(bytes);
+    } catch (error) {
+        console.error('Decoding error:', error);
+        return '';
+    }
+}
