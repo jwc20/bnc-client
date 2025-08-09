@@ -4,7 +4,6 @@ import { useParams, useNavigate } from "react-router";
 import { SinglePlayerGamePage } from "./SinglePlayerGamePage";
 import { MultiPlayerSingleBoardGamePage } from "./MultiPlayerSingleBoardGamePage";
 import { MultiPlayerGamePage } from "./MultiPlayerGamePage";
-import { TestWebSocket } from "../components/TestWebSocket";
 import { useGame } from "../stores/singlePlayerGameStore";
 import { gamesApiGetRoom } from "../api/sdk.gen";
 import type { RoomResponse } from "../api/types.gen";
@@ -98,7 +97,7 @@ export function RoomPage() {
     if (room?.game_type === 0) {
         return <SinglePlayerGamePage roomId={roomId} />;
     } else if (room?.game_type === 1) {
-        return <TestWebSocket roomId={roomId} />;
+        return <h1>TODO Multiplayer Game</h1>;
         // return <MultiPlayerGamePage roomId={roomId} />;
     } else if (room?.game_type === 2) {
         return <MultiPlayerSingleBoardGamePage roomId={roomId} />;

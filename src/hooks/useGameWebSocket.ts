@@ -1,4 +1,3 @@
-// hooks/useGameWebSocket.js
 import { useCallback, useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import { useGameStore } from '../stores/gameStore'
