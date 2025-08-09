@@ -8,7 +8,12 @@ export const useGameStore = create((set) => ({
         game_won: false,
         remaining_guesses: 10,
         isLoading: false,
-        secret_code: null
+        secret_code: null, // TODO: remove
+        config: {
+            code_length: 4,
+            num_of_colors: 6,
+            num_of_guesses: 10
+        }
     },
 
     updateGameState: (newState) => {
@@ -37,7 +42,12 @@ export const useGameStore = create((set) => ({
                 game_won: false,
                 remaining_guesses: 10,
                 isLoading: false,
-                secret_code: null
+                secret_code: null,
+                config: {
+                    code_length: 4,
+                    num_of_colors: 6,
+                    num_of_guesses: 10
+                }
             }
         })
     }

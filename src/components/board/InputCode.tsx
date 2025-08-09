@@ -4,12 +4,12 @@ import type { ChangeEvent, KeyboardEvent } from "react";
 
 interface InputCodeProps {
     length: number;
-    label: string;
+    numOfColors: number;
     loading: boolean;
     onSubmit: (code: string) => void;
 }
 
-export const InputCode = ({ length, label, loading, onSubmit }: InputCodeProps) => {
+export const InputCode = ({ length, numOfColors, loading, onSubmit }: InputCodeProps) => {
     const [code, setCode] = useState<string[]>(Array(length).fill(""));
     const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -51,7 +51,7 @@ export const InputCode = ({ length, label, loading, onSubmit }: InputCodeProps) 
 
     return (
         <div className="code-input">
-            <label className="code-label">{label}</label>
+            <label className="code-label">Enter numbers from 1 to {numOfColors}</label>
             <div className="code-inputs" style={{ display: "flex", gap: 8 }}>
                 {code.map((num, idx) => (
                     <input
