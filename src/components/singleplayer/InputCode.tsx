@@ -9,7 +9,7 @@ interface InputCodeProps {
     onSubmit: (code: string) => void;
 }
 
-const InputCode = ({ length, label, loading, onSubmit }: InputCodeProps) => {
+export const InputCode = ({ length, label, loading, onSubmit }: InputCodeProps) => {
     const [code, setCode] = useState<string[]>(Array(length).fill(""));
     const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -98,4 +98,4 @@ const InputCode = ({ length, label, loading, onSubmit }: InputCodeProps) => {
     );
 };
 
-export default InputCode;
+

@@ -1,11 +1,26 @@
 import { useEffect } from 'react';
-import InputCode from './InputCode.tsx';
-import { useGame } from '../stores/singlePlayerGameStore.ts';
+import { useGame } from '../../stores/singlePlayerGameStore.ts';
+import { GameRow } from "../board/GameRow.tsx";
+import { GameFeedBackPegs } from "../board/GameFeedBackPegs.tsx";
+import { InputCode } from "./InputCode.tsx";
 
-import {GameRow} from "./board/GameRow.tsx";
-import {GameFeedBackPegs} from "./board/GameFeedBackPegs.tsx";
 
-const COLORS = [
+// Type definitions
+interface ColorOption {
+    value: string;
+    label: string;
+    color: string;
+}
+
+interface GameState {
+    [index: number]: ColorOption[];
+}
+
+interface FeedbackState {
+    [index: number]: { bulls: number; cows: number };
+}
+
+const COLORS: ColorOption[] = [
     { value: 'red', label: 'Red', color: '#ff4444' },
     { value: 'blue', label: 'Blue', color: '#4444ff' },
     { value: 'green', label: 'Green', color: '#44ff44' },
@@ -14,68 +29,100 @@ const COLORS = [
     { value: 'orange', label: 'Orange', color: '#ff8844' }
 ];
 
-
 export const GameBoard = () => {
     const game = useGame();
 
-    // convert guesses to the format expected by GameRow
-    const convertGuessToRow = (guess: string) => {
+    // Convert guesses to the format expected by GameRow
+    const convertGuessToRow = (guess: string): ColorOption[] => {
         return guess.split('').map(digit => COLORS[parseInt(digit) - 1]);
     };
 
-    // create gameState object from store guesses
-    // const gameState: GameState = game.guesses.reduce((acc, guess, index) => {
-    //     acc[index] = convertGuessToRow(guess.guess);
-    //     return acc;
-    // }, {} as { [index: number]: ColorOption[] });
+    // Create gameState object from store guesses
     const gameState: GameState = game.guesses.reduce<GameState>((acc, guess, index) => {
         acc[index] = convertGuessToRow(guess.guess);
         return acc;
     }, {});
 
-
-
-    // create feedbackState object from store guesses
-    // const feedbackState: FeedbackState = game.guesses.reduce((acc, guess, index) => {
-    //     acc[index] = { bulls: guess.bulls, cows: guess.cows };
-    //     return acc;
-    // }, {});
-    const feedbackState = game.guesses.reduce<FeedbackState>((acc, guess, index) => {
+    // Create feedbackState object from store guesses
+    const feedbackState: FeedbackState = game.guesses.reduce<FeedbackState>((acc, guess, index) => {
         acc[index] = { bulls: guess.bulls, cows: guess.cows };
         return acc;
     }, {});
 
-
-
     const handleSubmitCode = async (codeStr: string) => {
         if (game.isLoading) return;
 
-        const digits = codeStr.split('').map(Number);
-        if (digits.some(d => d < 1 || d > COLORS.length)) {
-            alert('Invalid input. Use digits 1-6 only.');
+        // Validate input
+        if (!game.isValidGuess(codeStr)) {
+            alert(`Invalid input. Use digits 1-${game.numOfColors} only, with ${game.codeLength} digits.`);
             return;
         }
 
         const success = await game.submitGuess(codeStr);
         if (!success && game.error) {
-            alert(game.error);
-            game.clearError();
+            // Error is already set in store, component will show it
+            console.error('Failed to submit guess:', game.error);
         }
     };
 
-    // Show error messages
+    // Auto-clear errors after a delay
     useEffect(() => {
         if (game.error) {
             console.error('Game error:', game.error);
+            const timer = setTimeout(() => {
+                game.clearError();
+            }, 5000); // Auto-clear after 5 seconds
+
+            return () => clearTimeout(timer);
         }
-    }, [game.error]);
+    }, [game.error, game.clearError]);
+
+    // Handle game initialization
+    useEffect(() => {
+        if (!game.room && !game.isLoading) {
+            // Auto-create a room if none exists
+            game.createRandomRoom();
+        }
+    }, [game.room, game.isLoading, game.createRandomRoom]);
+
+    // Show loading state if no room
+    if (!game.room && game.isLoading) {
+        return (
+            <div className="loading-container">
+                <div className="loading-text">Setting up your game...</div>
+            </div>
+        );
+    }
+
+    // Show error state if room creation failed
+    if (!game.room && game.error) {
+        return (
+            <div className="error-container">
+                <div className="error-text">Failed to create game room</div>
+                <div className="error-details">{game.error}</div>
+                <button
+                    onClick={() => game.createRandomRoom()}
+                    className="retry-button"
+                >
+                    Try Again
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className="game-board-container">
+            {/* Game Info Header */}
+            <div className="game-info">
+                <div className="game-stats">
+                    Room #{game.room?.id} | {game.codeLength} digits | {game.numOfColors} colors
+                </div>
+            </div>
+
             <div className="game-board">
                 <div className="game-rows-container">
-                    {Array.from({ length: 10 }).map((_, i) => {
-                        const rowIndex = 9 - i;
+                    {Array.from({ length: game.numOfGuesses }).map((_, i) => {
+                        const rowIndex = game.numOfGuesses - 1 - i;
                         const row = gameState[rowIndex];
                         const isCurrentRow = rowIndex === game.currentRow;
                         const isActiveRow = rowIndex <= game.currentRow;
@@ -104,8 +151,8 @@ export const GameBoard = () => {
             {!game.gameOver ? (
                 <div className="input-section">
                     <InputCode
-                        length={4}
-                        label="Enter code (1-6)"
+                        length={game.codeLength}
+                        label={`Enter code (1-${game.numOfColors})`}
                         loading={game.isLoading}
                         onSubmit={handleSubmitCode}
                     />
@@ -116,35 +163,50 @@ export const GameBoard = () => {
             ) : (
                 <div className="game-over-section">
                     <div className="game-over-text">
-                        game over
+                        Game Over
                     </div>
                     {game.gameWon ? (
                         <div className="win-message">
-                            you won
+                            🎉 You Won! 🎉
+                            <div className="win-details">
+                                Solved in {game.guesses.length} guess{game.guesses.length !== 1 ? 'es' : ''}
+                            </div>
                         </div>
                     ) : (
                         <div className="lose-message">
-                            you lost
+                            Better luck next time!
                         </div>
                     )}
-                    <button
-                        onClick={game.resetGame}
-                        className="play-again-button"
-                    >
-                        Play Again
-                    </button>
+                    <div className="game-actions">
+                        <button
+                            onClick={game.resetGame}
+                            className="play-again-button"
+                        >
+                            Play Again
+                        </button>
+                        <button
+                            onClick={() => game.createRandomRoom()}
+                            className="new-room-button"
+                        >
+                            New Room
+                        </button>
+                    </div>
                 </div>
             )}
 
             {game.error && (
                 <div className="error-section">
-                    Error: {game.error}
-                    <button
-                        onClick={game.clearError}
-                        className="error-close-button"
-                    >
-                        ✕
-                    </button>
+                    <div className="error-content">
+                        <span className="error-icon">⚠️</span>
+                        <span className="error-message">{game.error}</span>
+                        <button
+                            onClick={game.clearError}
+                            className="error-close-button"
+                            title="Dismiss"
+                        >
+                            ✕
+                        </button>
+                    </div>
                 </div>
             )}
 
@@ -306,5 +368,17 @@ const styles = `
         margin-left: 8px;
         padding: 4px 8px;
         cursor: pointer;
+    }
+    .code-input {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .code-label {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
     }
 `;

@@ -1,4 +1,4 @@
-import { GameBoard } from "../components/GameBoard.tsx";
+import { GameBoard } from "../components/singleplayer/GameBoard.tsx";
 
 type SinglePlayerGamePageProps = {
     roomId: number;
