@@ -2,6 +2,9 @@ import { useEffect } from 'react';
 import InputCode from './InputCode.tsx';
 import { useGame } from '../stores/singlePlayerGameStore.ts';
 
+import {GameRow} from "./board/GameRow.tsx";
+import {GameFeedBackPegs} from "./board/GameFeedBackPegs.tsx";
+
 const COLORS = [
     { value: 'red', label: 'Red', color: '#ff4444' },
     { value: 'blue', label: 'Blue', color: '#4444ff' },
@@ -11,97 +14,6 @@ const COLORS = [
     { value: 'orange', label: 'Orange', color: '#ff8844' }
 ];
 
-type ColorOption = {
-    value: string;
-    label: string;
-    color: string;
-};
-
-type GameState = { [index: number]: ColorOption[] };
-type FeedbackState = { [index: number]: { bulls: number; cows: number } };
-
-const GameColorPeg = ({ color }: { color?: ColorOption }) => (
-
-    <div
-        className="game-color-peg"
-        style={{
-            backgroundColor: color?.color || '#fff',
-        }}
-    />
-);
-
-const GameFeedBackPegs = ({ bulls, cows }: { bulls?: number, cows?: number }) => {
-    if (bulls === undefined && cows === undefined) {
-        return (
-            <div className="feedback-pegs-container">
-                <div className="feedback-row">
-                    {[0, 1].map(i => (
-                        <div key={i} className="feedback-peg empty">
-                            X
-                        </div>
-                    ))}
-                </div>
-                <div className="feedback-row">
-                    {[2, 3].map(i => (
-                        <div key={i} className="feedback-peg empty">
-                            X
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-    }
-
-    const pegs = [];
-    for (let i = 0; i < (bulls || 0); i++) pegs.push('black');
-    for (let i = 0; i < (cows || 0); i++) pegs.push('white');
-    while (pegs.length < 4) pegs.push('empty');
-
-    return (
-        <div className="feedback-pegs-container">
-            <div className="feedback-row">
-                {pegs.slice(0, 2).map((color, i) => (
-                    <div
-                        key={i}
-                        className={`feedback-peg ${color}`}
-                    >
-                        {color === 'empty' ? 'X' : ''}
-                    </div>
-                ))}
-            </div>
-            <div className="feedback-row">
-                {pegs.slice(2, 4).map((color, i) => (
-                    <div
-                        key={i}
-                        className={`feedback-peg ${color}`}
-                    >
-                        {color === 'empty' ? 'X' : ''}
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
-
-// const GameRow = ({ row = [] }) => (
-//     <div className="game-row">
-//         {Array.from({ length: 4 }).map((_, i) => (
-//             <GameColorPeg key={i} color={row[i]} />
-//         ))}
-//     </div>
-// );
-
-type GameRowProps = {
-    row?: ColorOption[];
-};
-
-const GameRow = ({ row = [] }: GameRowProps) => (
-    <div className="game-row">
-        {Array.from({ length: 4 }).map((_, i) => (
-            <GameColorPeg key={i} color={row[i]} />
-        ))}
-    </div>
-);
 
 export const GameBoard = () => {
     const game = useGame();
