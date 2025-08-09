@@ -124,8 +124,8 @@ export const GameBoard = () => {
                     {Array.from({ length: game.numOfGuesses }).map((_, i) => {
                         const rowIndex = game.numOfGuesses - 1 - i;
                         const row = gameState[rowIndex];
-                        const isCurrentRow = rowIndex === game.currentRow;
-                        const isActiveRow = rowIndex <= game.currentRow;
+                        const isCurrentRow = rowIndex === game.current_row;
+                        const isActiveRow = rowIndex <= game.current_row;
 
                         return (
                             <div
@@ -157,7 +157,7 @@ export const GameBoard = () => {
                         onSubmit={handleSubmitCode}
                     />
                     <div className="remaining-guesses">
-                        Remaining guesses: {game.remainingGuesses}
+                        Remaining guesses: {game.remaining_guesses}
                     </div>
                 </div>
             ) : (
@@ -165,7 +165,7 @@ export const GameBoard = () => {
                     <div className="game-over-text">
                         Game Over
                     </div>
-                    {game.gameWon ? (
+                    {game.game_won ? (
                         <div className="win-message">
                             🎉 You Won! 🎉
                             <div className="win-details">

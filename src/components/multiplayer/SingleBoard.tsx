@@ -111,8 +111,8 @@ export const SingleBoard = ({roomId}) => {
                     {Array.from({length: 10}).map((_, i) => {
                         const rowIndex = 9 - i;
                         const row = gameRows[rowIndex];
-                        const isCurrentRow = rowIndex === gameState.currentRow;
-                        const isActiveRow = rowIndex <= gameState.currentRow;
+                        const isCurrentRow = rowIndex === gameState.current_row;
+                        const isActiveRow = rowIndex <= gameState.current_row;
 
                         return (
                             <div
@@ -135,7 +135,7 @@ export const SingleBoard = ({roomId}) => {
                 </div>
             </div>
 
-            {!gameState.gameOver ? (
+            {!gameState.game_over ? (
                 <div className="input-section">
                     <InputCode
                         length={4}
@@ -144,20 +144,20 @@ export const SingleBoard = ({roomId}) => {
                         onSubmit={handleSubmitCode}
                     />
                     <div className="remaining-guesses">
-                        Remaining guesses: {gameState.remainingGuesses}
+                        Remaining guesses: {gameState.remaining_guesses}
                     </div>
                 </div>
             ) : (
                 <div className="game-over-section">
                     <div className="game-over-text">game over</div>
-                    {gameState.gameWon ? (
+                    {gameState.game_won ? (
                         <div className="win-message">you won</div>
                     ) : (
                         <div className="lose-message">you lost</div>
                     )}
-                    {gameState.secretCode && (
+                    {gameState.secret_code && (
                         <div style={{marginTop: '8px', fontSize: '14px', color: '#666'}}>
-                            Secret code was: {gameState.secretCode}
+                            Secret code was: {gameState.secret_code}
                         </div>
                     )}
                     <button

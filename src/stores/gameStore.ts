@@ -3,15 +3,16 @@ import { create } from 'zustand'
 export const useGameStore = create((set) => ({
     gameState: {
         guesses: [],
-        currentRow: 0,
+        current_row: 0,
         gameOver: false,
-        gameWon: false,
-        remainingGuesses: 10,
+        game_won: false,
+        remaining_guesses: 10,
         isLoading: false,
-        secretCode: null
+        secret_code: null
     },
 
     updateGameState: (newState) => {
+        console.log("Updating game state:", newState);
         set(state => ({
             gameState: {
                 ...state.gameState,
@@ -31,12 +32,12 @@ export const useGameStore = create((set) => ({
         set({
             gameState: {
                 guesses: [],
-                currentRow: 0,
-                gameOver: false,
-                gameWon: false,
-                remainingGuesses: 10,
+                current_row: 0,
+                game_over: false,
+                game_won: false,
+                remaining_guesses: 10,
                 isLoading: false,
-                secretCode: null
+                secret_code: null
             }
         })
     }
