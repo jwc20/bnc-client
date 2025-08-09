@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { createJSONStorage, persist } from 'zustand/middleware';
+import {create} from 'zustand';
+import {createJSONStorage, persist} from 'zustand/middleware';
 import type {
-    RoomResponse,
+    RoomSchema,
     CreateRandomSingleplayerRoomRequest,
     CheckBullsCowsRequest,
 } from '../api/types.gen';
@@ -24,7 +24,7 @@ export interface GameGuess {
 }
 
 export interface GameState {
-    room: RoomResponse | null;
+    room: RoomSchema | null;
     guesses: GameGuess[];
     currentGuess: string;
     isLoading: boolean;
@@ -37,7 +37,7 @@ export interface GameState {
 }
 
 interface SinglePlayerGameStore extends GameState {
-    setRoom: (room: RoomResponse) => void;
+    setRoom: (room: RoomSchema) => void;
     setCurrentGuess: (guess: string) => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
@@ -58,7 +58,7 @@ const getAuthHeaders = () => {
     if (!userStorage) return {};
 
     try {
-        const { state } = JSON.parse(userStorage);
+        const {state} = JSON.parse(userStorage);
         if (state?.token) {
             return {
                 Authorization: `Bearer ${state.token}`
@@ -85,7 +85,7 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
             numOfColors: 6,
             numOfGuesses: 10,
 
-            setRoom: (room: RoomResponse) => {
+            setRoom: (room: RoomSchema) => {
                 set((state) => {
                     const isNewRoom = !state.room || state.room.id !== room.id;
                     return {
@@ -101,18 +101,18 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                 });
             },
 
-            setCurrentGuess: (currentGuess: string) => set({ currentGuess }),
-            setLoading: (isLoading: boolean) => set({ isLoading }),
-            setError: (error: string | null) => set({ error }),
-            setGameWon: (gameWon: boolean) => set({ gameWon }),
-            setGameOver: (gameOver: boolean) => set({ gameOver }),
+            setCurrentGuess: (currentGuess: string) => set({currentGuess}),
+            setLoading: (isLoading: boolean) => set({isLoading}),
+            setError: (error: string | null) => set({error}),
+            setGameWon: (gameWon: boolean) => set({gameWon}),
+            setGameOver: (gameOver: boolean) => set({gameOver}),
 
             addGuess: (guess: GameGuess) => set((state) => ({
                 guesses: [...state.guesses, guess]
             })),
 
             createRandomRoom: async (config?: CreateRandomSingleplayerRoomRequest): Promise<boolean> => {
-                set({ isLoading: true, error: null });
+                set({isLoading: true, error: null});
 
                 try {
                     const requestBody: CreateRandomSingleplayerRoomRequest = {
@@ -144,9 +144,9 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                         throw new Error('No room data received');
                     }
                 } catch (error: unknown) {
-                    const errorMessage = 
-                        (error as ApiError)?.message || 
-                        (error as ApiError)?.detail || 
+                    const errorMessage =
+                        (error as ApiError)?.message ||
+                        (error as ApiError)?.detail ||
                         'Failed to create room';
                     set({
                         isLoading: false,
@@ -157,11 +157,11 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
             },
 
             loadExistingRoom: async (roomId: number): Promise<boolean> => {
-                set({ isLoading: true, error: null });
+                set({isLoading: true, error: null});
 
                 try {
                     const response = await gamesApiGetRoom({
-                        path: { room_id: roomId },
+                        path: {room_id: roomId},
                         headers: getAuthHeaders()
                     });
 
@@ -178,9 +178,9 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                         throw new Error('No room data received');
                     }
                 } catch (error: unknown) {
-                    const errorMessage = 
-                        (error as ApiError)?.message || 
-                        (error as ApiError)?.detail || 
+                    const errorMessage =
+                        (error as ApiError)?.message ||
+                        (error as ApiError)?.detail ||
                         'Failed to load room';
                     set({
                         isLoading: false,
@@ -194,21 +194,21 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                 const state = get();
 
                 if (!state.room) {
-                    set({ error: 'No active room' });
+                    set({error: 'No active room'});
                     return false;
                 }
 
                 if (!state.isValidGuess(guess)) {
-                    set({ error: 'Invalid guess format' });
+                    set({error: 'Invalid guess format'});
                     return false;
                 }
 
                 if (state.gameOver) {
-                    set({ error: 'Game is already over' });
+                    set({error: 'Game is already over'});
                     return false;
                 }
 
-                set({ isLoading: true, error: null });
+                set({isLoading: true, error: null});
 
                 try {
                     const requestBody: CheckBullsCowsRequest = {
@@ -246,9 +246,9 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                         throw new Error('No response data received');
                     }
                 } catch (error: unknown) {
-                    const errorMessage = 
-                        (error as ApiError)?.message || 
-                        (error as ApiError)?.detail || 
+                    const errorMessage =
+                        (error as ApiError)?.message ||
+                        (error as ApiError)?.detail ||
                         'Failed to submit guess';
                     set({
                         isLoading: false,
@@ -279,7 +279,7 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                 const state = get();
                 if (guess.length !== state.codeLength) return false;
 
-                const validNumbers = Array.from({ length: state.numOfColors }, (_, i) => (i + 1).toString());
+                const validNumbers = Array.from({length: state.numOfColors}, (_, i) => (i + 1).toString());
                 return guess.split('').every(char => validNumbers.includes(char));
             },
 
