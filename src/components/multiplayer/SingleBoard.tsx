@@ -6,6 +6,9 @@ import {GameRow} from '../board/GameRow.tsx';
 import {GameFeedBackPegs} from "../board/GameFeedBackPegs.tsx";
 
 
+
+
+
 // total 26 colors available for alphabet
 const COLORS = [
    {value: 'red', label: 'Red', color: '#ff4444'},
@@ -126,7 +129,7 @@ export const SingleBoard = ({roomId}) => {
                 <div style={{fontSize: '20px', color: 'red'}}>
                     Connection lost. Attempting to reconnect...
                 </div>
-                <div style={{fontSize: '14px', color: '#666'}}>
+                <div style={{fontSize: '0.5rem', color: '#666'}}>
                     Status: {connectionStatus}
                 </div>
             </div>
@@ -184,6 +187,7 @@ export const SingleBoard = ({roomId}) => {
                 <div className="input-section">
                     <InputCode
                         length={gameState.config.code_length}
+                        colors={COLORS}
                         numOfColors={gameState.config.num_of_colors}
                         loading={gameState.isLoading || !isConnected}
                         onSubmit={handleSubmitCode}
@@ -201,7 +205,7 @@ export const SingleBoard = ({roomId}) => {
                         <div className="lose-message">you lost</div>
                     )}
                     {gameState.secret_code && (
-                        <div style={{marginTop: '8px', fontSize: '14px', color: '#666'}}>
+                        <div style={{marginTop: '8px', fontSize: '0.5rem', color: '#666'}}>
                             Secret code was: {gameState.secret_code}
                         </div>
                     )}
@@ -244,7 +248,7 @@ const styles = `
 
     .legend-title {
         font-weight: bold;
-        font-size: 14px;
+        font-size: 0.5rem;
         margin-bottom: 12px;
         text-align: center;
         border-bottom: 1px solid #ccc;
@@ -272,7 +276,7 @@ const styles = `
     }
 
     .legend-code {
-        font-size: 14px;
+        font-size: 0.5rem;
         font-weight: 500;
         min-width: 20px;
     }
@@ -312,7 +316,7 @@ const styles = `
         align-items: center;
         justify-content: center;
         font-weight: bold;
-        font-size: 18px;
+        font-size: 0.5rem;
         border: 2px solid #000;
         border-radius: 4px;
     }
@@ -358,7 +362,7 @@ const styles = `
         justify-content: center;
         font-family: Arial;
         font-weight: bold;
-        font-size: 13px;
+        font-size: 1rem;
     }
 
     .feedback-peg.black {
@@ -372,7 +376,7 @@ const styles = `
     .feedback-peg.empty {
         background: #fafafa;
         color: black;
-        font-size: 14px;
+        font-size: 0.5rem;
     }
 
     .input-section {
@@ -382,7 +386,7 @@ const styles = `
     .remaining-guesses {
         margin-top: 8px;
         text-align: center;
-        font-size: 14px;
+        font-size: 0.5rem;
         color: #666;
     }
 
