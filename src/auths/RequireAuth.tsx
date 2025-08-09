@@ -18,7 +18,7 @@ export function RequireAuth({
 
     if (auth.isLoading) {
         return (
-            <div className="loading-container">
+            <div className="center">
                 <div className="loading-spinner">
                     <span>Loading...</span>
                 </div>
@@ -41,3 +41,4 @@ export function RequireAuth({
 
     return <>{children}</>;
 }
+

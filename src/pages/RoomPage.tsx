@@ -68,7 +68,7 @@ export function RoomPage() {
     }, [roomId, loadExistingRoom, gameError]);
 
     if (loading) {
-        return <div>Loading room...</div>;
+        return <div className="center">Loading...</div>;
     }
 
     if (error) {
@@ -108,7 +108,6 @@ export function RoomPage() {
         return (
             <div className="center">
                 <MultiPlayerSingleBoardGamePage roomId={roomId} />
-                <style>{style}</style>
             </div>
             
         ) 
@@ -124,11 +123,11 @@ export function RoomPage() {
     );
 }
 
-const style =`
-    .center {
-        position: absolute;
-        inset-block-start: 50%;
-        inset-inline-start: 50%;
-        transform: translate(-50%, -50%);
-    }
-`
+// const style =`
+//     .center {
+//         position: absolute;
+//         inset-block-start: 50%;
+//         inset-inline-start: 50%;
+//         transform: translate(-50%, -50%);
+//     }
+// `

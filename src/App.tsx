@@ -9,7 +9,7 @@ import { RoomPage } from "./pages/RoomPage";
 
 import { client } from "./api/client.gen";
 import { AESDemo } from "./components/AESdemo.js";
-// import "./App.css";
+import "./App.css";
 
 client.setConfig({
     baseUrl: import.meta.env.VITE_API_URL || "http://localhost:8000/",
