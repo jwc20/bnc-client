@@ -1,118 +1,30 @@
-
-import { useEffect } from 'react';
-import { InputCode } from './InputCode.tsx';
-
-import { useWebSocketStore } from '../../stores/webSocketStore';
+import {ReadyState} from 'react-use-websocket';
+import {InputCode} from './InputCode.tsx';
+import {useGameWebSocket} from '../../hooks/useGameWebSocket';
+import {useGameStore} from '../../stores/gameStore';
+import {GameRow} from '../board/GameRow.tsx';
+import {GameFeedBackPegs} from "../board/GameFeedBackPegs.tsx";
 
 const COLORS = [
-    { value: 'red', label: 'Red', color: '#ff4444' },
-    { value: 'blue', label: 'Blue', color: '#4444ff' },
-    { value: 'green', label: 'Green', color: '#44ff44' },
-    { value: 'yellow', label: 'Yellow', color: '#ffff44' },
-    { value: 'purple', label: 'Purple', color: '#ff44ff' },
-    { value: 'orange', label: 'Orange', color: '#ff8844' }
+    {value: 'red', label: 'Red', color: '#ff4444'},
+    {value: 'blue', label: 'Blue', color: '#4444ff'},
+    {value: 'green', label: 'Green', color: '#44ff44'},
+    {value: 'yellow', label: 'Yellow', color: '#ffff44'},
+    {value: 'purple', label: 'Purple', color: '#ff44ff'},
+    {value: 'orange', label: 'Orange', color: '#ff8844'}
 ];
 
 
-const GameColorPeg = ({ color }) => (
-    <div
-        className="game-color-peg"
-        style={{
-            backgroundColor: color?.color || '#fff',
-        }}
-    />
-);
-
-
-const GameFeedBackPegs = ({ bulls, cows }) => {
-    if (bulls === undefined && cows === undefined) {
-        return (
-            <div className="feedback-pegs-container">
-                <div className="feedback-row">
-                    {[0, 1].map(i => (
-                        <div key={i} className="feedback-peg empty">
-                            X
-                        </div>
-                    ))}
-                </div>
-                <div className="feedback-row">
-                    {[2, 3].map(i => (
-                        <div key={i} className="feedback-peg empty">
-                            X
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-    }
-
-    const pegs = [];
-    for (let i = 0; i < (bulls || 0); i++) pegs.push('black');
-    for (let i = 0; i < (cows || 0); i++) pegs.push('white');
-    while (pegs.length < 4) pegs.push('empty');
-
-    return (
-        <div className="feedback-pegs-container">
-            <div className="feedback-row">
-                {pegs.slice(0, 2).map((color, i) => (
-                    <div
-                        key={i}
-                        className={`feedback-peg ${color}`}
-                    >
-                        {color === 'empty' ? 'X' : ''}
-                    </div>
-                ))}
-            </div>
-            <div className="feedback-row">
-                {pegs.slice(2, 4).map((color, i) => (
-                    <div
-                        key={i}
-                        className={`feedback-peg ${color}`}
-                    >
-                        {color === 'empty' ? 'X' : ''}
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
-
-
-const GameRow = ({ row = [] }) => (
-    <div className="game-row">
-        {Array.from({ length: 4 }).map((_, i) => (
-            <GameColorPeg key={i} color={row[i]} />
-        ))}
-    </div>
-);
-
-interface WebSocketStore {
-    gameState: any;
-    isConnected: boolean;
-    connect: (roomId: string) => void;
-    disconnect: () => void;
-    submitGuess: (guess: string) => void;
-    resetGame: () => void;
-    clearError: () => void;
-}
-
-export const SingleBoard = ({ roomId }) => {
+export const SingleBoard = ({roomId}) => {
+    const {gameState} = useGameStore()
     const {
-        gameState,
-        isConnected,
-        connect,
-        disconnect,
         submitGuess,
         resetGame,
-        clearError
-    } = useWebSocketStore() as WebSocketStore;
-
-    useEffect(() => {
-        if (roomId) {
-            connect(roomId);
-            return () => disconnect();
-        }
-    }, [roomId]);
+        isConnected,
+        isConnecting,
+        connectionStatus,
+        readyState
+    } = useGameWebSocket(roomId)
 
     const convertGuessToRow = (guess) => {
         return guess.split('').map(digit => COLORS[parseInt(digit) - 1]);
@@ -124,12 +36,12 @@ export const SingleBoard = ({ roomId }) => {
     }, {});
 
     const feedbackState = gameState.guesses.reduce((acc, guess, index) => {
-        acc[index] = { bulls: guess.bulls, cows: guess.cows };
+        acc[index] = {bulls: guess.bulls, cows: guess.cows};
         return acc;
     }, {});
 
     const handleSubmitCode = (codeStr) => {
-        if (gameState.isLoading) return;
+        if (gameState.isLoading || !isConnected) return;
 
         const digits = codeStr.split('').map(Number);
         if (digits.some(d => d < 1 || d > COLORS.length)) {
@@ -140,25 +52,63 @@ export const SingleBoard = ({ roomId }) => {
         submitGuess(codeStr);
     };
 
-    useEffect(() => {
-        if (gameState.error) {
-            console.error('Game error:', gameState.error);
-        }
-    }, [gameState.error]);
-
-    if (!isConnected) {
+    // Show connection status
+    if (readyState === ReadyState.UNINSTANTIATED) {
         return (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-                <div style={{ fontSize: '20px', color: '#666' }}>Connecting to game server...</div>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
+                <div style={{fontSize: '20px', color: '#666'}}>Invalid room ID</div>
+            </div>
+        );
+    }
+
+    if (isConnecting) {
+        return (
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
+                <div style={{fontSize: '20px', color: '#666'}}>
+                    Connecting to game server... ({connectionStatus})
+                </div>
+            </div>
+        );
+    }
+
+    if (readyState === ReadyState.CLOSED) {
+        return (
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100vh',
+                gap: '20px'
+            }}>
+                <div style={{fontSize: '20px', color: 'red'}}>
+                    Connection lost. Attempting to reconnect...
+                </div>
+                <div style={{fontSize: '14px', color: '#666'}}>
+                    Status: {connectionStatus}
+                </div>
             </div>
         );
     }
 
     return (
         <div className="game-board-container">
+            <div style={{
+                position: 'inherit',
+                top: '10px',
+                right: 0,
+                padding: '8px 12px',
+                backgroundColor: isConnected ? '#4CAF50' : '#f44336',
+                color: 'white',
+                fontSize: '0.4rem'
+            }}>
+                {connectionStatus}
+            </div>
+
             <div className="game-board">
+
                 <div className="game-rows-container">
-                    {Array.from({ length: 10 }).map((_, i) => {
+                    {Array.from({length: 10}).map((_, i) => {
                         const rowIndex = 9 - i;
                         const row = gameRows[rowIndex];
                         const isCurrentRow = rowIndex === gameState.currentRow;
@@ -172,7 +122,7 @@ export const SingleBoard = ({ roomId }) => {
                                 <div className={`row-number ${isCurrentRow ? 'current' : ''}`}>
                                     {rowIndex + 1}
                                 </div>
-                                <GameRow row={row} />
+                                <GameRow row={row}/>
                                 <div className="feedback-section">
                                     <GameFeedBackPegs
                                         bulls={feedbackState[rowIndex]?.bulls}
@@ -190,7 +140,7 @@ export const SingleBoard = ({ roomId }) => {
                     <InputCode
                         length={4}
                         label="Enter code (1-6)"
-                        loading={gameState.isLoading}
+                        loading={gameState.isLoading || !isConnected}
                         onSubmit={handleSubmitCode}
                     />
                     <div className="remaining-guesses">
@@ -199,40 +149,23 @@ export const SingleBoard = ({ roomId }) => {
                 </div>
             ) : (
                 <div className="game-over-section">
-                    <div className="game-over-text">
-                        game over
-                    </div>
+                    <div className="game-over-text">game over</div>
                     {gameState.gameWon ? (
-                        <div className="win-message">
-                            you won
-                        </div>
+                        <div className="win-message">you won</div>
                     ) : (
-                        <div className="lose-message">
-                            you lost
-                        </div>
+                        <div className="lose-message">you lost</div>
                     )}
                     {gameState.secretCode && (
-                        <div style={{ marginTop: '8px', fontSize: '14px', color: '#666' }}>
+                        <div style={{marginTop: '8px', fontSize: '14px', color: '#666'}}>
                             Secret code was: {gameState.secretCode}
                         </div>
                     )}
                     <button
                         onClick={resetGame}
+                        disabled={!isConnected}
                         className="play-again-button"
                     >
                         Play Again
-                    </button>
-                </div>
-            )}
-
-            {gameState.error && (
-                <div className="error-section">
-                    Error: {gameState.error}
-                    <button
-                        onClick={clearError}
-                        className="error-close-button"
-                    >
-                        ✕
                     </button>
                 </div>
             )}
