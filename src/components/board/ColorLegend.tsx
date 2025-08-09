@@ -38,8 +38,7 @@ const style = `
     }
 
     .legend-title {
-        font-weight: bold;
-        font-size: 0.5rem;
+        font-size: 0.4rem;
         margin-bottom: 12px;
         text-align: center;
         border-bottom: 1px solid #ccc;
@@ -55,6 +54,7 @@ const style = `
     .legend-item {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 8px;
     }
 
