@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { useGame } from '../../stores/singlePlayerGameStore.ts';
 import { GameRow } from "../board/GameRow.tsx";
 import { GameFeedBackPegs } from "../board/GameFeedBackPegs.tsx";
-import { InputCode } from "./InputCode.tsx";
+import {InputCode} from '../board/InputCode.tsx';
+
 
 
 // Type definitions
