@@ -82,7 +82,7 @@ export function RegisterPage() {
         return null;
     }
     return (
-        <div className="register-page">
+        <div className="register-page center">
             <div className="register-container">
                 <div className="register-card">
                     <div className="register-header">
@@ -239,7 +239,7 @@ const styles = `
     }
     .register-form {
       display: flex;
-      font-size: 0.7rem;
+      font-size: 0.5rem;
       flex-direction: column;
       align-items: center;
     }
@@ -247,8 +247,8 @@ const styles = `
       border-collapse: collapse;
     }
     .form-table td {
-      padding: 0.5rem;
-      vertical-align: top;
+      vertical-align: center;
+      padding: 0.4rem;
     }
     .form-table td:first-child {
       text-align: right;
@@ -258,6 +258,9 @@ const styles = `
     }
     .form-table input {
       width: 100%;
+      height: 1rem;
+      padding: 0.5rem;
+      border-radius: 4px;
     }
     .field-error {
       display: block;
@@ -268,7 +271,7 @@ const styles = `
     .field-hint {
       display: block;
       color: #666;
-      font-size: 0.4rem;
+      font-size: 0.3rem;
       margin-top: 0.2rem;
     }
     .divider {

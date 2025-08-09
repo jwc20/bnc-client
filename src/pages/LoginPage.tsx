@@ -42,7 +42,7 @@ export function LoginPage() {
         return null;
     }
     return (
-        <div className="login-page">
+        <div className="login-page center">
             <div className="login-container">
                 <div className="login-card">
                     <div className="login-header">
@@ -151,7 +151,8 @@ const styles = `
       border-collapse: collapse;
     }
     .form-table td {
-      padding: 0.5rem;
+      vertical-align: center;
+      padding: 0.4rem;
     }
     .form-table td:first-child {
       text-align: right;
@@ -161,6 +162,9 @@ const styles = `
     }
     .form-table input {
       width: 100%;
+      height: 1rem;
+      padding: 0.5rem;
+      border-radius: 4px;
     }
     .divider {
       margin: 2rem 0;

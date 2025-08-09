@@ -122,12 +122,3 @@ export function RoomPage() {
         </div>
     );
 }
-
-// const style =`
-//     .center {
-//         position: absolute;
-//         inset-block-start: 50%;
-//         inset-inline-start: 50%;
-//         transform: translate(-50%, -50%);
-//     }
-// `
