@@ -11,6 +11,7 @@ interface ColorOption {
 
 interface InputCodeProps {
     length: number;
+    numOfColors: number;
     colors: ColorOption[];
     loading: boolean;
     onSubmit: (code: string) => void;
