@@ -22,7 +22,7 @@ interface GameConfig {
 interface GameState {
     guesses: GameGuess[];
     current_row: number;
-    gameOver: boolean;
+    game_over: boolean;
     game_won: boolean;
     remaining_guesses: number;
     isLoading: boolean;
@@ -44,7 +44,7 @@ interface CreateRoomData {
         current_row?: number;
         remaining_guesses?: number;
         game_won?: boolean;
-        gameOver?: boolean;
+        game_over?: boolean;
     };
 }
 interface GameStore {
@@ -73,7 +73,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     gameState: {
         guesses: [],
         current_row: 0,
-        gameOver: false,
+        game_over: false,
         game_won: false,
         remaining_guesses: 0, // No default value
         isLoading: false,
@@ -141,7 +141,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
                     guesses: newGuesses,
                     current_row: state.gameState.current_row + 1,
                     game_won: isWon,
-                    gameOver: isGameOver,
+                    game_over: isGameOver,
                     remaining_guesses: newRemainingGuesses,
                     isLoading: false
                 }
@@ -191,7 +191,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
             gameState: {
                 guesses: initialState?.guesses || [],
                 current_row: initialState?.current_row || 0,
-                gameOver: initialState?.gameOver || false,
+                game_over: initialState?.game_over || false,
                 game_won: initialState?.game_won || false,
                 remaining_guesses: initialState?.remaining_guesses ?? config.num_of_guesses,
                 isLoading: false,
@@ -208,7 +208,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
             gameState: {
                 guesses: [],
                 current_row: 0,
-                gameOver: false,
+                game_over: false,
                 game_won: false,
                 // Use the stored config for remaining guesses
                 remaining_guesses: currentConfig?.num_of_guesses ?? 0,

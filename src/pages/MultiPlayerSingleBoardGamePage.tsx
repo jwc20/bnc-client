@@ -119,7 +119,7 @@ export const MultiPlayerSingleBoardGamePage = ({ roomId }) => {
                     <ColorLegend colors={COLORS} gameState={gameState} />
                     <SingleBoard roomId={roomId} colors={COLORS} gameState={gameState} length={gameState.config.code_length} numOfGuesses={gameState.config.num_of_guesses} />
                 </div>
-                {!gameState.gameOver ? (
+                {!gameState.game_over ? (
                     <div className="input-section">
                         <InputCode
                             codeLength={gameState.config.code_length}
