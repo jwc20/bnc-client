@@ -19,7 +19,7 @@ client.setConfig({
     throwOnError: false,
 });
 
-if (import.meta.env.DEV) {
+if (import.meta.env.VITE_DEV) {
     client.interceptors.request.use((request, options) => {
         console.log("API Request:", request.method, request.url, options);
         return request;

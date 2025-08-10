@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+// import { persist, createJSONStorage } from 'zustand/middleware'
 import type {
   RoomSchema,
   CreateRoomRequest,
@@ -68,7 +68,7 @@ const DEFAULT_CONFIG: GameConfig = {
 }
 // Helper function for logging in development only
 const debugLog = (message: string, data?: any) => {
-  if (import.meta.env.DEV) {
+  if (import.meta.env.VITE_DEV) {
     console.log(message, data)
   }
 }
