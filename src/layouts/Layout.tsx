@@ -119,6 +119,7 @@ const styles = `
 
     .logout {
         align-items: center;
+        margin: auto;
     }
 
     .nav-link {

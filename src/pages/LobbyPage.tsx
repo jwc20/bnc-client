@@ -9,6 +9,7 @@ export function LobbyPage() {
     const [codeLength, setCodeLength] = useState(4);
     const [numOfColors, setNumOfColors] = useState(6);
     const [numOfGuesses, setNumOfGuesses] = useState(10);
+    const [secretCode, setSecretCode] = useState("");
     const [quickPlayLoading, setQuickPlayLoading] = useState(false);
 
     const navigate = useNavigate();
@@ -73,12 +74,13 @@ export function LobbyPage() {
                 code_length: codeLength,
                 num_of_colors: numOfColors,
                 num_of_guesses: numOfGuesses,
-                secret_code: null // Let the server generate random code
+                secret_code: secretCode.trim() || null // uise provided code or let server generate random
             };
             const newRoom = await createRoom(roomData);
             if (newRoom) {
                 navigate(`/room/${newRoom.id}`);
                 setRoomName("");
+                setSecretCode("");
             }
         } catch (error) {
             console.error('Room creation failed:', error);
@@ -94,6 +96,9 @@ export function LobbyPage() {
         } else {
             setCodeLength(value);
         }
+        if (secretCode.length > value) {
+            setSecretCode(secretCode.slice(0, value));
+        }
     };
     const handleNumOfColorsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(e.target.value);
@@ -103,6 +108,16 @@ export function LobbyPage() {
             setNumOfColors(9);
         } else {
             setNumOfColors(value);
+        }
+        if (secretCode) {
+            const validatedCode = secretCode
+                .split('')
+                .map(digit => {
+                    const num = parseInt(digit);
+                    return num >= 1 && num <= value ? digit : '';
+                })
+                .join('');
+            setSecretCode(validatedCode);
         }
     };
     const handleNumOfGuessesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,6 +137,20 @@ export function LobbyPage() {
 
     const handleRoomNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setRoomName(e.target.value);
+    };
+
+    const handleSecretCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        const filteredValue = value.replace(/[^1-9]/g, '').slice(0, codeLength);
+        const validatedValue = filteredValue
+            .split('')
+            .map(digit => {
+                const num = parseInt(digit);
+                return num >= 1 && num <= numOfColors ? digit : '';
+            })
+            .join('');
+            
+        setSecretCode(validatedValue);
     };
 
     const getGameTypeString = (type) => {
@@ -259,6 +288,28 @@ export function LobbyPage() {
                                     />
                                 </td>
                             </tr>
+                            {/* TODO: */}
+                            {/* <tr>
+                                <td>
+                                    <label>Secret Code (optional):</label>
+                                </td>
+                                <td>
+                                    <div style={{ position: 'relative' }}>
+                                        <input
+                                            type="text"
+                                            placeholder={`Numbers 1-${numOfColors}, max ${codeLength} digits`}
+                                            value={secretCode}
+                                            onChange={handleSecretCodeChange}
+                                            maxLength={codeLength}
+                                        />
+                                        {secretCode && secretCode.length > 0 && secretCode.length < codeLength && (
+                                            <div style={{ fontSize: '0.3rem', color: '#666', marginTop: '2px', position: 'absolute', width: '100%' }}>
+                                                Code must be exactly {codeLength} digits long ({secretCode.length}/{codeLength})
+                                            </div>
+                                        )}
+                                    </div>
+                                </td>
+                            </tr> */}
                         </tbody>
 
                     </table>
@@ -351,7 +402,6 @@ const style = `
         background-color: #4CAF50;
         color: white;
         padding: 10px 15px;
-        margin-top: 10px;
         border: none;
         cursor: pointer;
         width: 100%;
