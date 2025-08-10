@@ -119,6 +119,69 @@ export const RoomSchemaSchema = {
   type: "object",
 } as const;
 
+export const CreateRoomRequestSchema = {
+  properties: {
+    name: {
+      title: "Name",
+      type: "string",
+    },
+    game_type: {
+      title: "Game Type",
+      type: "integer",
+    },
+    code_length: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      default: 4,
+      title: "Code Length",
+    },
+    num_of_colors: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      default: 6,
+      title: "Num Of Colors",
+    },
+    num_of_guesses: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      default: 10,
+      title: "Num Of Guesses",
+    },
+    secret_code: {
+      anyOf: [
+        {
+          type: "string",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Secret Code",
+    },
+  },
+  required: ["name", "game_type", "secret_code"],
+  title: "CreateRoomRequest",
+  type: "object",
+} as const;
+
 export const CreateRandomSingleplayerRoomRequestSchema = {
   properties: {
     code_length: {

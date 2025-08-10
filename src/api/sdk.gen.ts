@@ -2,6 +2,8 @@
 
 import type { Options as ClientOptions, TDataShape, Client } from "./client";
 import type {
+  BncapiApiPingData,
+  BncapiApiPingResponses,
   UsersApiMeData,
   UsersApiMeResponses,
   UsersApiListUsersData,
@@ -44,6 +46,22 @@ export type Options<
    * used to access values that aren't defined as part of the SDK function.
    */
   meta?: Record<string, unknown>;
+};
+
+/**
+ * Ping
+ */
+export const bncapiApiPing = <ThrowOnError extends boolean = false>(
+  options?: Options<BncapiApiPingData, ThrowOnError>
+) => {
+  return (options?.client ?? _heyApiClient).get<
+    BncapiApiPingResponses,
+    unknown,
+    ThrowOnError
+  >({
+    url: "/api/ping",
+    ...options,
+  });
 };
 
 /**

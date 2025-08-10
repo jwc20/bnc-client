@@ -105,6 +105,36 @@ export type RoomSchema = {
 };
 
 /**
+ * CreateRoomRequest
+ */
+export type CreateRoomRequest = {
+  /**
+   * Name
+   */
+  name: string;
+  /**
+   * Game Type
+   */
+  game_type: number;
+  /**
+   * Code Length
+   */
+  code_length?: number | null;
+  /**
+   * Num Of Colors
+   */
+  num_of_colors?: number | null;
+  /**
+   * Num Of Guesses
+   */
+  num_of_guesses?: number | null;
+  /**
+   * Secret Code
+   */
+  secret_code: string | null;
+};
+
+/**
  * CreateRandomSingleplayerRoomRequest
  */
 export type CreateRandomSingleplayerRoomRequest = {
@@ -152,6 +182,20 @@ export type CheckBullsCowsRequest = {
    * Guess
    */
   guess: string;
+};
+
+export type BncapiApiPingData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/ping";
+};
+
+export type BncapiApiPingResponses = {
+  /**
+   * OK
+   */
+  200: unknown;
 };
 
 export type UsersApiMeData = {
@@ -263,7 +307,7 @@ export type GamesApiListRoomsResponse =
   GamesApiListRoomsResponses[keyof GamesApiListRoomsResponses];
 
 export type GamesApiCreateRoomData = {
-  body: RoomSchema;
+  body: CreateRoomRequest;
   path?: never;
   query?: never;
   url: "/api/games/rooms";
