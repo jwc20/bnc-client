@@ -13,7 +13,6 @@ import "./App.css";
 
 client.setConfig({
     baseUrl: import.meta.env.VITE_API_URL || "http://localhost:8000/",
-    // baseUrl: "https://bncapi.onrender.com", // :^O
     headers: {
         "Content-Type": "application/json",
     },
