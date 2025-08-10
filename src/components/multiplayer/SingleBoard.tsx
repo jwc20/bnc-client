@@ -72,7 +72,7 @@ const styles = `
 
     .game-board {
         border: 2px solid #000;
-        width: 500px;
+        width: 100%;
         padding: 24px;
     }
 
