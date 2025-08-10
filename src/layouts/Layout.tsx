@@ -83,8 +83,6 @@ const styles = `
     }
 
     .navbar-container {
-        background-color: var(--color-light);
-        border-bottom: 1px solid #ccc;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -156,7 +154,7 @@ const styles = `
     }
 
     .main-container {
-        padding: 2rem;
+
         max-width: 100%;
     }
 `

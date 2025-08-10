@@ -329,6 +329,7 @@ export function LobbyPage() {
                             <table className="room-table">
                                 <thead>
                                     <tr>
+                                        <th>#</th>
                                         <th>Name</th>
                                         <th>Length</th>
                                         <th>Colors</th>
@@ -340,6 +341,7 @@ export function LobbyPage() {
                                 <tbody>
                                     {roomState.rooms.map((room) => (
                                         <tr key={room.id}>
+                                            <td>{room.id}</td>
                                             <td>{room.name}</td>
                                             <td>{room.code_length}</td>
                                             <td>{room.num_of_colors}</td>
