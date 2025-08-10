@@ -15,7 +15,7 @@ interface AuthProviderProps {
     children: ReactNode;
 }
 
-// TODO: move to env
+
 const TOKEN_KEY = "auth_token";
 const USER_KEY = "user_data";
 
