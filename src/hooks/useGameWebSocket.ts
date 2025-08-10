@@ -2,11 +2,13 @@ import { useCallback, useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 // import { useGameStore } from '../stores/gameStore'
 import {useGameStore} from "../stores/gameRoomStore";
+import { useAuth } from '../auths/AuthContext'
 
 export const useGameWebSocket = (roomId) => {
   const { updateGameState, setLoading } = useGameStore()
+  const { token: authToken } = useAuth()
 
-  const socketUrl = roomId ? `ws://0.0.0.0:8000/ws/game/${roomId}/` : null
+  const socketUrl = roomId && authToken ? `ws://localhost:8000/ws/game/${roomId}/?token=${authToken}` : null
 
   const {
     sendMessage,

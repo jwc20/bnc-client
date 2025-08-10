@@ -109,7 +109,7 @@ export const InputCode = ({ codeLength, numOfColors, colorsArr, loading, onSubmi
                                 width: 40,
                                 height: 40,
                                 textAlign: "center",
-                                fontSize: 24,
+                                fontSize: "0.7rem",
                                 border: "2px solid #000",
                                 borderRadius: 6,
                                 backgroundColor,
