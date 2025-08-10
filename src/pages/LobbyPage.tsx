@@ -124,6 +124,19 @@ export function LobbyPage() {
         setRoomName(e.target.value);
     };
 
+    const getGameTypeString = (type) => {
+        switch (type) {
+            case 0:
+                return 'Single Player';
+            case 1:
+                return 'Multiplayer';
+            case 2:
+                return 'Co-op';
+            default:
+                return 'Unknown';
+        }
+    };
+
     return (
         <div>
             <h4>Lobby</h4>
@@ -257,22 +270,41 @@ export function LobbyPage() {
             </div>
             {/* Room List Section */}
             <div className="room-list">
-                <h5>Available Rooms</h5>
                 {roomState.isLoading ? (
                     <p>Loading rooms...</p>
                 ) : (
-                    <ul>
-                        {/* Use optional chaining or a logical OR with an empty array to safely access the length */}
+                    <div className="room-table-container">
                         {roomState.rooms?.length > 0 ? (
-                            roomState.rooms.map((room) => (
-                                <li key={room.id}>
-                                    <Link to={`/room/${room.id}`}>{room.name}</Link>
-                                </li>
-                            ))
+                            <table className="room-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Length</th>
+                                        <th>Colors</th>
+                                        <th>Guesses</th>
+                                        <th>Type</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {roomState.rooms.map((room) => (
+                                        <tr key={room.id}>
+                                            <td>{room.name}</td>
+                                            <td>{room.code_length}</td>
+                                            <td>{room.num_of_colors}</td>
+                                            <td>{room.num_of_guesses}</td>
+                                            <td>{getGameTypeString(room.game_type)}</td>
+                                            <td>
+                                                <Link to={`/room/${room.id}`}>Join</Link>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         ) : (
                             <p>No rooms available. Create one!</p>
                         )}
-                    </ul>
+                    </div>
                 )}
             </div>
             <style>{style}</style>
@@ -286,7 +318,11 @@ const style = `
         font-size: 0.7rem;
     }
     .room-list {
-        margin-top: 20px;
+        margin-top: 50px;
+        font-size: 0.2rem;
+    }
+    .room-item {
+        margin: 10px 0;
     }
     table {
         width: 100%;
@@ -294,6 +330,12 @@ const style = `
     }
     td {
         padding: 5px;
+    }
+    table th {
+        font-size: 0.2rem;
+        font-weight: bold;
+        padding: 5px;
+        border-bottom: 1px solid #ccc;
     }
     label {
         display: block;
