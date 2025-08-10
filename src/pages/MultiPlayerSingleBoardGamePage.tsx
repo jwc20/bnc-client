@@ -100,6 +100,9 @@ export const MultiPlayerSingleBoardGamePage = ({ roomId }) => {
     };
     return (
         <div>
+            <div className="room-header">
+                <h1 className="room-name">Room: {roomId}</h1>
+            </div>
             <div style={{
                 position: 'inherit',
                 padding: '8px 12px',
@@ -160,6 +163,19 @@ export const MultiPlayerSingleBoardGamePage = ({ roomId }) => {
     );
 };
 const style = `
+    .room-header {
+        text-align: center;
+        padding: 10px 0;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+    .room-name {
+        margin: 0;
+        color: black;
+        font-size: 1.2rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
     .board-layout {
         display: flex;
         flex-direction: column;

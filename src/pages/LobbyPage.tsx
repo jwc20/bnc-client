@@ -315,11 +315,11 @@ export function LobbyPage() {
 const style = `
     .room-create {
         margin-top: 20px;
-        font-size: 0.7rem;
+        font-size: 0.4rem;
     }
     .room-list {
         margin-top: 50px;
-        font-size: 0.2rem;
+        font-size: 0.4rem;
     }
     .room-item {
         margin: 10px 0;
