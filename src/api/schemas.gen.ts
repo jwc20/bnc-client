@@ -113,8 +113,60 @@ export const RoomSchemaSchema = {
       title: "Game Type",
       type: "integer",
     },
+    code_length: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Code Length",
+    },
+    num_of_colors: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Num Of Colors",
+    },
+    num_of_guesses: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Num Of Guesses",
+    },
+    secret_code: {
+      anyOf: [
+        {
+          type: "string",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Secret Code",
+    },
   },
-  required: ["id", "name", "game_type"],
+  required: [
+    "id",
+    "name",
+    "game_type",
+    "code_length",
+    "num_of_colors",
+    "num_of_guesses",
+    "secret_code",
+  ],
   title: "RoomSchema",
   type: "object",
 } as const;

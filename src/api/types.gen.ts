@@ -102,6 +102,22 @@ export type RoomSchema = {
    * Game Type
    */
   game_type: number;
+  /**
+   * Code Length
+   */
+  code_length: number | null;
+  /**
+   * Num Of Colors
+   */
+  num_of_colors: number | null;
+  /**
+   * Num Of Guesses
+   */
+  num_of_guesses: number | null;
+  /**
+   * Secret Code
+   */
+  secret_code: string | null;
 };
 
 /**
