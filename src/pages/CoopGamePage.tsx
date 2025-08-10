@@ -33,7 +33,7 @@ const COLORS = [
     { value: 'lavender', label: 'Lavender', color: '#aa88ff' }
 ];
 
-export const MultiPlayerSingleBoardGamePage = ({ roomId }) => {
+export const CoopGamePage = ({ roomId }) => {
     const { gameState } = useGameStore()
     const {
         submitGuess,

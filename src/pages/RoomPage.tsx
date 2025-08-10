@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 
 import { SinglePlayerGamePage } from "./SinglePlayerGamePage";
-import { MultiPlayerSingleBoardGamePage } from "./MultiPlayerSingleBoardGamePage";
+import { CoopGamePage } from "./CoopGamePage.tsx";
 import { MultiPlayerGamePage } from "./MultiPlayerGamePage";
 import { useGame } from "../stores/singlePlayerGameStore";
 import { gamesApiGetRoom } from "../api/sdk.gen";
@@ -106,7 +106,7 @@ export function RoomPage() {
     } else if (room?.game_type === 2) {
         return (
             <div className="center">
-                <MultiPlayerSingleBoardGamePage roomId={roomId} />
+                <CoopGamePage roomId={roomId} />
             </div>
             
         ) 
