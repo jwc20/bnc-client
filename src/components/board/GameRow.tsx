@@ -1,12 +1,11 @@
 import { GameColorPeg } from "./GameColorPeg";
 
-export const GameRow = ({ row = [] }) => {
+export const GameRow = ({ row = [], length }) => {
     return (
         <div className="game-row">
-            {Array.from({ length: 4 }).map((_, i) => (
+            {Array.from({ length }).map((_, i) => (
                 <GameColorPeg key={i} color={row[i]} />
             ))}
         </div>
     );
-
-}
+};
