@@ -242,8 +242,7 @@ interface RoomStore {
 }
 // Maximum number of rooms to keep in memory
 const MAX_ROOMS_IN_MEMORY = 100;
-export const useRoomStore = create<RoomStore>()(
-    persist(
+export const useRoomStore = create<RoomStore>(
         (set, get) => ({
             roomState: {
                 currentRoom: null,
@@ -485,29 +484,7 @@ export const useRoomStore = create<RoomStore>()(
                     return null
                 }
             }
-        }),
-        {
-            name: 'room-storage', // unique name for localStorage key
-            storage: createJSONStorage(() => localStorage),
-            partialize: (state) => ({
-                // Only persist the current room ID, not the entire room data
-                roomState: {
-                    currentRoom: state.roomState.currentRoom ? { id: state.roomState.currentRoom.id } : null
-                }
-            }),
-            onRehydrateStorage: (state) => {
-                debugLog('Rehydrating room state from storage');
-                return (state, error) => {
-                    if (error) {
-                        console.error('An error occurred during hydration', error);
-                    } else if (state && state.roomState.currentRoom) {
-                        // After rehydration, if there's a current room, you might want to fetch it from backend
-                        debugLog('Room state rehydrated', state.roomState.currentRoom);
-                    }
-                }
-            }
-        }
-    )
+        })
 )
 // Helper types for creating rooms
 export type CreateRoomPayload = CreateRoomRequest;
