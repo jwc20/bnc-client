@@ -18,9 +18,11 @@ interface InputCodeProps {
 }
 
 export const InputCode = ({ length, numOfColors, colors, loading, onSubmit }: InputCodeProps) => {
-    const [code, setCode] = useState<string[]>(Array(length).fill(""));
+    const [code, setCode] = useState<string[]>(Array(length+ 1).fill(""));
     const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
+    console.log("asdasd")
+    console.log(length)
 
     const processInput = (e: ChangeEvent<HTMLInputElement>, slot: number) => {
         const val = e.target.value;
@@ -77,7 +79,7 @@ export const InputCode = ({ length, numOfColors, colors, loading, onSubmit }: In
 
     return (
         <div className="code-input">
-            <label className="code-label">Enter numbers from 1 to {numOfColors - 1}</label>
+            <label className="code-label">Enter numbers from 1 to {numOfColors}</label>
             <div className="code-inputs" style={{ display: "flex", gap: 8 }}>
                 {code.map((num, idx) => {
                     const backgroundColor = getInputBackgroundColor(num);

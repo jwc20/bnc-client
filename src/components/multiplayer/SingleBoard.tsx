@@ -1,9 +1,8 @@
 import { GameRow } from '../board/GameRow.tsx';
 import { GameFeedBackPegs } from "../board/GameFeedBackPegs.tsx";
 
-
-
-export const SingleBoard = ({ roomId, colors, gameState }) => {
+export const SingleBoard = ({ roomId, colors, gameState, length, numOfGuesses }) => {
+    
     const convertGuessToRow = (guess) => {
         return guess.split('').map(digit => colors[parseInt(digit) - 1]);
     };
@@ -18,16 +17,13 @@ export const SingleBoard = ({ roomId, colors, gameState }) => {
         return acc;
     }, {});
 
-
     return (
         <div className="game-board-container">
-
-
             <div className="game-main-layout">
                 <div className="game-board">
                     <div className="game-rows-container">
-                        {Array.from({ length: gameState.config.num_of_guesses }).map((_, i) => {
-                            const rowIndex = 9 - i;
+                        {Array.from({ length: numOfGuesses }).map((_, i) => {
+                            const rowIndex = numOfGuesses - i - 1;
                             const row = gameRows[rowIndex];
                             const isCurrentRow = rowIndex === gameState.current_row;
                             const isActiveRow = rowIndex <= gameState.current_row;
@@ -40,11 +36,12 @@ export const SingleBoard = ({ roomId, colors, gameState }) => {
                                     <div className={`row-number ${isCurrentRow ? 'current' : ''}`}>
                                         {rowIndex + 1}
                                     </div>
-                                    <GameRow row={row} />
+                                    <GameRow row={row} length={length} />
                                     <div className="feedback-section">
                                         <GameFeedBackPegs
                                             bulls={feedbackState[rowIndex]?.bulls}
                                             cows={feedbackState[rowIndex]?.cows}
+                                            length={length}
                                         />
                                     </div>
                                 </div>
@@ -57,6 +54,7 @@ export const SingleBoard = ({ roomId, colors, gameState }) => {
         </div>
     );
 };
+
 
 
 const styles = `

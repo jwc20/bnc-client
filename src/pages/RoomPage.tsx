@@ -98,7 +98,6 @@ export function RoomPage() {
         return (
             <div className="center">
                 <SinglePlayerGamePage roomId={roomId} />
-                <style>{style}</style>
             </div>
         )
     } else if (room?.game_type === 1) {
