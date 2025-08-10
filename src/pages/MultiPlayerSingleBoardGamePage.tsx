@@ -1,9 +1,9 @@
 import { ReadyState } from 'react-use-websocket';
-import { SingleBoard } from '../components/multiplayer/SingleBoard';
-import { ColorLegend } from '../components/board/ColorLegend';
+import { SingleBoard } from '../components/game/multiplayer/SingleBoard.tsx';
+import { ColorLegend } from '../components/game/board/ColorLegend.tsx';
 import { useGameStore } from '../stores/gameRoomStore';
 import { useGameWebSocket } from '../hooks/useGameWebSocket';
-import { InputCode } from '../components/board/InputCode.tsx';
+import { InputCode } from '../components/game/board/InputCode.tsx';
 
 const COLORS = [
     { value: 'red', label: 'Red', color: '#ff4444' },
