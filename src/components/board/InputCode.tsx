@@ -17,12 +17,11 @@ interface InputCodeProps {
     onSubmit: (code: string) => void;
 }
 
-export const InputCode = ({ length, numOfColors, colors, loading, onSubmit }: InputCodeProps) => {
-    const [code, setCode] = useState<string[]>(Array(length+ 1).fill(""));
+export const InputCode = ({ codeLength, numOfColors, colors, loading, onSubmit }: InputCodeProps) => {
+    const [code, setCode] = useState<string[]>(Array(codeLength).fill(""));
     const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
-    console.log("asdasd")
-    console.log(length)
+
 
     const processInput = (e: ChangeEvent<HTMLInputElement>, slot: number) => {
         const val = e.target.value;
@@ -32,7 +31,7 @@ export const InputCode = ({ length, numOfColors, colors, loading, onSubmit }: In
         newCode[slot] = val;
         setCode(newCode);
 
-        if (slot < length - 1 && val !== "") {
+        if (slot < codeLength - 1 && val !== "") {
             inputs.current[slot + 1]?.focus();
         }
     };
@@ -52,9 +51,9 @@ export const InputCode = ({ length, numOfColors, colors, loading, onSubmit }: In
 
     const handleSubmit = () => {
         const codeStr = code.join("");
-        if (codeStr.length === length) {
+        if (codeStr.length === codeLength) {
             onSubmit(codeStr);
-            setCode(Array(length).fill(""));
+            setCode(Array(codeLength).fill(""));
             inputs.current[0]?.focus();
         }
     };

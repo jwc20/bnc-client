@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
-import {Link, useNavigate} from "react-router";
-import {gamesApiListRooms} from "../api/sdk.gen";
-import {useRoomStore} from "../stores/gameRoomStore";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { gamesApiListRooms } from "../api/sdk.gen";
+import { useRoomStore } from "../stores/gameRoomStore";
 
 export function LobbyPage() {
     const [roomName, setRoomName] = useState("");
@@ -10,18 +10,17 @@ export function LobbyPage() {
     const [numOfColors, setNumOfColors] = useState(6);
     const [numOfGuesses, setNumOfGuesses] = useState(10);
     const [quickPlayLoading, setQuickPlayLoading] = useState(false);
-    
-    const navigate = useNavigate();
-    
 
-    const { 
-        roomState, 
-        setRooms, 
+    const navigate = useNavigate();
+
+    const {
+        roomState,
+        setRooms,
         setLoading,
         setError,
         clearError,
-        createRoom, 
-        createQuickPlayRoom 
+        createRoom,
+        createQuickPlayRoom
     } = useRoomStore();
 
     useEffect(() => {
@@ -43,7 +42,7 @@ export function LobbyPage() {
 
     const onCreateQuickPlayRoom = async () => {
         setQuickPlayLoading(true);
-        
+
         try {
             const newRoom = await createQuickPlayRoom({
                 code_length: codeLength,
@@ -51,7 +50,6 @@ export function LobbyPage() {
                 num_of_guesses: numOfGuesses,
                 game_type: 0 // Single player
             });
-
             if (newRoom) {
                 navigate(`/room/${newRoom.id}`);
             }
@@ -64,12 +62,11 @@ export function LobbyPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!roomName.trim()) {
             setError('Room name is required');
             return;
         }
-
         try {
             const roomData = {
                 name: roomName,
@@ -79,9 +76,7 @@ export function LobbyPage() {
                 num_of_guesses: numOfGuesses,
                 secret_code: null // Let the server generate random code
             };
-
             const newRoom = await createRoom(roomData);
-
             if (newRoom) {
                 navigate(`/room/${newRoom.id}`);
                 setRoomName("");
@@ -101,34 +96,31 @@ export function LobbyPage() {
             setCodeLength(value);
         }
     };
-
     const handleNumOfColorsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(e.target.value);
         if (value < 4) {
             setNumOfColors(4);
-        } else if (value > 12) {
-            setNumOfColors(12);
+        } else if (value > 9) {
+            setNumOfColors(9);
         } else {
             setNumOfColors(value);
         }
     };
-
     const handleNumOfGuessesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(e.target.value);
         if (value < 1) {
             setNumOfGuesses(1);
-        } else if (value > 10) {
-            setNumOfGuesses(10);
+        } else if (value > 100) {
+            setNumOfGuesses(100);
         } else {
             setNumOfGuesses(value);
         }
     };
-
     const handleGameTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = Number(e.target.value);
         setGameType(value);
     };
-    
+
     const handleRoomNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setRoomName(e.target.value);
     };
@@ -136,40 +128,39 @@ export function LobbyPage() {
     return (
         <div>
             <h4>Lobby</h4>
-            
-            {/* Quick Play Section */}
+
             <div className="quick-play-section">
                 <h5>Quick Play (Single Player)</h5>
                 <div className="quick-play-controls">
                     <div className="control-group">
                         <label>Code Length (4-15):</label>
-                        <input 
+                        <input
                             type="number"
                             min="4"
                             max="15"
-                            value={codeLength} 
+                            value={codeLength}
                             onChange={handleCodeLengthChange}
                             disabled={quickPlayLoading}
                         />
                     </div>
                     <div className="control-group">
                         <label>Colors (4-12):</label>
-                        <input 
+                        <input
                             type="number"
                             min="4"
                             max="12"
-                            value={numOfColors} 
+                            value={numOfColors}
                             onChange={handleNumOfColorsChange}
                             disabled={quickPlayLoading}
                         />
                     </div>
                     <div className="control-group">
                         <label>Guesses (1-10):</label>
-                        <input 
+                        <input
                             type="number"
                             min="1"
                             max="10"
-                            value={numOfGuesses} 
+                            value={numOfGuesses}
                             onChange={handleNumOfGuessesChange}
                             disabled={quickPlayLoading}
                         />
@@ -183,7 +174,6 @@ export function LobbyPage() {
                     {quickPlayLoading ? 'Creating...' : 'Quick Play'}
                 </button>
             </div>
-
             {/* Create Room Section */}
             <div className="room-create">
                 <h5>Create Custom Room</h5>
@@ -194,13 +184,11 @@ export function LobbyPage() {
                                 <label>Room Name:</label>
                             </td>
                             <td>
-                                <input 
-                                    type="text" 
-                                    placeholder="Room Name" 
+                                <input
+                                    type="text"
+                                    placeholder="Room Name"
                                     value={roomName}
                                     onChange={handleRoomNameChange}
-                                    disabled={roomState.isLoading}
-                                    required
                                 />
                             </td>
                         </tr>
@@ -209,265 +197,144 @@ export function LobbyPage() {
                                 <label>Game Type:</label>
                             </td>
                             <td>
-                                <select 
-                                    value={gameType} 
-                                    onChange={handleGameTypeChange}
-                                    disabled={roomState.isLoading}
-                                >
-                                    <option value="0">Singleplayer</option>
-                                    <option value="1">Multiplayer</option>
-                                    <option value="2">Multiplayer with single board</option>
+                                <select value={gameType} onChange={handleGameTypeChange}>
+                                    <option value={0}>Single Player</option>
+                                    <option value={1}>Multiplayer</option>
+                                    <option value={2}>Co-op</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <label>Secret code length:</label>
+                                <label>Code Length (4-15):</label>
                             </td>
                             <td>
-                                <input 
+                                <input
                                     type="number"
                                     min="4"
                                     max="15"
-                                    value={codeLength} 
+                                    value={codeLength}
                                     onChange={handleCodeLengthChange}
-                                    disabled={roomState.isLoading}
-                                    placeholder="4-15"
                                 />
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <label>Number of colors:</label>
+                                <label>Num of Colors (4-9):</label>
                             </td>
                             <td>
-                                <input 
+                                <input
                                     type="number"
                                     min="4"
-                                    max="12"
-                                    value={numOfColors} 
+                                    max="9"
+                                    value={numOfColors}
                                     onChange={handleNumOfColorsChange}
-                                    disabled={roomState.isLoading}
-                                    placeholder="4-12"
                                 />
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <label>Number of guesses:</label>
+                                <label>Num of Guesses (1-100):</label>
                             </td>
                             <td>
-                                <input 
+                                <input
                                     type="number"
                                     min="1"
-                                    max="10"
-                                    value={numOfGuesses} 
+                                    max="100"
+                                    value={numOfGuesses}
                                     onChange={handleNumOfGuessesChange}
-                                    disabled={roomState.isLoading}
-                                    placeholder="1-10"
                                 />
                             </td>
                         </tr>
                     </table>
-                    <button 
-                        type="submit" 
-                        disabled={roomState.isLoading || !roomName.trim()}
-                    >
+                    <button type="submit" disabled={roomState.isLoading}>
                         {roomState.isLoading ? 'Creating...' : 'Create Room'}
                     </button>
                 </form>
+                {roomState.error && <p style={{ color: 'red' }}>{roomState.error}</p>}
             </div>
-
-            {/* Error Display */}
-            {roomState.error && (
-                <div style={{color: 'red', margin: '10px 0'}}>
-                    Error: {roomState.error}
-                    <button onClick={clearError} style={{marginLeft: 8}}>✕</button>
-                </div>
-            )}
-
-            {/* Room List */}
+            {/* Room List Section */}
             <div className="room-list">
                 <h5>Available Rooms</h5>
                 {roomState.isLoading ? (
-                    <div>Loading rooms...</div>
+                    <p>Loading rooms...</p>
                 ) : (
-                    <table className="room-list-table">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Room</th>
-                            <th>Game Type</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {roomState.rooms.map((room) => (
-                            <tr key={room.id}>
-                                <td>{room.id}</td>
-                                <td>
+                    <ul>
+                        {/* Use optional chaining or a logical OR with an empty array to safely access the length */}
+                        {roomState.rooms?.length > 0 ? (
+                            roomState.rooms.map((room) => (
+                                <li key={room.id}>
                                     <Link to={`/room/${room.id}`}>{room.name}</Link>
-                                </td>
-                                <td>
-                                    {room.game_type === 0 ? 'Single Player' : 
-                                     room.game_type === 1 ? 'Multiplayer' : 
-                                     'Multiplayer (Single Board)'}
-                                </td>
-                            </tr>
-                        ))}
-                        {roomState.rooms.length === 0 && !roomState.isLoading && (
-                            <tr>
-                                <td colSpan={3}>No rooms available</td>
-                            </tr>
+                                </li>
+                            ))
+                        ) : (
+                            <p>No rooms available. Create one!</p>
                         )}
-                        </tbody>
-                    </table>
+                    </ul>
                 )}
             </div>
-            <style>{styles}</style>
+            <style>{style}</style>
         </div>
     );
-};
+}
 
-const styles = `
+const style = `
+    .room-create {
+        margin-top: 20px;
+    }
+    .room-list {
+        margin-top: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    td {
+        padding: 5px;
+    }
+    label {
+        display: block;
+        font-weight: bold;
+    }
+    input[type="text"], input[type="number"], select {
+        width: 100%;
+        padding: 8px;
+        margin: 5px 0;
+        box-sizing: border-box;
+    }
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 15px;
+        margin-top: 10px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+    }
+    button:hover:enabled {
+        background-color: #45a049;
+    }
+    button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
     .quick-play-section {
-        margin: 20px 0;
+        margin-top: 20px;
         padding: 15px;
         border: 1px solid #ddd;
         border-radius: 8px;
         background-color: #f9f9f9;
+        text-align: center;
     }
-    
     .quick-play-controls {
         display: flex;
+        justify-content: center;
         gap: 15px;
-        margin: 10px 0;
-        flex-wrap: wrap;
+        margin-bottom: 15px;
     }
-    
-    .control-group {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-    
-    .control-group label {
-        font-size: 0.9rem;
-        font-weight: bold;
-    }
-    
-    .control-group input {
-        padding: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        width: 80px;
-    }
-    
     .quick-play-btn {
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 1rem;
+        padding: 12px 24px;
+        font-size: 18px;
     }
-    
-    .quick-play-btn:hover:not(:disabled) {
-        background-color: #0056b3;
-    }
-    
-    .quick-play-btn:disabled {
-        background-color: #6c757d;
-        cursor: not-allowed;
-    }
-
-    .room-list {
-        margin-top: 20px;
-        box-sizing: content-box;
-        margin-inline: auto;
-        text-align: center;
-        max-inline-size: var(--measure);
-        display:flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .room-list-table {
-        border-collapse: collapse;
-        align-items: center;
-        width: 100%;
-        max-width: 600px;
-    }
-    
-    .room-list-table th, .room-list-table td {
-        padding: 8px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
-    }
-    
-    .room-list-table tr:hover {
-        background-color: #f5f5f5;
-    }
-    
-    .room-create {
-        outline: 1px solid #ccc;
-        margin-top: 20px;
-        box-sizing: content-box;
-        margin-inline: auto;
-        text-align: center;
-        max-inline-size: var(--measure);
-        display:flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 15px;
-    }
-    
-    table {
-        border-collapse: collapse;
-        align-items: center;
-    }
-    
-    table label {
-        padding: 8px;
-        text-align: center;
-        font-size: 0.9rem;
-        font-weight: bold;
-    }
-    
-    table select, table input {
-        box-sizing: border-box;
-        padding: 5px;
-        text-align: center;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-    
-    table tr:hover {
-        background-color: #f5f5f5;
-    }
-    
-    button[type="submit"] {
-        margin-top: 10px;
-        background-color: #28a745;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 1rem;
-    }
-    
-    button[type="submit"]:hover:not(:disabled) {
-        background-color: #218838;
-    }
-    
-    button[type="submit"]:disabled {
-        background-color: #6c757d;
-        cursor: not-allowed;
-    }
-    
-    h5 {
-        margin-bottom: 10px;
-        color: #333;
-    }
-`
+`;

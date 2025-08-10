@@ -1,7 +1,7 @@
 import { ReadyState } from 'react-use-websocket';
 import { SingleBoard } from '../components/multiplayer/SingleBoard';
 import { ColorLegend } from '../components/board/ColorLegend';
-import { useGameStore } from '../stores/gameStore';
+import { useGameStore } from '../stores/gameRoomStore';
 import { useGameWebSocket } from '../hooks/useGameWebSocket';
 import { InputCode } from '../components/board/InputCode.tsx';
 
@@ -44,7 +44,16 @@ export const MultiPlayerSingleBoardGamePage = ({ roomId }) => {
         connectionStatus
     } = useGameWebSocket(roomId)
     
-
+    if (!gameState.config || !gameState.config.code_length || !gameState.config.num_of_colors) {
+      return (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+              <div style={{ fontSize: '20px', color: '#666' }}>
+                  Loading game configuration...
+              </div>
+          </div>
+      );
+    }
+    
     if (readyState === ReadyState.UNINSTANTIATED) {
         return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
@@ -52,7 +61,6 @@ export const MultiPlayerSingleBoardGamePage = ({ roomId }) => {
             </div>
         );
     }
-
     if (isConnecting) {
         return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
@@ -62,7 +70,6 @@ export const MultiPlayerSingleBoardGamePage = ({ roomId }) => {
             </div>
         );
     }
-
     if (readyState === ReadyState.CLOSED) {
         return (
             <div style={{
@@ -82,23 +89,15 @@ export const MultiPlayerSingleBoardGamePage = ({ roomId }) => {
             </div>
         );
     }
-
-
     const handleSubmitCode = (codeStr) => {
         if (gameState.isLoading || !isConnected) return;
-
-
         const digits = codeStr.split('').map(Number);
         if (digits.some(d => d < 1 || d > gameState.config.num_of_colors)) {
             alert('Invalid input. Use digits 1-' + gameState.config.num_of_colors + ' only.');
             return;
         }
-
         submitGuess(codeStr);
     };
-
-
-
     return (
         <div>
             <div style={{
@@ -115,16 +114,15 @@ export const MultiPlayerSingleBoardGamePage = ({ roomId }) => {
             }}>
                 {connectionStatus}
             </div>
-
             <div className='board-layout'>
                 <div className="board-container">
                     <ColorLegend colors={COLORS} gameState={gameState} />
                     <SingleBoard roomId={roomId} colors={COLORS} gameState={gameState} length={gameState.config.code_length} numOfGuesses={gameState.config.num_of_guesses} />
                 </div>
-                {!gameState.game_over ? (
+                {!gameState.gameOver ? (
                     <div className="input-section">
                         <InputCode
-                            length={gameState.config.code_length}
+                            codeLength={gameState.config.code_length}
                             numOfColors={gameState.config.num_of_colors}
                             colors={COLORS}
                             loading={gameState.isLoading || !isConnected}
@@ -156,23 +154,17 @@ export const MultiPlayerSingleBoardGamePage = ({ roomId }) => {
                         </button>
                     </div>
                 )}
-
             </div>
-
-
             <style>{style}</style>
         </div>
     );
 };
-
-
 const style = `
     .board-layout {
         display: flex;
         flex-direction: column;
         align-items: center;
-    }    
-
+    }
     .board-container {
         gap: 32px;
         display: flex;
@@ -180,38 +172,31 @@ const style = `
         justify-content: center;
         margin-top: 40px;
     }
-
     .input-section {
         margin-top: 1.3rem;
     }
-
     .remaining-guesses {
         margin-top: 1.3rem;
         text-align: center;
         font-size: 0.5rem;
         color: #666;
     }
-
     .game-over-section {
         margin-top: 24px;
         text-align: center;
     }
-
     .game-over-text {
         font-style: italic;
         font-size: 18px;
         margin-bottom: 8px;
     }
-
     .win-message {
         color: green;
         font-weight: bold;
     }
-
     .lose-message {
         color: red;
     }
-
     .play-again-button {
         margin-top: 12px;
         padding: 8px 16px;

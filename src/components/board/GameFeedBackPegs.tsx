@@ -1,5 +1,5 @@
 
-export const GameFeedBackPegs = ({ bulls, cows, length = 4 }) => {
+export const GameFeedBackPegs = ({ bulls, cows, length}) => {
     const totalPegs = length;
     const pegsPerRow = Math.ceil(length / 2); // distribute pegs across 2 rows
     

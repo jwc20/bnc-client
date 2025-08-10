@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
-import { useGameStore } from '../stores/gameStore'
+// import { useGameStore } from '../stores/gameStore'
+import {useGameStore} from "../stores/gameRoomStore";
 
 export const useGameWebSocket = (roomId) => {
   const { updateGameState, setLoading } = useGameStore()
