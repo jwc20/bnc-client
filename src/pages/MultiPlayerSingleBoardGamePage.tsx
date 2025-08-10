@@ -182,11 +182,11 @@ const style = `
     }
 
     .input-section {
-        margin-top: 24px;
+        margin-top: 1.3rem;
     }
 
     .remaining-guesses {
-        margin-top: 8px;
+        margin-top: 1.3rem;
         text-align: center;
         font-size: 0.5rem;
         color: #666;

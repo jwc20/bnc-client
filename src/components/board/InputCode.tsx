@@ -129,6 +129,14 @@ export const InputCode = ({ length, numOfColors, colors, loading, onSubmit }: In
             >
                 Submit
             </button>
+            <style>{style}</style>
         </div>
     );
 };
+
+
+const style = `
+    .code-inputs {
+        margin-top: 0.5rem;
+    }
+`

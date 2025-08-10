@@ -83,6 +83,8 @@ const styles = `
     }
 
     .navbar-container {
+        background-color: var(--color-light);
+        border-bottom: 1px solid #ccc;
         display: flex;
         justify-content: space-between;
         align-items: center;
