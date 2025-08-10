@@ -80,7 +80,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // };
     const validateToken = async (validationToken: string) => {
     try {
-        console.log("Validating token:", validationToken);
+        // console.log("Validating token:", validationToken);
         const response = await usersApiMe({
             throwOnError: true,
         });

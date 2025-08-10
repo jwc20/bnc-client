@@ -8,7 +8,7 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { RoomPage } from "./pages/RoomPage";
 
 import { client } from "./api/client.gen";
-import { AESDemo } from "./components/AESdemo.js";
+import { AESDemo } from "./components/AESdemo";
 import "./App.css";
 
 client.setConfig({
@@ -35,11 +35,9 @@ export default function App() {
                     <Route path="/register" element={<RegisterPage />} />
                     <Route path="/aes" element={<AESDemo />} />
                     <Route
-                        path="/lobby"
+                        path="/"
                         element={
-                            <RequireAuth>
-                                <LobbyPage />
-                            </RequireAuth>
+                            <LoginPage />
                         }
                     />
                     <Route

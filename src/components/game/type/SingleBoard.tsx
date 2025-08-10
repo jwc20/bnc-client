@@ -2,7 +2,6 @@ import { GameRow } from '../board/GameRow.tsx';
 import { GameFeedBackPegs } from "../board/GameFeedBackPegs.tsx";
 
 export const SingleBoard = ({ roomId, colors, gameState, length, numOfGuesses }) => {
-    
     const convertGuessToRow = (guess) => {
         return guess.split('').map(digit => colors[parseInt(digit) - 1]);
     };
