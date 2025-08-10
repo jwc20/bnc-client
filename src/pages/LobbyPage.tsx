@@ -237,6 +237,19 @@ export function LobbyPage() {
         setRoomName(e.target.value);
     };
 
+    const getGameTypeString = (type) => {
+        switch (type) {
+            case 0:
+                return 'Single Player';
+            case 1:
+                return 'Multiplayer';
+            case 2:
+                return 'Co-op';
+            default:
+                return 'Unknown';
+        }
+    };
+
     return (
         <div>
             <h4>Lobby</h4>
