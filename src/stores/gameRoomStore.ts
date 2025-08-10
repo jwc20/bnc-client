@@ -65,7 +65,7 @@ const DEFAULT_CONFIG: GameConfig = {
 };
 // Helper function for logging in development only
 const debugLog = (message: string, data?: any) => {
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
         console.log(message, data);
     }
 };
