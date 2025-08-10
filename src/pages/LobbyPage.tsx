@@ -174,12 +174,11 @@ export function LobbyPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!roomName.trim()) {
             setError('Room name is required');
             return;
         }
-
         try {
             const roomData = {
                 name: roomName,
@@ -189,9 +188,7 @@ export function LobbyPage() {
                 num_of_guesses: numOfGuesses,
                 secret_code: null // Let the server generate random code
             };
-
             const newRoom = await createRoom(roomData);
-
             if (newRoom) {
                 navigate(`/room/${newRoom.id}`);
                 setRoomName("");
@@ -211,34 +208,31 @@ export function LobbyPage() {
             setCodeLength(value);
         }
     };
-
     const handleNumOfColorsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(e.target.value);
         if (value < 4) {
             setNumOfColors(4);
-        } else if (value > 12) {
-            setNumOfColors(12);
+        } else if (value > 9) {
+            setNumOfColors(9);
         } else {
             setNumOfColors(value);
         }
     };
-
     const handleNumOfGuessesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(e.target.value);
         if (value < 1) {
             setNumOfGuesses(1);
-        } else if (value > 10) {
-            setNumOfGuesses(10);
+        } else if (value > 100) {
+            setNumOfGuesses(100);
         } else {
             setNumOfGuesses(value);
         }
     };
-
     const handleGameTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = Number(e.target.value);
         setGameType(value);
     };
-    
+
     const handleRoomNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setRoomName(e.target.value);
     };
