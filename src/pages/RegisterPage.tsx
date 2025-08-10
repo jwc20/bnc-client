@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../auths/AuthContext";
@@ -21,6 +21,15 @@ export function RegisterPage() {
 
     const auth = useAuth();
     const navigate = useNavigate();
+
+
+    useEffect(() => {
+        if (auth.user) {
+            navigate("/lobby", { replace: true });
+        }
+    }, [auth.user, navigate]); // rhe useEffect hook will run whenever `auth.user` or `Maps` changes.
+
+
 
     const validateForm = (): boolean => {
         const newErrors: ValidationErrors = {};
@@ -76,11 +85,6 @@ export function RegisterPage() {
         }
     };
 
-    // redirect if already logged in
-    if (auth.user) {
-        navigate("/lobby", { replace: true });
-        return null;
-    }
     return (
         <div className="register-page center">
             <div className="register-container">
@@ -98,103 +102,106 @@ export function RegisterPage() {
 
                     <form onSubmit={handleSubmit} className="register-form">
                         <table className="form-table">
-                            <tr>
-                                <td>username</td>
-                                <td>
-                                    <input
-                                        id="username"
-                                        type="text"
-                                        value={username}
-                                        onChange={(e) => {
-                                            setUsername(e.target.value);
-                                            if (errors.username) {
-                                                setErrors({ ...errors, username: undefined });
-                                            }
-                                        }}
-                                        placeholder="Choose a username"
-                                        required
-                                        disabled={isSubmitting}
-                                        autoComplete="username"
-                                        autoFocus
-                                    />
-                                    {errors.username && (
-                                        <div className="field-error">{errors.username}</div>
-                                    )}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>email</td>
-                                <td>
-                                    <input
-                                        id="email"
-                                        type="email"
-                                        value={email}
-                                        onChange={(e) => {
-                                            setEmail(e.target.value);
-                                            if (errors.email) {
-                                                setErrors({ ...errors, email: undefined });
-                                            }
-                                        }}
-                                        placeholder="Enter your email"
-                                        required
-                                        disabled={isSubmitting}
-                                        autoComplete="email"
-                                    />
-                                    {errors.email && (
-                                        <div className="field-error">{errors.email}</div>
-                                    )}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>password</td>
-                                <td>
-                                    <input
-                                        id="password"
-                                        type="password"
-                                        value={password}
-                                        onChange={(e) => {
-                                            setPassword(e.target.value);
-                                            if (errors.password) {
-                                                setErrors({ ...errors, password: undefined });
-                                            }
-                                        }}
-                                        placeholder="Create a password"
-                                        required
-                                        disabled={isSubmitting}
-                                        autoComplete="new-password"
-                                        minLength={6}
-                                    />
-                                    {errors.password && (
-                                        <div className="field-error">{errors.password}</div>
-                                    )}
-                                    <small className="field-hint">
-                                        Must be at least 6 characters
-                                    </small>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>confirm password</td>
-                                <td>
-                                    <input
-                                        id="confirmPassword"
-                                        type="password"
-                                        value={confirmPassword}
-                                        onChange={(e) => {
-                                            setConfirmPassword(e.target.value);
-                                            if (errors.confirmPassword) {
-                                                setErrors({ ...errors, confirmPassword: undefined });
-                                            }
-                                        }}
-                                        placeholder="Confirm your password"
-                                        required
-                                        disabled={isSubmitting}
-                                        autoComplete="new-password"
-                                    />
-                                    {errors.confirmPassword && (
-                                        <div className="field-error">{errors.confirmPassword}</div>
-                                    )}
-                                </td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td>username</td>
+                                    <td>
+                                        <input
+                                            id="username"
+                                            type="text"
+                                            value={username}
+                                            onChange={(e) => {
+                                                setUsername(e.target.value);
+                                                if (errors.username) {
+                                                    setErrors({ ...errors, username: undefined });
+                                                }
+                                            }}
+                                            placeholder="Choose a username"
+                                            required
+                                            disabled={isSubmitting}
+                                            autoComplete="username"
+                                            autoFocus
+                                        />
+                                        {errors.username && (
+                                            <div className="field-error">{errors.username}</div>
+                                        )}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>email</td>
+                                    <td>
+                                        <input
+                                            id="email"
+                                            type="email"
+                                            value={email}
+                                            onChange={(e) => {
+                                                setEmail(e.target.value);
+                                                if (errors.email) {
+                                                    setErrors({ ...errors, email: undefined });
+                                                }
+                                            }}
+                                            placeholder="Enter your email"
+                                            required
+                                            disabled={isSubmitting}
+                                            autoComplete="email"
+                                        />
+                                        {errors.email && (
+                                            <div className="field-error">{errors.email}</div>
+                                        )}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>password</td>
+                                    <td>
+                                        <input
+                                            id="password"
+                                            type="password"
+                                            value={password}
+                                            onChange={(e) => {
+                                                setPassword(e.target.value);
+                                                if (errors.password) {
+                                                    setErrors({ ...errors, password: undefined });
+                                                }
+                                            }}
+                                            placeholder="Create a password"
+                                            required
+                                            disabled={isSubmitting}
+                                            autoComplete="new-password"
+                                            minLength={6}
+                                        />
+                                        {errors.password && (
+                                            <div className="field-error">{errors.password}</div>
+                                        )}
+                                        <small className="field-hint">
+                                            Must be at least 6 characters
+                                        </small>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>confirm password</td>
+                                    <td>
+                                        <input
+                                            id="confirmPassword"
+                                            type="password"
+                                            value={confirmPassword}
+                                            onChange={(e) => {
+                                                setConfirmPassword(e.target.value);
+                                                if (errors.confirmPassword) {
+                                                    setErrors({ ...errors, confirmPassword: undefined });
+                                                }
+                                            }}
+                                            placeholder="Confirm your password"
+                                            required
+                                            disabled={isSubmitting}
+                                            autoComplete="new-password"
+                                        />
+                                        {errors.confirmPassword && (
+                                            <div className="field-error">{errors.confirmPassword}</div>
+                                        )}
+                                    </td>
+                                </tr>
+                            </tbody>
+
                         </table>
 
                         <div className="form-actions">

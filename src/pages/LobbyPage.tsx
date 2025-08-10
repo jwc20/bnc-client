@@ -28,7 +28,6 @@ export function LobbyPage() {
             try {
                 setLoading(true);
                 const response = await gamesApiListRooms();
-                console.log(response);
                 setRooms(response.data ?? []);
             } catch (error) {
                 console.error('Failed to fetch rooms:', error);
@@ -179,73 +178,76 @@ export function LobbyPage() {
                 <h5>Create Custom Room</h5>
                 <form onSubmit={handleSubmit}>
                     <table>
-                        <tr>
-                            <td>
-                                <label>Room Name:</label>
-                            </td>
-                            <td>
-                                <input
-                                    type="text"
-                                    placeholder="Room Name"
-                                    value={roomName}
-                                    onChange={handleRoomNameChange}
-                                />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Game Type:</label>
-                            </td>
-                            <td>
-                                <select value={gameType} onChange={handleGameTypeChange}>
-                                    <option value={0}>Single Player</option>
-                                    <option value={1}>Multiplayer</option>
-                                    <option value={2}>Co-op</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Code Length (4-15):</label>
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    min="4"
-                                    max="15"
-                                    value={codeLength}
-                                    onChange={handleCodeLengthChange}
-                                />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Num of Colors (4-9):</label>
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    min="4"
-                                    max="9"
-                                    value={numOfColors}
-                                    onChange={handleNumOfColorsChange}
-                                />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Num of Guesses (1-100):</label>
-                            </td>
-                            <td>
-                                <input
-                                    type="number"
-                                    min="1"
-                                    max="100"
-                                    value={numOfGuesses}
-                                    onChange={handleNumOfGuessesChange}
-                                />
-                            </td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label>Room Name:</label>
+                                </td>
+                                <td>
+                                    <input
+                                        type="text"
+                                        placeholder="Room Name"
+                                        value={roomName}
+                                        onChange={handleRoomNameChange}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Game Type:</label>
+                                </td>
+                                <td>
+                                    <select value={gameType} onChange={handleGameTypeChange}>
+                                        <option value={0}>Single Player</option>
+                                        <option value={1}>Multiplayer</option>
+                                        <option value={2}>Co-op</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Code Length (4-15):</label>
+                                </td>
+                                <td>
+                                    <input
+                                        type="number"
+                                        min="4"
+                                        max="15"
+                                        value={codeLength}
+                                        onChange={handleCodeLengthChange}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Num of Colors (4-9):</label>
+                                </td>
+                                <td>
+                                    <input
+                                        type="number"
+                                        min="4"
+                                        max="9"
+                                        value={numOfColors}
+                                        onChange={handleNumOfColorsChange}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Num of Guesses (1-100):</label>
+                                </td>
+                                <td>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max="100"
+                                        value={numOfGuesses}
+                                        onChange={handleNumOfGuessesChange}
+                                    />
+                                </td>
+                            </tr>
+                        </tbody>
+
                     </table>
                     <button type="submit" disabled={roomState.isLoading}>
                         {roomState.isLoading ? 'Creating...' : 'Create Room'}

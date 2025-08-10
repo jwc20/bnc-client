@@ -64,38 +64,41 @@ export function LoginPage() {
 
                     <form onSubmit={handleSubmit} className="login-form">
                         <table className="form-table">
-                            <tr>
-                                <td>email</td>
-                                <td>
-                                    <input
-                                        id="email"
-                                        type="email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        placeholder="Enter your email"
-                                        required
-                                        disabled={isSubmitting}
-                                        autoComplete="email"
-                                        autoFocus
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>password</td>
-                                <td>
-                                    <input
-                                        id="password"
-                                        type="password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        placeholder="Enter your password"
-                                        required
-                                        disabled={isSubmitting}
-                                        autoComplete="current-password"
-                                        minLength={6}
-                                    />
-                                </td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td>email</td>
+                                    <td>
+                                        <input
+                                            id="email"
+                                            type="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            placeholder="Enter your email"
+                                            required
+                                            disabled={isSubmitting}
+                                            autoComplete="email"
+                                            autoFocus
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>password</td>
+                                    <td>
+                                        <input
+                                            id="password"
+                                            type="password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            placeholder="Enter your password"
+                                            required
+                                            disabled={isSubmitting}
+                                            autoComplete="current-password"
+                                            minLength={6}
+                                        />
+                                    </td>
+                                </tr>
+                            </tbody>
+
                         </table>
 
 
