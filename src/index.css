@@ -14,7 +14,6 @@
   scroll-behavior: smooth;
   font-size: calc(1rem + 0.5vw);
   font-family: var(--family-normal);
-  line-height: 1.4;
 }
 
 * {
@@ -40,6 +39,10 @@ input {
   padding: 0.5rem;
   border-radius: 4px;
   gap: 12px;
+}
+
+button {
+    font-family: var(--family-special);
 }
 
 

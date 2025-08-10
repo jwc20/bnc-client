@@ -142,7 +142,7 @@ const styles = `
         padding: 0.5rem 1rem;
         border-radius: 4px;
         cursor: pointer;
-        font-size: 0.9rem;
+        font-size: 0.4rem;
         transition: background-color 0.2s;
     }
 

@@ -437,7 +437,7 @@ const style = `
     .create-room-btn {
         border-radius: 8px;
         padding: 12px 24px;
-        font-size: 18px;
+        font-size: 0.5rem;
         justify-content: center;
         margin: 10px auto 0 auto;
         display: block;
