@@ -26,7 +26,7 @@ export function Layout() {
                                             <span>Lobby</span>
                                         </Link>
                                     )}
-                                    {!isActive('/quick-play') && (
+                                    {/* {!isActive('/quick-play') && (
                                         <Link to="/quick-play" className="nav-link">
                                             <span>Quick Play</span>
                                         </Link>
@@ -35,7 +35,7 @@ export function Layout() {
                                         <Link to="/quick-plasy" className="nav-link">
                                             <span>another link</span>
                                         </Link>
-                                    )}
+                                    )} */}
                                     <div className="nav-right">
                                         <div className="username">
                                             <span>{auth.user.username}</span>

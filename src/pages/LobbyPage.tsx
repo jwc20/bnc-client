@@ -313,7 +313,7 @@ export function LobbyPage() {
                         </tbody>
 
                     </table>
-                    <button type="submit" disabled={roomState.isLoading}>
+                    <button className="create-room-btn" type="submit" disabled={roomState.isLoading}>
                         {roomState.isLoading ? 'Creating...' : 'Create Room'}
                     </button>
                 </form>
@@ -367,9 +367,11 @@ const style = `
     .room-create {
         margin-top: 20px;
         font-size: 0.4rem;
+        border: 1px solid #ccc;
+        padding: 10px;
     }
     .room-list {
-        margin-top: 50px;
+        margin-top: 30px;
         font-size: 0.4rem;
     }
     .room-item {
@@ -431,5 +433,14 @@ const style = `
     .quick-play-btn {
         padding: 12px 24px;
         font-size: 18px;
+    }
+    .create-room-btn {
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-size: 18px;
+        justify-content: center;
+        margin: 10px auto 0 auto;
+        display: block;
+        width: 40%;
     }
 `;
