@@ -1,5 +1,5 @@
 import { ReadyState } from 'react-use-websocket';
-import { SingleBoard } from '../components/game/multiplayer/SingleBoard.tsx';
+import { SingleBoard } from '../components/game/type/SingleBoard.tsx';
 import { ColorLegend } from '../components/game/board/ColorLegend.tsx';
 import { useGameStore } from '../stores/gameRoomStore';
 import { useGameWebSocket } from '../hooks/useGameWebSocket';
@@ -124,7 +124,7 @@ export const MultiPlayerSingleBoardGamePage = ({ roomId }) => {
                         <InputCode
                             codeLength={gameState.config.code_length}
                             numOfColors={gameState.config.num_of_colors}
-                            colors={COLORS}
+                            colorsArr={COLORS}
                             loading={gameState.isLoading || !isConnected}
                             onSubmit={handleSubmitCode}
                         />
