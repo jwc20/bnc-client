@@ -21,7 +21,7 @@ export function Layout() {
                         {auth.user && (
                             <>
                                 <div className="nav-center">
-                                    {!isActive('/lobby') && (
+                                    {!isActive('/lobby') || !isActive('/') && (
                                         <Link to="/lobby" className="nav-link">
                                             <span>Lobby</span>
                                         </Link>
