@@ -186,12 +186,13 @@ export function LobbyPage() {
                 code_length: codeLength,
                 num_of_colors: numOfColors,
                 num_of_guesses: numOfGuesses,
-                secret_code: null // Let the server generate random code
+                secret_code: secretCode.trim() || null // uise provided code or let server generate random
             };
             const newRoom = await createRoom(roomData);
             if (newRoom) {
                 navigate(`/room/${newRoom.id}`);
                 setRoomName("");
+                setSecretCode("");
             }
         } catch (error) {
             console.error('Room creation failed:', error);
@@ -207,6 +208,9 @@ export function LobbyPage() {
         } else {
             setCodeLength(value);
         }
+        if (secretCode.length > value) {
+            setSecretCode(secretCode.slice(0, value));
+        }
     };
     const handleNumOfColorsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(e.target.value);
@@ -216,6 +220,16 @@ export function LobbyPage() {
             setNumOfColors(9);
         } else {
             setNumOfColors(value);
+        }
+        if (secretCode) {
+            const validatedCode = secretCode
+                .split('')
+                .map(digit => {
+                    const num = parseInt(digit);
+                    return num >= 1 && num <= value ? digit : '';
+                })
+                .join('');
+            setSecretCode(validatedCode);
         }
     };
     const handleNumOfGuessesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -235,6 +249,20 @@ export function LobbyPage() {
 
     const handleRoomNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setRoomName(e.target.value);
+    };
+
+    const handleSecretCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        const filteredValue = value.replace(/[^1-9]/g, '').slice(0, codeLength);
+        const validatedValue = filteredValue
+            .split('')
+            .map(digit => {
+                const num = parseInt(digit);
+                return num >= 1 && num <= numOfColors ? digit : '';
+            })
+            .join('');
+            
+        setSecretCode(validatedValue);
     };
 
     const getGameTypeString = (type) => {
