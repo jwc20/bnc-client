@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
 
 
@@ -22,6 +22,11 @@ export const InputCode = ({ codeLength, numOfColors, colorsArr, loading, onSubmi
     
     const [code, setCode] = useState<string[]>(Array(codeLength).fill(""));
     const inputs = useRef<(HTMLInputElement | null)[]>([]);
+
+
+    useEffect(() => {
+        setCode(Array(codeLength).fill(""));
+    }, [codeLength]);
 
 
 
