@@ -35,7 +35,7 @@ export default function App() {
                     <Route path="/register" element={<RegisterPage />} />
                     <Route path="/aes" element={<AESDemo />} />
                     <Route
-                        path="/"
+                        path="/lobby"
                         element={
                             <RequireAuth>
                                 <LobbyPage />

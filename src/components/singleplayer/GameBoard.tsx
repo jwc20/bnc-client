@@ -149,7 +149,7 @@ export const GameBoard = () => {
                 </div>
             </div>
 
-            {!game.gameOver ? (
+            {!game.game_over ? (
                 <div className="input-section">
                     <InputCode
                         length={game.codeLength}

@@ -129,7 +129,7 @@ export function LobbyPage() {
         <div>
             <h4>Lobby</h4>
 
-            <div className="quick-play-section">
+            {/* <div className="quick-play-section">
                 <h5>Quick Play (Single Player)</h5>
                 <div className="quick-play-controls">
                     <div className="control-group">
@@ -173,7 +173,7 @@ export function LobbyPage() {
                 >
                     {quickPlayLoading ? 'Creating...' : 'Quick Play'}
                 </button>
-            </div>
+            </div> */}
             {/* Create Room Section */}
             <div className="room-create">
                 <h5>Create Custom Room</h5>
@@ -281,6 +281,7 @@ export function LobbyPage() {
 const style = `
     .room-create {
         margin-top: 20px;
+        font-size: 0.7rem;
     }
     .room-list {
         margin-top: 20px;
