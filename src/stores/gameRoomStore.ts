@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-// import { persist, createJSONStorage } from 'zustand/middleware'
 import type {
   RoomSchema,
   CreateRoomRequest,
@@ -11,17 +10,20 @@ import {
   gamesApiCreateRoom,
   gamesApiCreateRandomSingleplayerRoom
 } from '../api/sdk.gen'
-// Game state types
+
 interface GameGuess {
-  guess: string
+  guess: number[]
   bulls: number
   cows: number
 }
+
 interface GameConfig {
   code_length: number
   num_of_colors: number
   num_of_guesses: number
+  game_type: number
 }
+
 interface GameState {
   guesses: GameGuess[]
   current_row: number
@@ -29,76 +31,51 @@ interface GameState {
   game_won: boolean
   remaining_guesses: number
   isLoading: boolean
-  secret_code: string | null
-  config: GameConfig | null // Changed to allow null
+  secret_code: number[] | null
   room_id: number | null
+  config: GameConfig
+  mode: string
 }
-interface CreateRoomData {
-  id?: number
-  name: string
-  game_type: string
-  code_length: number
-  num_of_colors: number
-  num_of_guesses: number
-  secret_code: string
-  // Add initial game state from backend
-  initial_state?: {
-    guesses?: GameGuess[]
-    current_row?: number
-    remaining_guesses?: number
-    game_won?: boolean
-    game_over?: boolean
-  }
-}
+
 interface GameStore {
   gameState: GameState
-  updateGameState: (newState: Partial<GameState>) => void
-  setLoading: (loading: boolean) => void
-  resetGameState: () => void
-  addGuess: (guess: string, result: CheckBullsCowsResponse) => void
-  setConfig: (config: Partial<GameConfig>) => void
-  setRoomId: (roomId: number | null) => void
-  initializeGameFromRoom: (room: CreateRoomData | RoomSchema) => void
+  setGameType: (type: number) => void
+  initializeGameFromRoom: (room: RoomSchema, initialGameType?: number) => void
+  createRoom: (data: CreateRoomRequest) => Promise<RoomSchema>
+  createRandomSingleplayerRoom: (
+    data: CreateRandomSingleplayerRoomRequest
+  ) => Promise<RoomSchema>
 }
-// Default config values (used only as fallback)
+
 const DEFAULT_CONFIG: GameConfig = {
   code_length: 4,
   num_of_colors: 6,
-  num_of_guesses: 10
+  num_of_guesses: 10,
+  game_type: 1
 }
-// Helper function for logging in development only
+
 const debugLog = (message: string, data?: any) => {
   if (import.meta.env.VITE_DEV) {
     console.log(message, data)
   }
 }
+
+const getGameMode = (gameType: number): string => {
+  return gameType === 2 ? "MULTI-BOARD" : "SINGLE-BOARD"
+}
+
 export const useGameStore = create<GameStore>((set, get) => ({
   gameState: {
     guesses: [],
     current_row: 0,
     game_over: false,
     game_won: false,
-    remaining_guesses: 0, // No default value
+    remaining_guesses: DEFAULT_CONFIG.num_of_guesses,
     isLoading: false,
     secret_code: null,
     room_id: null,
-    config: null // No default value
-  },
-  updateGameState: newState => {
-    // Validate newState if needed
-    if (!newState || typeof newState !== 'object') {
-      console.error('Invalid state update provided')
-      return
-    }
-
-    debugLog('Updating game state:', newState)
-    set(state => ({
-      gameState: {
-        ...state.gameState,
-        ...newState,
-        isLoading: false
-      }
-    }))
+    config: DEFAULT_CONFIG,
+    mode: getGameMode(DEFAULT_CONFIG.game_type)
   },
   setLoading: loading => {
     if (typeof loading !== 'boolean') {
@@ -110,93 +87,65 @@ export const useGameStore = create<GameStore>((set, get) => ({
       gameState: { ...state.gameState, isLoading: loading }
     }))
   },
-  addGuess: (guess, result) => {
-    // Validate inputs
-    if (!guess || typeof guess !== 'string') {
-      console.error('Invalid guess provided')
+  updateGameState: newState => {
+    if (!newState || typeof newState !== 'object') {
+      console.error('Invalid state update provided')
       return
     }
 
-    if (
-      !result ||
-      typeof result.bulls !== 'number' ||
-      typeof result.cows !== 'number'
-    ) {
-      console.error('Invalid result provided')
-      return
-    }
+    console.log('Updating game state:', newState)
 
+    debugLog('Updating game state:', newState)
     set(state => {
-      if (!state.gameState.config) {
-        console.error('Game config not initialized. Cannot add guess.')
-        return state
+      const preservedGameType = state.gameState.config.game_type
+      const updatedConfig = {
+        ...state.gameState.config,
+        ...(newState.config || {}),
+        game_type: preservedGameType
       }
-
-      const newGuess: GameGuess = {
-        guess,
-        bulls: result.bulls,
-        cows: result.cows
-      }
-
-      const newGuesses = [...state.gameState.guesses, newGuess]
-      const isWon = result.bulls === state.gameState.config.code_length
-      const newRemainingGuesses = Math.max(
-        0,
-        state.gameState.remaining_guesses - 1
-      )
-      const isGameOver = isWon || newRemainingGuesses <= 0
+      
       return {
         gameState: {
           ...state.gameState,
-          guesses: newGuesses,
-          current_row: state.gameState.current_row + 1,
-          game_won: isWon,
-          game_over: isGameOver,
-          remaining_guesses: newRemainingGuesses,
-          isLoading: false
+          ...newState,
+          isLoading: false,
+          config: updatedConfig,
+          mode: getGameMode(updatedConfig.game_type)
         }
       }
     })
   },
-  setConfig: config => {
-    if (!config || typeof config !== 'object') {
-      console.error('Invalid config provided')
-      return
-    }
-
-    set(state => ({
+  setGameType: (type) => {
+    set((state) => ({
       gameState: {
         ...state.gameState,
-        config: { ...state.gameState.config, ...config },
-        remaining_guesses:
-          config.num_of_guesses ?? state.gameState.remaining_guesses
+        config: { ...state.gameState.config, game_type: type },
+        mode: getGameMode(type)
       }
     }))
   },
-  setRoomId: roomId => {
-    if (roomId !== null && typeof roomId !== 'number') {
-      console.error('Invalid room ID provided')
-      return
-    }
 
-    set(state => ({
-      gameState: { ...state.gameState, room_id: roomId }
-    }))
-  },
-  // Initialize game from room data (supports both CreateRoomData and RoomSchema)
-  initializeGameFromRoom: room => {
+  initializeGameFromRoom: (room, initialGameType) => {
     if (!room) {
       console.error('Invalid room data provided')
       return
     }
 
+    const currentState = get().gameState
+    const currentGameType = currentState.config.game_type
+    
+    const preservedGameType = (currentGameType !== DEFAULT_CONFIG.game_type) 
+      ? currentGameType 
+      : initialGameType ?? room.game_type ?? DEFAULT_CONFIG.game_type
+
     const config: GameConfig = {
       code_length: room.code_length || DEFAULT_CONFIG.code_length,
       num_of_colors: room.num_of_colors || DEFAULT_CONFIG.num_of_colors,
-      num_of_guesses: room.num_of_guesses || DEFAULT_CONFIG.num_of_guesses
+      num_of_guesses: room.num_of_guesses || DEFAULT_CONFIG.num_of_guesses,
+      game_type: preservedGameType
     }
-    // Extract initial state from backend if provided
-    const initialState = (room as CreateRoomData).initial_state
+
+    const initialState = (room as any).initial_state
 
     set({
       gameState: {
@@ -208,35 +157,24 @@ export const useGameStore = create<GameStore>((set, get) => ({
           initialState?.remaining_guesses ?? config.num_of_guesses,
         isLoading: false,
         secret_code: room.secret_code || null,
-        room_id: room.id || null, // Fixed: now id is part of CreateRoomData
-        config
+        room_id: room.id || null,
+        config,
+        mode: getGameMode(config.game_type)
       }
-    })
-    debugLog('Game initialized from room:', {
-      roomId: room.id,
-      config,
-      initialState
     })
   },
-  resetGameState: () => {
-    const currentConfig = get().gameState.config
-    set(state => ({
-      gameState: {
-        guesses: [],
-        current_row: 0,
-        game_over: false,
-        game_won: false,
-        // Use the stored config for remaining guesses
-        remaining_guesses: currentConfig?.num_of_guesses ?? 0,
-        isLoading: false,
-        secret_code: null,
-        room_id: null,
-        config: currentConfig // Preserve config on reset
-      }
-    }))
+
+  createRoom: async (data) => {
+    const room = await gamesApiCreateRoom({ body: data })
+    return room
+  },
+
+  createRandomSingleplayerRoom: async (data) => {
+    const room = await gamesApiCreateRandomSingleplayerRoom({ body: data })
+    return room
   }
 }))
-// Room store types and implementation
+
 interface RoomState {
   currentRoom: RoomSchema | null
   rooms: RoomSchema[]
@@ -258,7 +196,7 @@ interface RoomStore {
     roomData: CreateRandomSingleplayerRoomRequest
   ) => Promise<RoomSchema | null>
 }
-// Maximum number of rooms to keep in memory
+
 const MAX_ROOMS_IN_MEMORY = 100
 export const useRoomStore = create<RoomStore>((set, get) => ({
   roomState: {
@@ -269,9 +207,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
   },
   currentOperation: null,
   setCurrentRoom: room => {
-    // Fixed: Removed duplicate state initialization
     if (room) {
-      // Only initialize game state once through the game store
       useGameStore.getState().initializeGameFromRoom(room)
     }
 
@@ -285,7 +221,6 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
       return
     }
 
-    // Limit the number of rooms stored
     const limitedRooms = rooms.slice(-MAX_ROOMS_IN_MEMORY)
 
     set(state => ({
@@ -300,7 +235,6 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
 
     set(state => {
       const newRooms = [...state.roomState.rooms, room]
-      // Keep only the last MAX_ROOMS_IN_MEMORY rooms
       const limitedRooms = newRooms.slice(-MAX_ROOMS_IN_MEMORY)
 
       return {
@@ -333,7 +267,6 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     }))
   },
   resetRoomState: () => {
-    // Cancel any pending operations
     const currentOp = get().currentOperation
     if (currentOp) {
       currentOp.abort()
@@ -351,13 +284,11 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
   },
   createRoom: async roomData => {
     try {
-      // Cancel any pending operation
       const currentOp = get().currentOperation
       if (currentOp) {
         currentOp.abort()
       }
 
-      // Create new abort controller for this operation
       const controller = new AbortController()
 
       set(state => ({
@@ -366,21 +297,17 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
       }))
       const response = await gamesApiCreateRoom({
         body: roomData
-        // Add signal if API supports it
-        // signal: controller.signal
       })
-      // Check if operation was aborted
+
       if (controller.signal.aborted) {
         return null
       }
       if (response.data) {
         const newRoom = response.data
 
-        // Initialize game state with the new room configuration
         const gameStore = useGameStore.getState()
         gameStore.initializeGameFromRoom(newRoom)
 
-        // Add the new room to the rooms list and set as current room
         set(state => {
           const newRooms = [...state.roomState.rooms, newRoom]
           const limitedRooms = newRooms.slice(-MAX_ROOMS_IN_MEMORY)
@@ -406,7 +333,6 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
 
       return null
     } catch (error) {
-      // Check if error is due to abort
       if (error instanceof Error && error.name === 'AbortError') {
         return null
       }
@@ -429,13 +355,11 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
   },
   createQuickPlayRoom: async roomData => {
     try {
-      // Cancel any pending operation
       const currentOp = get().currentOperation
       if (currentOp) {
         currentOp.abort()
       }
 
-      // Create new abort controller for this operation
       const controller = new AbortController()
 
       set(state => ({
@@ -444,21 +368,17 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
       }))
       const response = await gamesApiCreateRandomSingleplayerRoom({
         body: roomData
-        // Add signal if API supports it
-        // signal: controller.signal
       })
-      // Check if operation was aborted
+
       if (controller.signal.aborted) {
         return null
       }
       if (response.data) {
         const newRoom = response.data
 
-        // Initialize game state with the new room configuration
         const gameStore = useGameStore.getState()
         gameStore.initializeGameFromRoom(newRoom)
 
-        // Set as current room (don't add to rooms list since it's single player)
         set(state => ({
           currentOperation: null,
           roomState: {
@@ -478,7 +398,6 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
 
       return null
     } catch (error) {
-      // Check if error is due to abort
       if (error instanceof Error && error.name === 'AbortError') {
         return null
       }
@@ -502,7 +421,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     }
   }
 }))
-// Helper types for creating rooms
+
 export type CreateRoomPayload = CreateRoomRequest
 export type CreateQuickPlayPayload = CreateRandomSingleplayerRoomRequest
 export type CheckGamePayload = CheckBullsCowsRequest

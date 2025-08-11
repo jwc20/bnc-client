@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 
-import { SinglePlayerGamePage } from "./SinglePlayerGamePage";
-import { CoopGamePage } from "./CoopGamePage.tsx";
-import { MultiPlayerGamePage } from "./MultiPlayerGamePage";
 import { useGame } from "../stores/singlePlayerGameStore";
 import { gamesApiGetRoom } from "../api/sdk.gen";
-import type { RoomResponse } from "../api/types.gen";
+import type { RoomSchema } from "../api/types.gen"
+;
+import { SinglePlayerGamePage } from "./SinglePlayerGamePage";
+import { CoopGamePage } from "./CoopGamePage.tsx";
+import { BattleGamePage } from "./BattleGamePage.tsx";
 
 export function RoomPage() {
     const { roomId: roomIdParam } = useParams();
     const navigate = useNavigate();
-    const game = useGame();
+    // const game = useGame();
+    // const { loadExistingRoom, error: gameError } = game;
 
-    const { loadExistingRoom, error: gameError } = game;
-
-    const [room, setRoom] = useState<RoomResponse | null>(null);
+    const [room, setRoom] = useState<RoomSchema | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -43,12 +43,12 @@ export function RoomPage() {
                 if (response.data) {
                     setRoom(response.data);
 
-                    if (response.data.game_type === 0) {
-                        const success = await loadExistingRoom(roomId);
-                        if (!success && gameError) {
-                            setError(gameError);
-                        }
-                    }
+                    // if (response.data.game_type === 0) {
+                    //     const success = await loadExistingRoom(roomId);
+                    //     if (!success && gameError) {
+                    //         setError(gameError);
+                    //     }
+                    // }
                 } else {
                     throw new Error('No room data received');
                 }
@@ -65,7 +65,7 @@ export function RoomPage() {
         };
 
         loadRoom();
-    }, [roomId, loadExistingRoom, gameError]);
+    }, [roomId]);
 
     if (loading) {
         return <div className="center">Loading...</div>;
@@ -100,10 +100,9 @@ export function RoomPage() {
                 <SinglePlayerGamePage roomId={roomId} />
             </div>
         )
-    } else if (room?.game_type === 1) {
-        return <h1>TODO Multiplayer Game</h1>;
-        // return <MultiPlayerGamePage roomId={roomId} />;
     } else if (room?.game_type === 2) {
+        return <BattleGamePage roomId={roomId} />;
+    } else if (room?.game_type === 1) {
         return (
             <div className="center">
                 <CoopGamePage roomId={roomId} />

@@ -5,7 +5,7 @@ import { useRoomStore } from "../stores/gameRoomStore";
 
 export function LobbyPage() {
     const [roomName, setRoomName] = useState("");
-    const [gameType, setGameType] = useState(0);
+    const [gameType, setGameType] = useState(1);
     const [codeLength, setCodeLength] = useState(4);
     const [numOfColors, setNumOfColors] = useState(6);
     const [numOfGuesses, setNumOfGuesses] = useState(10);
@@ -40,25 +40,25 @@ export function LobbyPage() {
         fetchRooms();
     }, [setRooms, setLoading, setError]);
 
-    const onCreateQuickPlayRoom = async () => {
-        setQuickPlayLoading(true);
+    // const onCreateQuickPlayRoom = async () => {
+    //     setQuickPlayLoading(true);
 
-        try {
-            const newRoom = await createQuickPlayRoom({
-                code_length: codeLength,
-                num_of_colors: numOfColors,
-                num_of_guesses: numOfGuesses,
-                game_type: 0 // Single player
-            });
-            if (newRoom) {
-                navigate(`/room/${newRoom.id}`);
-            }
-        } catch (error) {
-            console.error('Quick play creation failed:', error);
-        } finally {
-            setQuickPlayLoading(false);
-        }
-    };
+    //     try {
+    //         const newRoom = await createQuickPlayRoom({
+    //             code_length: codeLength,
+    //             num_of_colors: numOfColors,
+    //             num_of_guesses: numOfGuesses,
+    //             game_type: 0 // Single player
+    //         });
+    //         if (newRoom) {
+    //             navigate(`/room/${newRoom.id}`);
+    //         }
+    //     } catch (error) {
+    //         console.error('Quick play creation failed:', error);
+    //     } finally {
+    //         setQuickPlayLoading(false);
+    //     }
+    // };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -67,6 +67,8 @@ export function LobbyPage() {
             setError('Room name is required');
             return;
         }
+
+        console.log(gameType, codeLength, numOfColors, numOfGuesses, secretCode);
         try {
             const roomData = {
                 name: roomName,
@@ -76,6 +78,7 @@ export function LobbyPage() {
                 num_of_guesses: numOfGuesses,
                 secret_code: secretCode.trim() || null // uise provided code or let server generate random
             };
+            console.log("roomData", roomData);
             const newRoom = await createRoom(roomData);
             if (newRoom) {
                 navigate(`/room/${newRoom.id}`);
@@ -158,9 +161,9 @@ export function LobbyPage() {
             case 0:
                 return 'Single Player';
             case 1:
-                return 'Multiplayer';
-            case 2:
                 return 'Co-op';
+            case 2:
+                return 'Battle';
             default:
                 return 'Unknown';
         }
@@ -241,8 +244,8 @@ export function LobbyPage() {
                                 <td>
                                     <select value={gameType} onChange={handleGameTypeChange}>
                                         <option value={0}>Single Player</option>
-                                        <option value={1}>Multiplayer</option>
-                                        <option value={2}>Co-op</option>
+                                        <option value={1}>Co-op</option>
+                                        <option value={2}>Battle</option>
                                     </select>
                                 </td>
                             </tr>
