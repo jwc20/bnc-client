@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import type { FormEvent } from 'react';
-import { Link, useNavigate, useLocation } from "react-router";
-import { useAuth } from "../auths/AuthContext";
+import {useState, useEffect} from "react";
+import type {FormEvent} from 'react';
+import {Link, useNavigate, useLocation} from "react-router";
+import {useAuth} from "../auths/AuthContext";
 
 export function LoginPage() {
     const [email, setEmail] = useState("");
@@ -34,7 +34,7 @@ export function LoginPage() {
 
     useEffect(() => {
         if (auth.user) {
-            navigate(from, { replace: true });
+            navigate(from, {replace: true});
         }
     }, [auth.user, navigate, from]);
 
@@ -65,48 +65,46 @@ export function LoginPage() {
                     <form onSubmit={handleSubmit} className="login-form">
                         <table className="form-table">
                             <tbody>
-                                <tr>
-                                    <td>email</td>
-                                    <td>
-                                        <input
-                                            id="email"
-                                            type="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            placeholder="Enter your email"
-                                            required
-                                            disabled={isSubmitting}
-                                            autoComplete="email"
-                                            autoFocus
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>password</td>
-                                    <td>
-                                        <input
-                                            id="password"
-                                            type="password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            placeholder="Enter your password"
-                                            required
-                                            disabled={isSubmitting}
-                                            autoComplete="current-password"
-                                            minLength={6}
-                                        />
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td>email</td>
+                                <td>
+                                    <input
+                                        id="email"
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="Enter your email"
+                                        required
+                                        disabled={isSubmitting}
+                                        autoComplete="email"
+                                        autoFocus
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>password</td>
+                                <td>
+                                    <input
+                                        id="password"
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="Enter your password"
+                                        required
+                                        disabled={isSubmitting}
+                                        autoComplete="current-password"
+                                        minLength={6}
+                                    />
+                                </td>
+                            </tr>
                             </tbody>
 
                         </table>
 
 
-
                         <div className="form-actions">
                             <button
                                 type="submit"
-                                className="btn btn-primary btn-block"
                                 disabled={isSubmitting || !email || !password}
                             >
                                 {isSubmitting ? "Signing in..." : "Sign In"}
@@ -120,9 +118,9 @@ export function LoginPage() {
                         </div> */}
                     </form>
 
-                    <div className="divider">
-                        <span>or</span>
-                    </div>
+                    {/*<div className="divider">*/}
+                    {/*    <span>or</span>*/}
+                    {/*</div>*/}
 
                     <div className="alternative-actions">
                         <p>

@@ -50,7 +50,7 @@ export const BattleGamePage = ({roomId}: { roomId: number }) => {
     } = useGameWebSocket(roomId);
 
     const isGameEnded = () => {
-        if (gameState.game_won) {
+        if (gameState?.game_won) {
             return true;
         }
 
@@ -66,7 +66,7 @@ export const BattleGamePage = ({roomId}: { roomId: number }) => {
         );
     };
 
-    if (!gameState.config || !gameState.config.code_length || !gameState.config.num_of_colors) {
+    if (!gameState.config || !gameState.config?.code_length || !gameState.config.num_of_colors) {
         return (
             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
                 <div style={{fontSize: '20px', color: '#666'}}>

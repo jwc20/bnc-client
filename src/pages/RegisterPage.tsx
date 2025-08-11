@@ -207,7 +207,6 @@ export function RegisterPage() {
                         <div className="form-actions">
                             <button
                                 type="submit"
-                                className="btn btn-primary btn-block"
                                 disabled={
                                     isSubmitting ||
                                     !email ||
@@ -221,9 +220,9 @@ export function RegisterPage() {
                         </div>
                     </form>
 
-                    <div className="divider">
-                        <span>or</span>
-                    </div>
+                    {/*<div className="divider">*/}
+                    {/*    <span>or</span>*/}
+                    {/*</div>*/}
 
                     <div className="alternative-actions">
                         <p>

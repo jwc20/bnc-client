@@ -12,8 +12,19 @@ interface BattleBoardProps {
 
 export const BattleBoard = ({ colors, gameState, length, numOfGuesses, currentPlayerToken }: BattleBoardProps) => {
 
-    const convertGuessToRow = (guess: number[]): Array<GameRowColor | undefined> => {
-        return guess.map((digit: number) => colors[digit - 1]);
+    const toDigitsArray = (value: unknown): number[] => {
+        if (Array.isArray(value)) {
+            return (value as Array<number | string>).map(Number);
+        }
+        if (typeof value === 'string') {
+            return value.split('').map(Number);
+        }
+        return [];
+    };
+
+    const convertGuessToRow = (guessLike: unknown): Array<GameRowColor | undefined> => {
+        const digits = toDigitsArray(guessLike);
+        return digits.map((digit: number) => colors[digit - 1]);
     };
 
     // Check if game should end
@@ -47,7 +58,7 @@ export const BattleBoard = ({ colors, gameState, length, numOfGuesses, currentPl
     const currentPlayerRow = currentPlayerGuesses.length;
 
     const gameRows = currentPlayerGuesses.reduce<Record<number, Array<GameRowColor | undefined>>>((acc, guess: GameGuess, index: number) => {
-        acc[index] = convertGuessToRow(guess.guess);
+        acc[index] = convertGuessToRow(guess.guess as unknown);
         return acc;
     }, {});
 

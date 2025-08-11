@@ -1,21 +1,10 @@
 // Re-export all game store functionality
-export {
-    useGameStore,
-    type GameGuess,
-    type GameConfig,
-    type PlayerData,
-    type GameState,
-    type GameStore
-} from './gameStore'
+export { useGameStore } from './gameStore'
+export type { GameGuess, GameConfig, PlayerData, GameState, GameStore } from './gameStore'
 
 // Re-export all room store functionality
-export {
-    useRoomStore,
-    type RoomState,
-    type RoomStore,
-    type CreateRoomPayload,
-    type CreateQuickPlayPayload
-} from './roomStore'
+export { useRoomStore } from './roomStore'
+export type { RoomState, RoomStore, CreateRoomPayload, CreateQuickPlayPayload } from './roomStore'
 
 // Re-export user store functionality
 export {
@@ -39,3 +28,4 @@ export type {
     LoginCredentials,
     User
 } from '../types/auth'
+

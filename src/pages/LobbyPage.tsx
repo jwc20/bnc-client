@@ -161,8 +161,8 @@ export function LobbyPage() {
 
     const getGameTypeString = (type: number) => {
         switch (type) {
-            case 0:
-                return 'Single Player';
+            // case 0:
+            //     return 'Single Player';
             case 1:
                 return 'Co-op';
             case 2:
@@ -246,7 +246,7 @@ export function LobbyPage() {
                                 </td>
                                 <td>
                                     <select value={gameType} onChange={handleGameTypeChange}>
-                                        <option value={0}>Single Player</option>
+                                        {/*<option value={0}>Single Player</option>*/}
                                         <option value={1}>Co-op</option>
                                         <option value={2}>Battle</option>
                                     </select>
