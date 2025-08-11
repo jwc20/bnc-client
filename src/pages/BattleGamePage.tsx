@@ -8,37 +8,37 @@ import { MultiplayerInputCode } from '../components/game/board/MultiplayerInputC
 import { useAuth } from '../auths/AuthContext'
 
 const COLORS = [
-    { value: 'red', label: 'Red', color: '#ff4444' },
-    { value: 'blue', label: 'Blue', color: '#4444ff' },
-    { value: 'green', label: 'Green', color: '#44ff44' },
-    { value: 'yellow', label: 'Yellow', color: '#ffff44' },
-    { value: 'purple', label: 'Purple', color: '#ff44ff' },
-    { value: 'orange', label: 'Orange', color: '#ff8844' },
-    { value: 'pink', label: 'Pink', color: '#ff88cc' },
-    { value: 'cyan', label: 'Cyan', color: '#44ffff' },
-    { value: 'indigo', label: 'Indigo', color: '#4444aa' },
-    { value: 'teal', label: 'Teal', color: '#44aa88' },
-    { value: 'maroon', label: 'Maroon', color: '#aa4444' },
-    { value: 'navy', label: 'Navy', color: '#444488' },
-    { value: 'olive', label: 'Olive', color: '#888844' },
-    { value: 'coral', label: 'Coral', color: '#ff6644' },
-    { value: 'violet', label: 'Violet', color: '#aa44ff' },
-    { value: 'turquoise', label: 'Turquoise', color: '#44ddaa' },
-    { value: 'gold', label: 'Gold', color: '#ffcc44' },
-    { value: 'crimson', label: 'Crimson', color: '#cc4444' },
-    { value: 'salmon', label: 'Salmon', color: '#ff8866' },
-    { value: 'brown', label: 'Brown', color: '#aa6644' },
-    { value: 'silver', label: 'Silver', color: '#aaaaaa' },
-    { value: 'magenta', label: 'Magenta', color: '#ff4488' },
-    { value: 'aqua', label: 'Aqua', color: '#44aaff' },
-    { value: 'tan', label: 'Tan', color: '#cc9966' },
-    { value: 'lavender', label: 'Lavender', color: '#aa88ff' }
+    {value: 'red', label: 'Red', color: '#ff4444'},
+    {value: 'blue', label: 'Blue', color: '#4444ff'},
+    {value: 'green', label: 'Green', color: '#44ff44'},
+    {value: 'yellow', label: 'Yellow', color: '#ffff44'},
+    {value: 'purple', label: 'Purple', color: '#ff44ff'},
+    {value: 'orange', label: 'Orange', color: '#ff8844'},
+    {value: 'pink', label: 'Pink', color: '#ff88cc'},
+    {value: 'cyan', label: 'Cyan', color: '#44ffff'},
+    {value: 'indigo', label: 'Indigo', color: '#4444aa'},
+    {value: 'teal', label: 'Teal', color: '#44aa88'},
+    {value: 'maroon', label: 'Maroon', color: '#aa4444'},
+    {value: 'navy', label: 'Navy', color: '#444488'},
+    {value: 'olive', label: 'Olive', color: '#888844'},
+    {value: 'coral', label: 'Coral', color: '#ff6644'},
+    {value: 'violet', label: 'Violet', color: '#aa44ff'},
+    {value: 'turquoise', label: 'Turquoise', color: '#44ddaa'},
+    {value: 'gold', label: 'Gold', color: '#ffcc44'},
+    {value: 'crimson', label: 'Crimson', color: '#cc4444'},
+    {value: 'salmon', label: 'Salmon', color: '#ff8866'},
+    {value: 'brown', label: 'Brown', color: '#aa6644'},
+    {value: 'silver', label: 'Silver', color: '#aaaaaa'},
+    {value: 'magenta', label: 'Magenta', color: '#ff4488'},
+    {value: 'aqua', label: 'Aqua', color: '#44aaff'},
+    {value: 'tan', label: 'Tan', color: '#cc9966'},
+    {value: 'lavender', label: 'Lavender', color: '#aa88ff'}
 ];
 
 export const BattleGamePage = ({ roomId }: { roomId: number }) => {
     const { token: authToken } = useAuth()
     const currentPlayerToken = authToken && authToken.substring(0, 8);
-    const { gameState } = useGameStore();
+    const {gameState} = useGameStore();
 
     const {
         submitGuess,
@@ -68,8 +68,8 @@ export const BattleGamePage = ({ roomId }: { roomId: number }) => {
 
     if (!gameState.config || !gameState.config?.code_length || !gameState.config.num_of_colors) {
         return (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-                <div style={{ fontSize: '20px', color: '#666' }}>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
+                <div style={{fontSize: '20px', color: '#666'}}>
                     Loading game configuration...
                 </div>
             </div>
@@ -78,16 +78,16 @@ export const BattleGamePage = ({ roomId }: { roomId: number }) => {
 
     if (readyState === ReadyState.UNINSTANTIATED) {
         return (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-                <div style={{ fontSize: '20px', color: '#666' }}>Invalid room ID</div>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
+                <div style={{fontSize: '20px', color: '#666'}}>Invalid room ID</div>
             </div>
         );
     }
 
     if (isConnecting) {
         return (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-                <div style={{ fontSize: '20px', color: '#666' }}>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh'}}>
+                <div style={{fontSize: '20px', color: '#666'}}>
                     Connecting to game server... ({connectionStatus})
                 </div>
             </div>
@@ -104,10 +104,10 @@ export const BattleGamePage = ({ roomId }: { roomId: number }) => {
                 height: '100vh',
                 gap: '20px'
             }}>
-                <div style={{ fontSize: '20px', color: 'red' }}>
+                <div style={{fontSize: '20px', color: 'red'}}>
                     Connection lost. Attempting to reconnect...
                 </div>
-                <div style={{ fontSize: '0.5rem', color: '#666' }}>
+                <div style={{fontSize: '0.5rem', color: '#666'}}>
                     Status: {connectionStatus}
                 </div>
             </div>
@@ -154,7 +154,7 @@ export const BattleGamePage = ({ roomId }: { roomId: number }) => {
             </div>
             <div className='board-layout'>
                 <div className="board-container">
-                    <ColorLegend colors={COLORS} gameState={gameState} />
+                    <ColorLegend colors={COLORS} gameState={gameState}/>
                     <BattleBoard
                         colors={COLORS}
                         gameState={gameState}
@@ -200,7 +200,7 @@ export const BattleGamePage = ({ roomId }: { roomId: number }) => {
                                     <div className="no-winners">No winners this round</div>
                                 )}
                                 {gameState.secret_code && (
-                                    <div style={{ marginTop: '8px', fontSize: '0.5rem', color: '#666' }}>
+                                    <div style={{marginTop: '8px', fontSize: '0.5rem', color: '#666'}}>
                                         Secret code was: {gameState.secret_code}
                                     </div>
                                 )}
@@ -221,7 +221,7 @@ export const BattleGamePage = ({ roomId }: { roomId: number }) => {
                                 ) : (
                                     <div className="lose-message">Out of guesses</div>
                                 )}
-                                <div style={{ marginTop: '12px', fontSize: '0.5rem', color: '#666' }}>
+                                <div style={{marginTop: '12px', fontSize: '0.5rem', color: '#666'}}>
                                     Waiting for other players...
                                 </div>
                             </>

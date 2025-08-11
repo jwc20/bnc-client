@@ -15,6 +15,8 @@ interface GameGuess {
   guess: number[]
   bulls: number
   cows: number
+  player?: string
+  timestamp?: string
 }
 
 interface GameConfig {
@@ -22,6 +24,15 @@ interface GameConfig {
   num_of_colors: number
   num_of_guesses: number
   game_type: number
+}
+
+interface PlayerData {
+  name: string
+  guesses: GameGuess[]
+  game_won: boolean
+  game_over: boolean
+  current_row: number
+  remaining_guesses: number
 }
 
 interface GameState {
@@ -35,6 +46,10 @@ interface GameState {
   room_id: number | null
   config: GameConfig
   mode: string
+  players?: string[]
+  players_data?: { [key: string]: PlayerData }
+  winners?: string[]
+  game_started?: boolean
 }
 
 interface GameStore {
@@ -43,9 +58,10 @@ interface GameStore {
   initializeGameFromRoom: (room: RoomSchema) => void
   setLoading: (loading: boolean) => void
   updateGameState: (newState: any) => void
+  removePlayerData: (playerId: string) => void
   createRoom: (data: CreateRoomRequest) => Promise<RoomSchema>
   createRandomSingleplayerRoom: (
-    data: CreateRandomSingleplayerRoomRequest
+      data: CreateRandomSingleplayerRoomRequest
   ) => Promise<RoomSchema>
 }
 
@@ -77,7 +93,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
     secret_code: null,
     room_id: null,
     config: DEFAULT_CONFIG,
-    mode: getGameMode(DEFAULT_CONFIG.game_type)
+    mode: getGameMode(DEFAULT_CONFIG.game_type),
+    players: [],
+    players_data: {},
+    winners: [],
+    game_started: false
   },
 
   setLoading: loading => {
@@ -105,7 +125,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         ...state.gameState.config,
         ...(newState.config || {}),
       }
-      
+
       return {
         gameState: {
           ...state.gameState,
@@ -115,6 +135,46 @@ export const useGameStore = create<GameStore>((set, get) => ({
           mode: getGameMode(updatedConfig.game_type)
         }
       }
+    })
+  },
+
+  removePlayerData: (playerId: string) => {
+    if (!playerId) {
+      console.error('Invalid player ID provided')
+      return
+    }
+
+    debugLog('Removing player data for:', playerId)
+    set(state => {
+      const newState = { ...state.gameState }
+
+      // Remove player from players array
+      if (newState.players) {
+        newState.players = newState.players.filter(id => id !== playerId)
+      }
+
+      // Remove player data from players_data
+      if (newState.players_data) {
+        const { [playerId]: removed, ...remainingPlayersData } = newState.players_data
+        newState.players_data = remainingPlayersData
+      }
+
+      // Remove player's guesses from guesses array
+      if (newState.guesses) {
+        newState.guesses = newState.guesses.filter(guess => guess.player !== playerId)
+      }
+
+      // Remove player from winners if present
+      if (newState.winners) {
+        newState.winners = newState.winners.filter(id => id !== playerId)
+      }
+
+      // Update current_row based on remaining guesses
+      if (newState.guesses) {
+        newState.current_row = newState.guesses.length
+      }
+
+      return { gameState: newState }
     })
   },
 
@@ -133,7 +193,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       console.error('Invalid room data provided')
       return
     }
-    
+
     // FIX: Drastically simplify initialization. The `room` object from the API
     // is the absolute source of truth for the new game's configuration.
     const config: GameConfig = {
@@ -152,12 +212,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
         game_over: initialState?.game_over || false,
         game_won: initialState?.game_won || false,
         remaining_guesses:
-          initialState?.remaining_guesses ?? config.num_of_guesses,
+            initialState?.remaining_guesses ?? config.num_of_guesses,
         isLoading: false,
         secret_code: room.secret_code || null,
         room_id: room.id || null,
         config,
-        mode: getGameMode(config.game_type)
+        mode: getGameMode(config.game_type),
+        players: initialState?.players || [],
+        players_data: initialState?.players_data || {},
+        winners: initialState?.winners || [],
+        game_started: initialState?.game_started || false
       }
     })
   },
@@ -192,7 +256,7 @@ interface RoomStore {
   resetRoomState: () => void
   createRoom: (roomData: CreateRoomRequest) => Promise<RoomSchema | null>
   createQuickPlayRoom: (
-    roomData: CreateRandomSingleplayerRoomRequest
+      roomData: CreateRandomSingleplayerRoomRequest
   ) => Promise<RoomSchema | null>
 }
 
@@ -303,7 +367,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
         currentOperation: controller,
         roomState: { ...state.roomState, isLoading: true, error: null }
       }))
-      
+
       const response = await gamesApiCreateRoom({
         body: roomData
       })
@@ -311,7 +375,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
       if (controller.signal.aborted) {
         return null
       }
-      
+
       if (response.data) {
         const newRoom = response.data
 
@@ -348,7 +412,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
       }
 
       const errorMessage =
-        error instanceof Error ? error.message : 'Failed to create room'
+          error instanceof Error ? error.message : 'Failed to create room'
 
       set(state => ({
         currentOperation: null,
@@ -377,7 +441,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
         currentOperation: controller,
         roomState: { ...state.roomState, isLoading: true, error: null }
       }))
-      
+
       const response = await gamesApiCreateRandomSingleplayerRoom({
         body: roomData
       })
@@ -385,7 +449,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
       if (controller.signal.aborted) {
         return null
       }
-      
+
       if (response.data) {
         const newRoom = response.data
 
@@ -416,9 +480,9 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
       }
 
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : 'Failed to create quick play room'
+          error instanceof Error
+              ? error.message
+              : 'Failed to create quick play room'
 
       set(state => ({
         currentOperation: null,
