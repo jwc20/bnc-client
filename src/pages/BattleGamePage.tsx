@@ -3,10 +3,8 @@ import { BattleBoard } from '../components/game/type/BattleBoard.tsx';
 import { ColorLegend } from '../components/game/board/ColorLegend.tsx';
 import { useGameStore } from '../stores/gameRoomStore';
 import { useGameWebSocket } from '../hooks/useGameWebSocket';
-import { InputCode } from '../components/game/board/InputCode.tsx';
+import { MultiplayerInputCode } from '../components/game/board/MultiplayerInputCode';
 import { useAuth } from '../auths/AuthContext'
-import { useEffect, useRef } from 'react';
-
 
 const COLORS = [
     { value: 'red', label: 'Red', color: '#ff4444' },
@@ -38,19 +36,8 @@ const COLORS = [
 
 export const BattleGamePage = ({ roomId }) => {
     const { token: authToken } = useAuth()
-    const gameTypeSetRef = useRef(false);
-
     const currentPlayerToken = authToken && authToken.substring(0, 8);
-
-    const { gameState, setGameType } = useGameStore();
-
-    useEffect(() => {
-        if (!gameTypeSetRef.current) {
-            console.log('Setting game type to battle mode (2)');
-            setGameType(2);
-            gameTypeSetRef.current = true;
-        }
-    }, [setGameType]);
+    const { gameState } = useGameStore();
 
     const {
         submitGuess,
@@ -61,8 +48,24 @@ export const BattleGamePage = ({ roomId }) => {
         connectionStatus
     } = useGameWebSocket(roomId);
 
-    console.log('gameState', gameState);
-    
+    // Check if game should end
+    const isGameEnded = () => {
+        // Game ends if someone won
+        if (gameState.game_won) {
+            return true;
+        }
+
+        // Game ends if all players have used all their guesses
+        const playerGuessCounts = {};
+        gameState.guesses.forEach(guess => {
+            playerGuessCounts[guess.player] = (playerGuessCounts[guess.player] || 0) + 1;
+        });
+
+        return gameState.players?.every(player =>
+            (playerGuessCounts[player] || 0) >= gameState.config.num_of_guesses
+        );
+    };
+
     if (!gameState.config || !gameState.config.code_length || !gameState.config.num_of_colors) {
         return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
@@ -72,7 +75,7 @@ export const BattleGamePage = ({ roomId }) => {
             </div>
         );
     }
-    
+
     if (readyState === ReadyState.UNINSTANTIATED) {
         return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
@@ -80,7 +83,7 @@ export const BattleGamePage = ({ roomId }) => {
             </div>
         );
     }
-    
+
     if (isConnecting) {
         return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
@@ -90,7 +93,7 @@ export const BattleGamePage = ({ roomId }) => {
             </div>
         );
     }
-    
+
     if (readyState === ReadyState.CLOSED) {
         return (
             <div style={{
@@ -110,12 +113,13 @@ export const BattleGamePage = ({ roomId }) => {
             </div>
         );
     }
-    
+
     const currentPlayerState = gameState.players_data?.[currentPlayerToken];
-    const isCurrentPlayerActive = currentPlayerState && !currentPlayerState.game_over;
-    
+    const gameEnded = isGameEnded();
+    const currentPlayerGuesses = gameState.guesses.filter(guess => guess.player === currentPlayerToken);
+
     const handleSubmitCode = (codeStr) => {
-        if (gameState.isLoading || !isConnected || !isCurrentPlayerActive) return;
+        if (gameState.isLoading || !isConnected || gameEnded) return;
         const digits = codeStr.split('').map(Number);
         if (digits.some(d => d < 1 || d > gameState.config.num_of_colors)) {
             alert('Invalid input. Use digits 1-' + gameState.config.num_of_colors + ' only.');
@@ -123,10 +127,9 @@ export const BattleGamePage = ({ roomId }) => {
         }
         submitGuess(codeStr);
     };
-    
-    const allPlayersFinished = gameState.players_data && 
-        Object.values(gameState.players_data).every(player => player.game_over);
-    
+
+    const currentPlayerReachedMax = currentPlayerGuesses.length >= gameState.config.num_of_guesses;
+
     return (
         <div>
             <div className="room-header">
@@ -152,34 +155,37 @@ export const BattleGamePage = ({ roomId }) => {
             <div className='board-layout'>
                 <div className="board-container">
                     <ColorLegend colors={COLORS} gameState={gameState} />
-                    <BattleBoard 
-                        roomId={roomId} 
-                        colors={COLORS} 
-                        gameState={gameState} 
+                    <BattleBoard
+                        roomId={roomId}
+                        colors={COLORS}
+                        gameState={gameState}
                         currentPlayerToken={currentPlayerToken}
-                        length={gameState.config.code_length} 
-                        numOfGuesses={gameState.config.num_of_guesses} 
+                        length={gameState.config.code_length}
+                        numOfGuesses={gameState.config.num_of_guesses}
                         gameType={gameState.config.game_type}
                     />
                 </div>
-                {!allPlayersFinished && isCurrentPlayerActive ? (
+                {!gameEnded && !currentPlayerReachedMax ? (
                     <div className="input-section">
-                        <InputCode
+                        <MultiplayerInputCode
                             codeLength={gameState.config.code_length}
                             numOfColors={gameState.config.num_of_colors}
                             colorsArr={COLORS}
                             loading={gameState.isLoading || !isConnected}
                             onSubmit={handleSubmitCode}
+                            gameType={gameState.config.game_type}
+                            gameState={gameState}
+                            numOfGuesses={gameState.config.num_of_guesses}
                         />
                         <div className="remaining-guesses">
-                            Your remaining guesses: {currentPlayerState?.remaining_guesses || 0}
+                            Your remaining guesses: {gameState.config.num_of_guesses - currentPlayerGuesses.length}
                         </div>
                     </div>
                 ) : (
                     <div className="game-over-section">
-                        {allPlayersFinished && (
+                        {gameEnded && (
                             <>
-                                <div className="game-over-text">All Players Finished!</div>
+                                <div className="game-over-text">Game Finished!</div>
                                 {gameState.winners?.length > 0 ? (
                                     <div className="winners-list">
                                         Winners: {gameState.winners.join(', ')}
@@ -192,12 +198,19 @@ export const BattleGamePage = ({ roomId }) => {
                                         Secret code was: {gameState.secret_code}
                                     </div>
                                 )}
+                                <button
+                                    onClick={resetGame}
+                                    disabled={!isConnected}
+                                    className="play-again-button"
+                                >
+                                    Play Again
+                                </button>
                             </>
                         )}
-                        {currentPlayerState?.game_over && !allPlayersFinished && (
+                        {currentPlayerReachedMax && !gameEnded && (
                             <>
                                 <div className="game-over-text">You're finished!</div>
-                                {currentPlayerState.game_won ? (
+                                {gameState.game_won && currentPlayerGuesses.some(g => g.bulls === gameState.config.code_length) ? (
                                     <div className="win-message">You found the code!</div>
                                 ) : (
                                     <div className="lose-message">Out of guesses</div>
@@ -206,15 +219,6 @@ export const BattleGamePage = ({ roomId }) => {
                                     Waiting for other players...
                                 </div>
                             </>
-                        )}
-                        {allPlayersFinished && (
-                            <button
-                                onClick={resetGame}
-                                disabled={!isConnected}
-                                className="play-again-button"
-                            >
-                                Play Again
-                            </button>
                         )}
                     </div>
                 )}

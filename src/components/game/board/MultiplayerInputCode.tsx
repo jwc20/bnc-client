@@ -1,13 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
 
-
 interface ColorOption {
     value: string;
     label: string;
     color: string;
 }
-
 
 interface InputCodeProps {
     codeLength: number;
@@ -15,21 +13,60 @@ interface InputCodeProps {
     colorsArr: ColorOption[];
     loading: boolean;
     onSubmit: (code: string) => void;
+    gameType: string;
+    gameState?: {
+        players: string[];
+        guesses: Array<{ player: string; [key: string]: any }>;
+        game_won: boolean;
+        game_over: boolean;
+    };
+    numOfGuesses: number;
 }
 
-export const InputCode = ({ codeLength, numOfColors, colorsArr, loading, onSubmit }: InputCodeProps) => {
+export const MultiplayerInputCode = ({
+                                         codeLength,
+                                         numOfColors,
+                                         colorsArr,
+                                         loading,
+                                         onSubmit,
+                                         gameType,
+                                         gameState,
+                                         numOfGuesses
+                                     }: InputCodeProps) => {
     const colors = colorsArr.slice(0, numOfColors);
-    
+
     const [code, setCode] = useState<string[]>(Array(codeLength).fill(""));
     const inputs = useRef<(HTMLInputElement | null)[]>([]);
-
 
     useEffect(() => {
         setCode(Array(codeLength).fill(""));
     }, [codeLength]);
 
+    // Check if game should end
+    const isGameEnded = () => {
+        if (!gameState) return false;
+
+        // Game ends if someone won
+        if (gameState.game_won) {
+            return true;
+        }
+
+        // Game ends if all players have used all their guesses
+        const playerGuessCounts = {};
+        gameState.guesses.forEach(guess => {
+            playerGuessCounts[guess.player] = (playerGuessCounts[guess.player] || 0) + 1;
+        });
+
+        return gameState.players?.every(player =>
+            (playerGuessCounts[player] || 0) >= numOfGuesses
+        );
+    };
+
+    const gameEnded = isGameEnded();
 
     const processInput = (e: ChangeEvent<HTMLInputElement>, slot: number) => {
+        if (gameEnded) return;
+
         const val = e.target.value;
         if (/[^0-9]/.test(val)) return;
 
@@ -43,6 +80,8 @@ export const InputCode = ({ codeLength, numOfColors, colorsArr, loading, onSubmi
     };
 
     const onKeyUp = (e: KeyboardEvent<HTMLInputElement>, slot: number) => {
+        if (gameEnded) return;
+
         if (e.key === "Backspace" && !code[slot] && slot > 0) {
             const newCode = [...code];
             newCode[slot - 1] = "";
@@ -56,6 +95,8 @@ export const InputCode = ({ codeLength, numOfColors, colorsArr, loading, onSubmi
     };
 
     const handleSubmit = () => {
+        if (gameEnded) return;
+
         const codeStr = code.join("");
         if (codeStr.length === codeLength) {
             onSubmit(codeStr);
@@ -84,12 +125,14 @@ export const InputCode = ({ codeLength, numOfColors, colorsArr, loading, onSubmi
 
     return (
         <div className="code-input">
-            <label className="code-label">Enter numbers from 1 to {numOfColors}</label>
+            <label className="code-label">
+                {gameEnded ? "Game Ended" : `Enter numbers from 1 to ${numOfColors}`}
+            </label>
             <div className="code-inputs" style={{ display: "flex", gap: 8 }}>
                 {code.map((num, idx) => {
                     const backgroundColor = getInputBackgroundColor(num);
                     const textColor = getTextColor(backgroundColor);
-                    
+
                     return (
                         <input
                             key={idx}
@@ -98,7 +141,7 @@ export const InputCode = ({ codeLength, numOfColors, colorsArr, loading, onSubmi
                             maxLength={1}
                             value={num}
                             autoFocus={!code[0] && idx === 0}
-                            readOnly={loading}
+                            readOnly={loading || gameEnded}
                             onChange={(e) => processInput(e, idx)}
                             onKeyUp={(e) => onKeyUp(e, idx)}
                             ref={(ref) => {
@@ -111,10 +154,11 @@ export const InputCode = ({ codeLength, numOfColors, colorsArr, loading, onSubmi
                                 fontSize: "0.7rem",
                                 border: "2px solid #000",
                                 borderRadius: 6,
-                                backgroundColor,
-                                color: textColor,
+                                backgroundColor: gameEnded ? "#f0f0f0" : backgroundColor,
+                                color: gameEnded ? "#999" : textColor,
                                 fontWeight: 'bold',
-                                transition: 'background-color 0.2s ease, color 0.2s ease'
+                                transition: 'background-color 0.2s ease, color 0.2s ease',
+                                opacity: gameEnded ? 0.6 : 1
                             }}
                         />
                     );
@@ -122,25 +166,25 @@ export const InputCode = ({ codeLength, numOfColors, colorsArr, loading, onSubmi
             </div>
             <button
                 onClick={handleSubmit}
-                disabled={code.some(c => c === "") || loading}
+                disabled={code.some(c => c === "") || loading || gameEnded}
                 style={{
                     marginTop: 12,
                     padding: "8px 16px",
                     fontWeight: "bold",
-                    background: "#4444ff",
-                    color: "#fff",
+                    background: gameEnded ? "#ccc" : "#4444ff",
+                    color: gameEnded ? "#666" : "#fff",
                     border: "2px solid #000",
                     borderRadius: 4,
-                    cursor: "pointer",
+                    cursor: gameEnded ? "not-allowed" : "pointer",
+                    opacity: gameEnded ? 0.6 : 1
                 }}
             >
-                Submit
+                {gameEnded ? "Game Over" : "Submit"}
             </button>
             <style>{style}</style>
         </div>
     );
 };
-
 
 const style = `
     .code-inputs {

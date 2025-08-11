@@ -120,6 +120,7 @@ export const CoopGamePage = ({ roomId }) => {
             <div className='board-layout'>
                 <div className="board-container">
                     <ColorLegend colors={COLORS} gameState={gameState} />
+                    {/* TODO */}
                     <SingleBoard roomId={roomId} colors={COLORS} gameState={gameState} length={gameState.config.code_length} numOfGuesses={gameState.config.num_of_guesses} />
                 </div>
                 {!gameState.game_over ? (

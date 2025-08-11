@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
-// import { useGameStore } from '../stores/gameStore'
-import {useGameStore} from "../stores/gameRoomStore";
+import { useGameStore } from "../stores/gameRoomStore";
 import { useAuth } from '../auths/AuthContext'
 
 export const useGameWebSocket = (roomId) => {
@@ -36,7 +35,10 @@ export const useGameWebSocket = (roomId) => {
     if (lastMessage !== null) {
       try {
         const data = JSON.parse(lastMessage.data)
+        console.log("Received message:", data)
         if (data.type === 'update') {
+          // FIX: Directly pass the server state to the update function.
+          // Do NOT remove game_type from the config - server is source of truth
           updateGameState(data.state)
         }
       } catch (error) {
@@ -60,6 +62,10 @@ export const useGameWebSocket = (roomId) => {
     sendGameMessage('make_move', { action: 'reset_game' })
   }, [sendGameMessage])
 
+  const updateServerGameType = useCallback((gameType) => {
+    sendGameMessage('update_config', { game_type: gameType })
+  }, [sendGameMessage])
+
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',
     [ReadyState.OPEN]: 'Connected',
@@ -71,6 +77,7 @@ export const useGameWebSocket = (roomId) => {
   return {
     submitGuess,
     resetGame,
+    updateServerGameType,
     isConnected: readyState === ReadyState.OPEN,
     isConnecting: readyState === ReadyState.CONNECTING,
     connectionStatus,
