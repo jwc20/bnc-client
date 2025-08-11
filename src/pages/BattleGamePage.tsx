@@ -1,6 +1,7 @@
 import { ReadyState } from 'react-use-websocket';
 import { BattleBoard } from '../components/game/type/BattleBoard.tsx';
 import { ColorLegend } from '../components/game/board/ColorLegend.tsx';
+import { OtherPlayersFeedback } from '../components/game/board/OtherPlayersFeedback.tsx';
 import { useGameStore } from '../stores/gameRoomStore';
 import { useGameWebSocket } from '../hooks/useGameWebSocket';
 import { MultiplayerInputCode } from '../components/game/board/MultiplayerInputCode';
@@ -61,8 +62,8 @@ export const BattleGamePage = ({ roomId }) => {
             playerGuessCounts[guess.player] = (playerGuessCounts[guess.player] || 0) + 1;
         });
 
-        return gameState.players?.every(player =>
-            (playerGuessCounts[player] || 0) >= gameState.config.num_of_guesses
+        return gameState.players?.every(guess =>
+            (playerGuessCounts[guess.player] || 0) >= gameState.config.num_of_guesses
         );
     };
 
@@ -164,6 +165,10 @@ export const BattleGamePage = ({ roomId }) => {
                         numOfGuesses={gameState.config.num_of_guesses}
                         gameType={gameState.config.game_type}
                     />
+                    <OtherPlayersFeedback
+                        gameState={gameState}
+                        currentPlayerToken={currentPlayerToken}
+                    />
                 </div>
                 {!gameEnded && !currentPlayerReachedMax ? (
                     <div className="input-section">
@@ -258,6 +263,7 @@ const style = `
         align-items: flex-start;
         justify-content: center;
         margin-top: 40px;
+        flex-wrap: wrap;
     }
     .input-section {
         margin-top: 1.3rem;
