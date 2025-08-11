@@ -4,7 +4,7 @@ import { useGameStore } from "../stores/gameRoomStore";
 import { useAuth } from '../auths/AuthContext'
 
 export const useGameWebSocket = (roomId) => {
-  const { updateGameState, setLoading } = useGameStore()
+  const { updateGameState, setLoading, removePlayerData } = useGameStore()
   const { token: authToken } = useAuth()
 
   const socketUrl = roomId && authToken ? `ws://localhost:8000/ws/game/${roomId}/?token=${authToken}` : null
@@ -36,16 +36,36 @@ export const useGameWebSocket = (roomId) => {
       try {
         const data = JSON.parse(lastMessage.data)
         console.log("Received message:", data)
+
         if (data.type === 'update') {
           // FIX: Directly pass the server state to the update function.
           // Do NOT remove game_type from the config - server is source of truth
           updateGameState(data.state)
+        } else if (data.type === 'player_disconnect' || data.type === 'player_disconnected') {
+          // Handle player disconnection
+          if (data.player_id) {
+            console.log(`Player ${data.player_id} disconnected`)
+            removePlayerData(data.player_id)
+          }
+          // If the server sends updated state with the disconnect message, apply it
+          if (data.state) {
+            updateGameState(data.state)
+          }
+        } else if (data.type === 'player_left' || data.type === 'player_leave') {
+          // Alternative message types that might be used for player leaving
+          if (data.player_id) {
+            console.log(`Player ${data.player_id} left`)
+            removePlayerData(data.player_id)
+          }
+          if (data.state) {
+            updateGameState(data.state)
+          }
         }
       } catch (error) {
         console.error('Error parsing message:', error)
       }
     }
-  }, [lastMessage, updateGameState])
+  }, [lastMessage, updateGameState, removePlayerData])
 
   const sendGameMessage = useCallback((type, payload) => {
     if (readyState === ReadyState.OPEN) {
