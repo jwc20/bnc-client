@@ -1,5 +1,5 @@
 export default {
-  input: 'http://localhost:8000/api/openapi.json',
+  input: 'http://0.0.0.0:8000/api/openapi.json',
   output: {
     format: 'prettier',
     lint: 'eslint',

@@ -1,6 +1,6 @@
-import type {ReactNode} from "react";
-import {Navigate, useLocation} from "react-router";
-import {useAuth} from "./AuthContext";
+import type { ReactNode } from "react";
+import { Navigate, useLocation } from "react-router";
+import { useAuth } from "./AuthContext";
 
 interface RequireAuthProps {
     children: ReactNode;
@@ -9,16 +9,16 @@ interface RequireAuthProps {
 }
 
 export function RequireAuth({
-                                children,
-                                redirectTo = "/login",
-                                allowedRoles
-                            }: RequireAuthProps) {
+    children,
+    redirectTo = "/login",
+    allowedRoles
+}: RequireAuthProps) {
     const auth = useAuth();
     const location = useLocation();
 
     if (auth.isLoading) {
         return (
-            <div className="loading-container">
+            <div className="center">
                 <div className="loading-spinner">
                     <span>Loading...</span>
                 </div>
@@ -27,7 +27,7 @@ export function RequireAuth({
     }
 
     if (!auth.user || !auth.token) {
-        return <Navigate to={redirectTo} state={{from: location}} replace/>;
+        return <Navigate to={redirectTo} state={{ from: location }} replace />;
     }
 
     if (allowedRoles && allowedRoles.length > 0) {
@@ -35,9 +35,10 @@ export function RequireAuth({
         const userRole = userWithRole.role || userWithRole.roles?.[0];
 
         if (!userRole || !allowedRoles.includes(userRole)) {
-            return <Navigate to="/unauthorized" replace/>;
+            return <Navigate to="/unauthorized" replace />;
         }
     }
 
     return <>{children}</>;
 }
+

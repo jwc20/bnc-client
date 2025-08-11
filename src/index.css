@@ -1,0 +1,64 @@
+@font-face {
+  font-family: 'templeos';
+  src: url('./assets/fonts/templeos_font.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --color-light: #fafafa;
+  /* --color-dark: #000; */
+  --family-normal: templeos, serif;
+  /* --family-special: 'Staatliches', Impact, serif; */
+  /*color: var(--color-dark);*/
+  scroll-behavior: smooth;
+  font-size: calc(1rem + 0.5vw);
+  font-family: var(--family-normal);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+}
+
+body {
+  min-height: 100vh;
+  /* padding: 2rem; */
+  background-color: var(--color-light);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+input {
+  width: 100%;
+  height: 1rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  gap: 12px;
+}
+
+button {
+  font-family: var(--family-special);
+  justify-content: center;
+  margin: 10px auto 0 auto;
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0.5rem;
+  }
+}

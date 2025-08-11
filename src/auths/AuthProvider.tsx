@@ -15,7 +15,7 @@ interface AuthProviderProps {
     children: ReactNode;
 }
 
-// TODO: move to env
+
 const TOKEN_KEY = "auth_token";
 const USER_KEY = "user_data";
 
@@ -45,7 +45,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                     } as Config);
 
                     // validate token with backend
-                    await validateToken(storedToken);
+                    await validateToken();
                 }
             } catch (error) {
                 console.error("Auth initialization error:", error);
@@ -78,9 +78,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     //         throw error;
     //     }
     // };
-    const validateToken = async (validationToken: string) => {
+    const validateToken = async () => {
     try {
-        console.log("Validating token:", validationToken);
+        // console.log("Validating token:", validationToken);
         const response = await usersApiMe({
             throwOnError: true,
         });

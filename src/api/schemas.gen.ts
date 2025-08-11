@@ -109,29 +109,128 @@ export const RoomSchemaSchema = {
       title: "Name",
       type: "string",
     },
+    game_type: {
+      title: "Game Type",
+      type: "integer",
+    },
+    code_length: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Code Length",
+    },
+    num_of_colors: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Num Of Colors",
+    },
+    num_of_guesses: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Num Of Guesses",
+    },
+    secret_code: {
+      anyOf: [
+        {
+          type: "string",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Secret Code",
+    },
   },
-  required: ["id", "name"],
+  required: [
+    "id",
+    "name",
+    "game_type",
+    "code_length",
+    "num_of_colors",
+    "num_of_guesses",
+    "secret_code",
+  ],
   title: "RoomSchema",
   type: "object",
 } as const;
 
-export const RoomResponseSchema = {
+export const CreateRoomRequestSchema = {
   properties: {
-    id: {
-      title: "Id",
-      type: "integer",
-    },
     name: {
       title: "Name",
       type: "string",
     },
-    type: {
-      title: "Type",
+    game_type: {
+      title: "Game Type",
       type: "integer",
     },
+    code_length: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      default: 4,
+      title: "Code Length",
+    },
+    num_of_colors: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      default: 6,
+      title: "Num Of Colors",
+    },
+    num_of_guesses: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      default: 10,
+      title: "Num Of Guesses",
+    },
+    secret_code: {
+      anyOf: [
+        {
+          type: "string",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "Secret Code",
+    },
   },
-  required: ["id", "name", "type"],
-  title: "RoomResponse",
+  required: ["name", "game_type", "secret_code"],
+  title: "CreateRoomRequest",
   type: "object",
 } as const;
 
@@ -173,9 +272,9 @@ export const CreateRandomSingleplayerRoomRequestSchema = {
       default: 10,
       title: "Num Of Guesses",
     },
-    type: {
+    game_type: {
       default: 0,
-      title: "Type",
+      title: "Game Type",
       type: "integer",
     },
   },

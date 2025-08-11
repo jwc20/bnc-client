@@ -98,24 +98,56 @@ export type RoomSchema = {
    * Name
    */
   name: string;
+  /**
+   * Game Type
+   */
+  game_type: number;
+  /**
+   * Code Length
+   */
+  code_length: number | null;
+  /**
+   * Num Of Colors
+   */
+  num_of_colors: number | null;
+  /**
+   * Num Of Guesses
+   */
+  num_of_guesses: number | null;
+  /**
+   * Secret Code
+   */
+  secret_code: string | null;
 };
 
 /**
- * RoomResponse
+ * CreateRoomRequest
  */
-export type RoomResponse = {
-  /**
-   * Id
-   */
-  id: number;
+export type CreateRoomRequest = {
   /**
    * Name
    */
   name: string;
   /**
-   * Type
+   * Game Type
    */
-  type: number;
+  game_type: number;
+  /**
+   * Code Length
+   */
+  code_length?: number | null;
+  /**
+   * Num Of Colors
+   */
+  num_of_colors?: number | null;
+  /**
+   * Num Of Guesses
+   */
+  num_of_guesses?: number | null;
+  /**
+   * Secret Code
+   */
+  secret_code: string | null;
 };
 
 /**
@@ -135,9 +167,9 @@ export type CreateRandomSingleplayerRoomRequest = {
    */
   num_of_guesses?: number | null;
   /**
-   * Type
+   * Game Type
    */
-  type?: number;
+  game_type?: number;
 };
 
 /**
@@ -166,6 +198,20 @@ export type CheckBullsCowsRequest = {
    * Guess
    */
   guess: string;
+};
+
+export type BncapiApiPingData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/ping";
+};
+
+export type BncapiApiPingResponses = {
+  /**
+   * OK
+   */
+  200: unknown;
 };
 
 export type UsersApiMeData = {
@@ -277,7 +323,7 @@ export type GamesApiListRoomsResponse =
   GamesApiListRoomsResponses[keyof GamesApiListRoomsResponses];
 
 export type GamesApiCreateRoomData = {
-  body: RoomSchema;
+  body: CreateRoomRequest;
   path?: never;
   query?: never;
   url: "/api/games/rooms";
@@ -309,7 +355,7 @@ export type GamesApiGetRoomResponses = {
   /**
    * OK
    */
-  200: RoomResponse;
+  200: RoomSchema;
 };
 
 export type GamesApiGetRoomResponse =
@@ -326,7 +372,7 @@ export type GamesApiCreateRandomSingleplayerRoomResponses = {
   /**
    * OK
    */
-  200: RoomResponse;
+  200: RoomSchema;
 };
 
 export type GamesApiCreateRandomSingleplayerRoomResponse =
