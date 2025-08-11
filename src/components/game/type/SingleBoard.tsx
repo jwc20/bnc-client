@@ -1,21 +1,32 @@
-import { GameRow } from '../board/GameRow.tsx';
+import { GameRow, type GameRowColor } from '../board/GameRow.tsx';
 import { GameFeedBackPegs } from "../board/GameFeedBackPegs.tsx";
+import type { GameState } from '../../../stores/gameStore';
 
-export const SingleBoard = ({ colors, gameState, length, numOfGuesses }) => {
+type Color = GameRowColor;
+type BoardState = Pick<GameState, 'guesses' | 'current_row'>;
 
-    const convertGuessToRow = (guess) => {
-        return guess.split('').map(digit => colors[parseInt(digit) - 1]);
+interface SingleBoardProps {
+    colors: Color[];
+    gameState: BoardState;
+    length: number;
+    numOfGuesses: number;
+}
+
+export const SingleBoard = ({ colors, gameState, length, numOfGuesses }: SingleBoardProps) => {
+
+    const convertGuessToRow = (guess: number[]): Array<Color | undefined> => {
+        return guess.map((digit: number) => colors[digit - 1]);
     };
 
-    const gameRows = gameState.guesses.reduce((acc, guess, index) => {
+    const gameRows = gameState.guesses.reduce<Record<number, Array<Color | undefined>>>((acc, guess, index: number) => {
         acc[index] = convertGuessToRow(guess.guess);
         return acc;
-    }, {});
+    }, {} as Record<number, Array<Color | undefined>>);
 
-    const feedbackState = gameState.guesses.reduce((acc, guess, index) => {
+    const feedbackState = gameState.guesses.reduce<Record<number, { bulls: number; cows: number }>>((acc, guess, index: number) => {
         acc[index] = { bulls: guess.bulls, cows: guess.cows };
         return acc;
-    }, {});
+    }, {} as Record<number, { bulls: number; cows: number }>);
 
     return (
         <div className="game-board-container">

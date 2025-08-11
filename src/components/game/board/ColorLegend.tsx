@@ -1,4 +1,11 @@
-export const ColorLegend = ({colors, gameState}) => {
+type Color = { color: string; value?: string; label?: string };
+
+type ColorLegendProps = {
+    colors: Color[];
+    gameState: { config: { num_of_colors: number } };
+};
+
+export const ColorLegend = ({ colors, gameState }: ColorLegendProps) => {
     const numOfColors = gameState.config.num_of_colors;
     const availableColors = colors.slice(0, numOfColors);
     
@@ -6,7 +13,7 @@ export const ColorLegend = ({colors, gameState}) => {
         <div className="color-legend">
             <div className="legend-title">Color Codes</div>
             <div className="legend-items">
-                {availableColors.map((color, index) => (
+                {availableColors.map((color: Color, index: number) => (
                     <div key={color.value} className="legend-item">
                         <div 
                             className="legend-color-peg" 

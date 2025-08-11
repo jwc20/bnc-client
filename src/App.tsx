@@ -8,7 +8,7 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { RoomPage } from "./pages/RoomPage";
 
 import { client } from "./api/client.gen";
-import { AESDemo } from "./components/AESdemo";
+// import { AESDemo } from "./components/AESdemo";
 import "./App.css";
 
 client.setConfig({
@@ -33,7 +33,7 @@ export default function App() {
                 <Route element={<Layout />}>
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
-                    <Route path="/aes" element={<AESDemo />} />
+                    {/*<Route path="/aes" element={<AESDemo />} />*/}
                     <Route
                         path="/"
                         element={

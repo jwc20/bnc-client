@@ -1,5 +1,10 @@
+interface GameFeedBackPegsProps {
+    bulls?: number;
+    cows?: number;
+    length: number;
+}
 
-export const GameFeedBackPegs = ({ bulls, cows, length}) => {
+export const GameFeedBackPegs = ({ bulls, cows, length}: GameFeedBackPegsProps) => {
     const totalPegs = length;
     const pegsPerRow = Math.ceil(length / 2); // distribute pegs across 2 rows
     

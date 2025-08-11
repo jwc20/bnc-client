@@ -1,7 +1,7 @@
 import { ReadyState } from 'react-use-websocket';
 import { SingleBoard } from '../components/game/type/SingleBoard.tsx';
 import { ColorLegend } from '../components/game/board/ColorLegend.tsx';
-import { useGameStore } from '../stores/gameStore.ts';
+import { useGameStore } from '../stores';
 import { useGameWebSocket } from '../hooks/useGameWebSocket';
 import { InputCode } from '../components/game/board/InputCode.tsx';
 
@@ -124,7 +124,6 @@ export const CoopGamePage = ({ roomId } : CoopGamePageProps) => {
             <div className='board-layout'>
                 <div className="board-container">
                     <ColorLegend colors={COLORS} gameState={gameState} />
-                    {/* TODO */}
                     <SingleBoard  colors={COLORS} gameState={gameState} length={gameState.config.code_length} numOfGuesses={gameState.config.num_of_guesses} />
                 </div>
                 {!gameState.game_over ? (

@@ -1,49 +1,63 @@
-import { GameRow } from '../board/GameRow.tsx';
+import { GameRow, type GameRowColor } from '../board/GameRow.tsx';
 import { GameFeedBackPegs } from "../board/GameFeedBackPegs.tsx";
+import type { GameGuess, GameState as StoreGameState } from '../../../stores';
 
-export const BattleBoard = ({ colors, gameState, length, numOfGuesses, currentPlayerToken }) => {
+interface BattleBoardProps {
+    colors: GameRowColor[];
+    gameState: StoreGameState;
+    length: number;
+    numOfGuesses: number;
+    currentPlayerToken: string | null;
+}
 
-    const convertGuessToRow = (guess) => {
-        return guess.split('').map(digit => colors[parseInt(digit) - 1]);
+export const BattleBoard = ({ colors, gameState, length, numOfGuesses, currentPlayerToken }: BattleBoardProps) => {
+
+    const convertGuessToRow = (guess: number[]): Array<GameRowColor | undefined> => {
+        return guess.map((digit: number) => colors[digit - 1]);
     };
 
     // Check if game should end
-    const isGameEnded = () => {
+    const isGameEnded = (): boolean => {
         // Game ends if someone won
         if (gameState.game_won) {
             return true;
         }
 
         // Game ends if all players have used all their guesses
-        const playerGuessCounts = {};
-        gameState.guesses.forEach(guess => {
-            playerGuessCounts[guess.player] = (playerGuessCounts[guess.player] || 0) + 1;
-        });
+        if (gameState.players && gameState.players.length > 0) {
+            const playerGuessCounts: Record<string, number> = {};
+            gameState.guesses.forEach((guess: GameGuess) => {
+                const playerId = guess.player ?? '';
+                if (!playerId) return;
+                playerGuessCounts[playerId] = (playerGuessCounts[playerId] ?? 0) + 1;
+            });
 
-        return gameState.guesses.every(player =>
-            (playerGuessCounts[player] || 0) >= numOfGuesses
-        );
+            return gameState.players.every(
+                (playerId: string) => (playerGuessCounts[playerId] ?? 0) >= numOfGuesses
+            );
+        }
+
+        return false;
     };
 
     // Get current player's guesses and calculate their current row
-    const currentPlayerGuesses = gameState.guesses.filter(guess => guess.player === currentPlayerToken);
+    const currentPlayerGuesses: GameGuess[] = gameState.guesses.filter(
+        (guess: GameGuess) => !!currentPlayerToken && guess.player === currentPlayerToken
+    );
     const currentPlayerRow = currentPlayerGuesses.length;
 
-    const gameRows = gameState.guesses.reduce((acc, guess) => {
-        if (guess.player === currentPlayerToken) {
-            const playerGuessIndex = currentPlayerGuesses.findIndex(g => g.timestamp === guess.timestamp);
-            acc[playerGuessIndex] = convertGuessToRow(guess.guess);
-        }
+    const gameRows = currentPlayerGuesses.reduce<Record<number, Array<GameRowColor | undefined>>>((acc, guess: GameGuess, index: number) => {
+        acc[index] = convertGuessToRow(guess.guess);
         return acc;
     }, {});
 
-    const feedbackState = gameState.guesses.reduce((acc, guess) => {
-        if (guess.player === currentPlayerToken) {
-            const playerGuessIndex = currentPlayerGuesses.findIndex(g => g.timestamp === guess.timestamp);
-            acc[playerGuessIndex] = { bulls: guess.bulls, cows: guess.cows };
-        }
-        return acc;
-    }, {});
+    const feedbackState = currentPlayerGuesses.reduce<Record<number, { bulls: number; cows: number } | undefined>>(
+        (acc, guess: GameGuess, index: number) => {
+            acc[index] = { bulls: guess.bulls, cows: guess.cows };
+            return acc;
+        },
+        {}
+    );
 
     const gameEnded = isGameEnded();
 

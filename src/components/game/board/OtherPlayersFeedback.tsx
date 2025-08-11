@@ -1,26 +1,34 @@
 import { GameFeedBackPegs } from "../board/GameFeedBackPegs.tsx";
+import type { GameGuess, GameState as StoreGameState } from "../../../stores";
 
-export const OtherPlayersFeedback = ({ gameState, currentPlayerToken }) => {
-    const otherPlayers = gameState.guesses.filter(
-        guess => guess.player !== currentPlayerToken
-    );
+type OtherPlayersFeedbackProps = {
+    gameState: StoreGameState;
+    currentPlayerToken: string | null;
+};
 
-    const playerGuesses = {};
-    gameState.guesses.forEach(guess => {
-        if (!playerGuesses[guess.player]) {
-            playerGuesses[guess.player] = [];
+export const OtherPlayersFeedback = ({ gameState, currentPlayerToken }: OtherPlayersFeedbackProps) => {
+    const playerGuesses: Record<string, GameGuess[]> = {};
+    gameState.guesses.forEach((guess: GameGuess) => {
+        const playerId = guess.player;
+        if (!playerId) return;
+        if (!playerGuesses[playerId]) {
+            playerGuesses[playerId] = [];
         }
-        playerGuesses[guess.player].push(guess);
+        playerGuesses[playerId].push(guess);
     });
 
     // Sort by timestamp ascending (oldest first)
-    Object.keys(playerGuesses).forEach(player => {
-        playerGuesses[player].sort(
-            (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
-        );
+    Object.keys(playerGuesses).forEach((playerId: string) => {
+        playerGuesses[playerId].sort((a: GameGuess, b: GameGuess) => {
+            const aTime = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+            const bTime = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+            return aTime - bTime;
+        });
     });
 
-    const uniquePlayerTokens = [...new Set(otherPlayers.map(guess => guess.player))];
+    const uniquePlayerTokens: string[] = Object.keys(playerGuesses).filter(
+        (token) => token !== (currentPlayerToken ?? "")
+    );
 
     if (uniquePlayerTokens.length === 0) {
         return null;
@@ -30,17 +38,17 @@ export const OtherPlayersFeedback = ({ gameState, currentPlayerToken }) => {
         <div className="other-players-feedback">
             <h3 className="other-players-title">Other Players</h3>
             <div className="players-container">
-                {uniquePlayerTokens.map(token => {
-                    const guesses = playerGuesses[token] || [];
+                {uniquePlayerTokens.map((token: string) => {
+                    const guesses: GameGuess[] = playerGuesses[token] ?? [];
                     const playerName = token.substring(0, 8);
 
                     const totalSlots = gameState.config.num_of_guesses;
-                    const filledSlots = [...guesses];
+                    const filledSlots: Array<GameGuess | null> = [...guesses];
                     while (filledSlots.length < totalSlots) {
                         filledSlots.push(null);
                     }
 
-                    // Reverse so that index 0 (top) is guess #totalSlots, and bottom is #1
+                    // Using flex column-reverse to show bottom-up
                     const slotsBottomUp = [...filledSlots];
 
                     return (
@@ -52,9 +60,6 @@ export const OtherPlayersFeedback = ({ gameState, currentPlayerToken }) => {
                                         key={i}
                                         className={`guess-feedback ${!guess ? "empty-feedback" : ""}`}
                                     >
-                                        {/*<div className="guess-number">*/}
-                                        {/*    #{i + 1}*/}
-                                        {/*</div>*/}
                                         {guess ? (
                                             <GameFeedBackPegs
                                                 bulls={guess.bulls}

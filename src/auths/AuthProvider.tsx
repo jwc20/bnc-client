@@ -45,7 +45,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                     } as Config);
 
                     // validate token with backend
-                    await validateToken(storedToken);
+                    await validateToken();
                 }
             } catch (error) {
                 console.error("Auth initialization error:", error);
