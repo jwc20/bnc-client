@@ -41,6 +41,8 @@ export const useGameWebSocket = (roomId: string | number) => {
         console.log('Received message:', data)
 
         if (data.type === 'update') {
+          // FIX: Directly pass the server state to the update function.
+          // Do NOT remove game_type from the config - server is source of truth
           updateGameState(data.state)
         } else if (
           data.type === 'player_disconnect' ||
