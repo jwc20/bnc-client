@@ -3,8 +3,8 @@ import type {
   RoomSchema,
   CreateRoomRequest,
   CreateRandomSingleplayerRoomRequest,
-  CheckBullsCowsResponse,
-  CheckBullsCowsRequest
+  // CheckBullsCowsResponse,
+  // CheckBullsCowsRequest
 } from '../api/types.gen'
 import {
   gamesApiCreateRoom,
@@ -57,7 +57,7 @@ interface GameStore {
   setGameType: (type: number) => void
   initializeGameFromRoom: (room: RoomSchema) => void
   setLoading: (loading: boolean) => void
-  updateGameState: (newState: any) => void
+  updateGameState: (newState: Partial<GameState>) => void
   removePlayerData: (playerId: string) => void
   createRoom: (data: CreateRoomRequest) => Promise<RoomSchema>
   createRandomSingleplayerRoom: (
@@ -72,7 +72,7 @@ const DEFAULT_CONFIG: GameConfig = {
   game_type: 1
 }
 
-const debugLog = (message: string, data?: any) => {
+const debugLog = (message: string, data?: unknown) => {
   if (import.meta.env.VITE_DEV) {
     console.log(message, data)
   }
@@ -82,7 +82,7 @@ const getGameMode = (gameType: number): string => {
   return gameType === 2 ? "MULTI_BOARD" : "SINGLE_BOARD"
 }
 
-export const useGameStore = create<GameStore>((set, get) => ({
+export const useGameStore = create<GameStore>((set) => ({
   gameState: {
     guesses: [],
     current_row: 0,
@@ -156,6 +156,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       // Remove player data from players_data
       if (newState.players_data) {
         const { [playerId]: removed, ...remainingPlayersData } = newState.players_data
+        console.log(removed)
         newState.players_data = remainingPlayersData
       }
 
@@ -203,7 +204,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       game_type: room.game_type ?? DEFAULT_CONFIG.game_type // Directly use room's game_type
     }
 
-    const initialState = (room as any).initial_state
+    const initialState = (room as unknown as Room).initial_state
 
     set({
       gameState: {
@@ -501,4 +502,4 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
 
 export type CreateRoomPayload = CreateRoomRequest
 export type CreateQuickPlayPayload = CreateRandomSingleplayerRoomRequest
-export type CheckGamePayload = CheckBullsCowsRequest
+// export type CheckGamePayload = CheckBullsCowsRequest

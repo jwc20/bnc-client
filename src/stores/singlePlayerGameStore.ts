@@ -42,7 +42,7 @@ interface SinglePlayerGameStore extends GameState {
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
     addGuess: (guess: GameGuess) => void;
-    setGameWon: (won: boolean) => void;
+    // setGameWon: (won: boolean) => void;
     setGameOver: (over: boolean) => void;
     createRandomRoom: (config?: CreateRandomSingleplayerRoomRequest) => Promise<boolean>;
     submitGuess: (guess: string) => Promise<boolean>;
@@ -79,8 +79,8 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
             currentGuess: '',
             isLoading: false,
             error: null,
-            game_won: false,
-            game_over: false,
+            gameWon: false,
+            gameOver: false,
             codeLength: 4,
             numOfColors: 6,
             numOfGuesses: 10,
@@ -104,7 +104,7 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
             setCurrentGuess: (currentGuess: string) => set({currentGuess}),
             setLoading: (isLoading: boolean) => set({isLoading}),
             setError: (error: string | null) => set({error}),
-            setGameWon: (gameWon: boolean) => set({gameWon: game_won}),
+            // setGameWon: (gameWon: boolean) => set({gameWon: game_won}),
             setGameOver: (gameOver: boolean) => set({gameOver}),
 
             addGuess: (guess: GameGuess) => set((state) => ({
@@ -131,7 +131,7 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                             room: response.data,
                             guesses: [],
                             currentGuess: '',
-                            game_won: false,
+                            gameWon: false,
                             gameOver: false,
                             isLoading: false,
                             error: null,
@@ -190,7 +190,7 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                 }
             },
 
-            
+
             submitGuess: async (guess: string): Promise<boolean> => {
                 const state = get();
 
@@ -236,7 +236,7 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                         set({
                             guesses: updatedGuesses,
                             currentGuess: '',
-                            gameWon: game_won,
+                            gameWon: gameWon,
                             gameOver,
                             isLoading: false,
                             error: null,
@@ -247,7 +247,7 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                         throw new Error('No response data received');
                     }
                 } catch (error: unknown) {
-                    
+
                     let errorMessage = 'Failed to submit guess';
 
                     if (error instanceof Error) {
@@ -269,7 +269,7 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
                 set({
                     guesses: [],
                     currentGuess: '',
-                    game_won: false,
+                    gameWon: false,
                     gameOver: false,
                     error: null,
                     codeLength: 4,
@@ -301,7 +301,7 @@ export const useSinglePlayerGameStore = create<SinglePlayerGameStore>()(
             partialize: (state) => ({
                 room: state.room,
                 guesses: state.guesses,
-                game_won: state.game_won,
+                gameWon: state.gameWon,
                 gameOver: state.gameOver,
                 codeLength: state.codeLength,
                 numOfColors: state.numOfColors,
@@ -319,7 +319,7 @@ export const useGame = () => {
         currentGuess: store.currentGuess,
         isLoading: store.isLoading,
         error: store.error,
-        game_won: store.game_won,
+        game_won: store.gameWon,
         gameOver: store.gameOver,
         codeLength: store.codeLength,
         numOfColors: store.numOfColors,
