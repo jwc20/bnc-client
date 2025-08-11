@@ -1,4 +1,4 @@
-import type { LoginCredentials, User } from '../types/auth'
+import type { LoginCredentials, User } from '../stores/authStore'
 
 export interface ApiError {
   detail?: string

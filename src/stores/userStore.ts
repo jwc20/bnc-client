@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { usersApiLogin, usersApiMe } from '../api/sdk.gen'
-import type { ApiError, UserStore, LoginCredentials, User } from '../types/auth'
+import type { ApiError, UserStore, LoginCredentials, User } from '../stores/authStore'
 
 const STORAGE_KEY = 'user-storage'
 

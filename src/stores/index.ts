@@ -36,4 +36,4 @@ export type {
   UserStore,
   LoginCredentials,
   User
-} from '../types/auth'
+} from '../stores/authStore'
