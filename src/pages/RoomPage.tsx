@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 
-import { useGame } from "../stores/singlePlayerGameStore";
+// import { useGame } from "../stores/singlePlayerGameStore";
 import { gamesApiGetRoom } from "../api/sdk.gen";
 import type { RoomSchema } from "../api/types.gen"
 ;

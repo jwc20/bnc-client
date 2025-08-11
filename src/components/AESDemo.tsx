@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AESCrypto, twoWayEncAes, twoWayDecAes, base64ToTextModern, textToBase64Modern } from '../libs/aes-crypto';
+import { AESCrypto, twoWayDecAes, base64ToTextModern, textToBase64Modern } from '../libs/aes-crypto';
 
 interface AESResult {
     encrypted?: string;

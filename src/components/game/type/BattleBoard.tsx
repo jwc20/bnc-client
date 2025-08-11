@@ -1,7 +1,7 @@
 import { GameRow } from '../board/GameRow.tsx';
 import { GameFeedBackPegs } from "../board/GameFeedBackPegs.tsx";
 
-export const BattleBoard = ({ roomId, colors, gameState, length, numOfGuesses, currentPlayerToken, gameType }) => {
+export const BattleBoard = ({ colors, gameState, length, numOfGuesses, currentPlayerToken }) => {
 
     const convertGuessToRow = (guess) => {
         return guess.split('').map(digit => colors[parseInt(digit) - 1]);
@@ -29,7 +29,7 @@ export const BattleBoard = ({ roomId, colors, gameState, length, numOfGuesses, c
     const currentPlayerGuesses = gameState.guesses.filter(guess => guess.player === currentPlayerToken);
     const currentPlayerRow = currentPlayerGuesses.length;
 
-    const gameRows = gameState.guesses.reduce((acc, guess, index) => {
+    const gameRows = gameState.guesses.reduce((acc, guess) => {
         if (guess.player === currentPlayerToken) {
             const playerGuessIndex = currentPlayerGuesses.findIndex(g => g.timestamp === guess.timestamp);
             acc[playerGuessIndex] = convertGuessToRow(guess.guess);
@@ -37,7 +37,7 @@ export const BattleBoard = ({ roomId, colors, gameState, length, numOfGuesses, c
         return acc;
     }, {});
 
-    const feedbackState = gameState.guesses.reduce((acc, guess, index) => {
+    const feedbackState = gameState.guesses.reduce((acc, guess) => {
         if (guess.player === currentPlayerToken) {
             const playerGuessIndex = currentPlayerGuesses.findIndex(g => g.timestamp === guess.timestamp);
             acc[playerGuessIndex] = { bulls: guess.bulls, cows: guess.cows };

@@ -10,7 +10,7 @@ export function LobbyPage() {
     const [numOfColors, setNumOfColors] = useState(6);
     const [numOfGuesses, setNumOfGuesses] = useState(10);
     const [secretCode, setSecretCode] = useState("");
-    const [quickPlayLoading, setQuickPlayLoading] = useState(false);
+    // const [quickPlayLoading, setQuickPlayLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -19,9 +19,9 @@ export function LobbyPage() {
         setRooms,
         setLoading,
         setError,
-        clearError,
+        // clearError,
         createRoom,
-        createQuickPlayRoom
+        // createQuickPlayRoom
     } = useRoomStore();
 
     useEffect(() => {
@@ -142,19 +142,19 @@ export function LobbyPage() {
         setRoomName(e.target.value);
     };
 
-    const handleSecretCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        const filteredValue = value.replace(/[^1-9]/g, '').slice(0, codeLength);
-        const validatedValue = filteredValue
-            .split('')
-            .map(digit => {
-                const num = parseInt(digit);
-                return num >= 1 && num <= numOfColors ? digit : '';
-            })
-            .join('');
-            
-        setSecretCode(validatedValue);
-    };
+    // const handleSecretCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const value = e.target.value;
+    //     const filteredValue = value.replace(/[^1-9]/g, '').slice(0, codeLength);
+    //     const validatedValue = filteredValue
+    //         .split('')
+    //         .map(digit => {
+    //             const num = parseInt(digit);
+    //             return num >= 1 && num <= numOfColors ? digit : '';
+    //         })
+    //         .join('');
+    //
+    //     setSecretCode(validatedValue);
+    // };
 
     const getGameTypeString = (type) => {
         switch (type) {

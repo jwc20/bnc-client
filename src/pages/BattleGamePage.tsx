@@ -112,7 +112,7 @@ export const BattleGamePage = ({roomId}) => {
         );
     }
 
-    const currentPlayerState = gameState.players_data?.[currentPlayerToken];
+    // const currentPlayerState = gameState.players_data?.[currentPlayerToken];
     const gameEnded = isGameEnded();
     const currentPlayerGuesses = gameState.guesses.filter(guess => guess.player === currentPlayerToken);
 

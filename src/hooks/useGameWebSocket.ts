@@ -13,7 +13,7 @@ export const useGameWebSocket = (roomId) => {
         sendMessage,
         lastMessage,
         readyState,
-        getWebSocket
+        // getWebSocket
     } = useWebSocket(socketUrl, {
         onOpen: () => {
             console.log('WebSocket connected')

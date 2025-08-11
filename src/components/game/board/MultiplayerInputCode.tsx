@@ -16,7 +16,7 @@ interface InputCodeProps {
     gameType: string;
     gameState?: {
         players: string[];
-        guesses: Array<{ player: string; [key: string]: any }>;
+        guesses: Array<{ player: string; [key: string]: unknown }>;
         game_won: boolean;
         game_over: boolean;
     };
@@ -29,7 +29,7 @@ export const MultiplayerInputCode = ({
                                          colorsArr,
                                          loading,
                                          onSubmit,
-                                         gameType,
+                                         // gameType,
                                          gameState,
                                          numOfGuesses
                                      }: InputCodeProps) => {
