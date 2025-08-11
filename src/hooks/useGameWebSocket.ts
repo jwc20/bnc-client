@@ -9,7 +9,7 @@ export const useGameWebSocket = (roomId: string | number) => {
 
   const socketUrl =
     roomId && authToken
-      ? `ws://localhost:8000/ws/game/${roomId}/?token=${authToken}`
+      ? `${import.meta.env.VITE_WS_URL}/ws/game/${roomId}/?token=${authToken}`
       : null
 
   const {
