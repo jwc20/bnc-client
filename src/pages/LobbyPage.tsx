@@ -179,6 +179,8 @@ export function LobbyPage() {
             setError('Room name is required');
             return;
         }
+
+        console.log(gameType, codeLength, numOfColors, numOfGuesses, secretCode);
         try {
             const roomData = {
                 name: roomName,
@@ -188,6 +190,7 @@ export function LobbyPage() {
                 num_of_guesses: numOfGuesses,
                 secret_code: secretCode.trim() || null // uise provided code or let server generate random
             };
+            console.log("roomData", roomData);
             const newRoom = await createRoom(roomData);
             if (newRoom) {
                 navigate(`/room/${newRoom.id}`);
@@ -270,9 +273,9 @@ export function LobbyPage() {
             case 0:
                 return 'Single Player';
             case 1:
-                return 'Multiplayer';
-            case 2:
                 return 'Co-op';
+            case 2:
+                return 'Battle';
             default:
                 return 'Unknown';
         }
