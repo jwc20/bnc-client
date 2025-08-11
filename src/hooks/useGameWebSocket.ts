@@ -67,43 +67,9 @@ export const useGameWebSocket = (roomId: string | number) => {
             updateGameState(data.state)
           }
         }
-    }, [lastMessage, updateGameState, removePlayerData])
-
-    const sendGameMessage = useCallback((type: string, payload: unknown) => {
-        if (readyState === ReadyState.OPEN) {
-            sendMessage(JSON.stringify({type, payload}))
-        }
-    }, [sendMessage, readyState])
-
-    const submitGuess = useCallback((guess: string) => {
-        setLoading(true)
-        sendGameMessage('make_move', {guess, action: 'submit_guess'})
-    }, [sendGameMessage, setLoading])
-
-    const resetGame = useCallback(() => {
-        sendGameMessage('make_move', {action: 'reset_game'})
-    }, [sendGameMessage])
-
-    const updateServerGameType = useCallback((gameType: string | number) => {
-        sendGameMessage('update_config', {game_type: gameType})
-    }, [sendGameMessage])
-
-    const connectionStatus = {
-        [ReadyState.CONNECTING]: 'Connecting',
-        [ReadyState.OPEN]: 'Connected',
-        [ReadyState.CLOSING]: 'Closing',
-        [ReadyState.CLOSED]: 'Disconnected',
-        [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-    }[readyState]
-
-    return {
-        submitGuess,
-        resetGame,
-        updateServerGameType,
-        isConnected: readyState === ReadyState.OPEN,
-        isConnecting: readyState === ReadyState.CONNECTING,
-        connectionStatus,
-        readyState
+      } catch (error) {
+        console.error('Error parsing message:', error)
+      }
     }
   }, [lastMessage, updateGameState, removePlayerData])
 
