@@ -1,7 +1,7 @@
 import { ReadyState } from 'react-use-websocket';
 import { SingleBoard } from '../components/game/type/SingleBoard.tsx';
 import { ColorLegend } from '../components/game/board/ColorLegend.tsx';
-import { useGameStore } from '../stores/gameRoomStore';
+import { useGameStore } from '../stores/gameStore.ts';
 import { useGameWebSocket } from '../hooks/useGameWebSocket';
 import { InputCode } from '../components/game/board/InputCode.tsx';
 
@@ -33,7 +33,11 @@ const COLORS = [
     { value: 'lavender', label: 'Lavender', color: '#aa88ff' }
 ];
 
-export const CoopGamePage = ({ roomId }) => {
+type CoopGamePageProps = {
+    roomId: number
+}
+
+export const CoopGamePage = ({ roomId } : CoopGamePageProps) => {
     const { gameState } = useGameStore()
     const {
         submitGuess,
@@ -89,10 +93,10 @@ export const CoopGamePage = ({ roomId }) => {
             </div>
         );
     }
-    const handleSubmitCode = (codeStr) => {
+    const handleSubmitCode = (codeStr: string) => {
         if (gameState.isLoading || !isConnected) return;
         const digits = codeStr.split('').map(Number);
-        if (digits.some(d => d < 1 || d > gameState.config.num_of_colors)) {
+        if (digits.some((d: number) => d < 1 || d > gameState.config.num_of_colors)) {
             alert('Invalid input. Use digits 1-' + gameState.config.num_of_colors + ' only.');
             return;
         }
@@ -121,7 +125,7 @@ export const CoopGamePage = ({ roomId }) => {
                 <div className="board-container">
                     <ColorLegend colors={COLORS} gameState={gameState} />
                     {/* TODO */}
-                    <SingleBoard roomId={roomId} colors={COLORS} gameState={gameState} length={gameState.config.code_length} numOfGuesses={gameState.config.num_of_guesses} />
+                    <SingleBoard  colors={COLORS} gameState={gameState} length={gameState.config.code_length} numOfGuesses={gameState.config.num_of_guesses} />
                 </div>
                 {!gameState.game_over ? (
                     <div className="input-section">

@@ -13,10 +13,10 @@ interface InputCodeProps {
     colorsArr: ColorOption[];
     loading: boolean;
     onSubmit: (code: string) => void;
-    gameType: string;
+    gameType?: string | number;
     gameState?: {
-        players: string[];
-        guesses: Array<{ player: string; [key: string]: unknown }>;
+        players?: string[];
+        guesses: Array<{ player?: string }>;
         game_won: boolean;
         game_over: boolean;
     };
@@ -52,9 +52,11 @@ export const MultiplayerInputCode = ({
         }
 
         // Game ends if all players have used all their guesses
-        const playerGuessCounts = {};
+        const playerGuessCounts: Record<string, number> = {};
         gameState.guesses.forEach(guess => {
-            playerGuessCounts[guess.player] = (playerGuessCounts[guess.player] || 0) + 1;
+            const playerId = guess.player ?? "";
+            if (!playerId) return;
+            playerGuessCounts[playerId] = (playerGuessCounts[playerId] || 0) + 1;
         });
 
         return gameState.players?.every(player =>

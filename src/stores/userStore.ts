@@ -1,51 +1,38 @@
-export interface ApiError {
-    detail?: string;
-    message?: string;
-    error?: string;
-}
-
-import {create} from 'zustand';
-import {createJSONStorage, persist} from 'zustand/middleware';
-import type {
-    UserLogin as LoginCredentials,
-    UserResponse as User,
-} from '../api/types.gen';
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { usersApiLogin, usersApiMe } from '../api/sdk.gen';
+import type {
+    ApiError,
+    UserStore,
+    LoginCredentials,
+    User
+} from '../types/auth';
 
-interface UserState {
-    token: string | null;
-    user: User | null;
-    isLoading: boolean;
-    error: string | null;
+const STORAGE_KEY = 'user-storage';
 
-    setToken: (token: string) => void;
-    setUser: (user: User) => void;
-    setLoading: (loading: boolean) => void;
-    setError: (error: string | null) => void;
+const handleApiError = (error: unknown): string => {
+    const apiError = error as ApiError;
+    return apiError?.message || apiError?.detail || 'An error occurred';
+};
 
-    login: (credentials: LoginCredentials) => Promise<boolean>;
-    fetchProfile: () => Promise<boolean>;
-
-    isAuthenticated: () => boolean;
-
-    clearAuth: () => void;
-}
-
-export const useUserStore = create<UserState>()(
+export const useUserStore = create<UserStore>()(
     persist(
         (set, get) => ({
+            // State
             token: null,
             user: null,
             isLoading: false,
             error: null,
 
-            setToken: (token: string) => set({token}),
-            setUser: (user: User) => set({user}),
-            setLoading: (isLoading: boolean) => set({isLoading}),
-            setError: (error: string | null) => set({error}),
+            // Basic setters
+            setToken: (token: string) => set({ token }),
+            setUser: (user: User) => set({ user }),
+            setLoading: (isLoading: boolean) => set({ isLoading }),
+            setError: (error: string | null) => set({ error }),
 
+            // Auth actions
             login: async (credentials: LoginCredentials): Promise<boolean> => {
-                set({isLoading: true, error: null});
+                set({ isLoading: true, error: null });
 
                 try {
                     const response = await usersApiLogin({
@@ -71,10 +58,7 @@ export const useUserStore = create<UserState>()(
                         throw new Error('No response data received');
                     }
                 } catch (error: unknown) {
-                    const errorMessage = 
-                        (error as ApiError)?.message || 
-                        (error as ApiError)?.detail || 
-                        'Login failed';
+                    const errorMessage = handleApiError(error) || 'Login failed';
                     set({
                         token: null,
                         user: null,
@@ -109,19 +93,14 @@ export const useUserStore = create<UserState>()(
                         throw new Error('No profile data received');
                     }
                 } catch (error: unknown) {
-                    const errorMessage = 
-                        (error as ApiError)?.message || 
-                        (error as ApiError)?.detail || 
-                        'Failed to fetch profile';
-                    set({
-                        error: errorMessage,
-                    });
+                    const errorMessage = handleApiError(error) || 'Failed to fetch profile';
+                    set({ error: errorMessage });
                     return false;
                 }
             },
 
             isAuthenticated: (): boolean => {
-                const {token, user} = get();
+                const { token, user } = get();
                 return !!(token && user);
             },
 
@@ -131,11 +110,11 @@ export const useUserStore = create<UserState>()(
                     user: null,
                     error: null,
                 });
-                localStorage.removeItem('user-storage');
+                localStorage.removeItem(STORAGE_KEY);
             },
         }),
         {
-            name: 'user-storage',
+            name: STORAGE_KEY,
             storage: createJSONStorage(() => localStorage),
 
             partialize: (state) => ({
@@ -154,33 +133,3 @@ export const useUserStore = create<UserState>()(
         }
     )
 );
-
-export const useAuth = () => {
-    const store = useUserStore();
-    return {
-        isAuthenticated: store.isAuthenticated(),
-        isLoading: store.isLoading,
-        user: store.user,
-        error: store.error,
-        login: store.login,
-        fetchProfile: store.fetchProfile,
-        clearError: () => store.setError(null),
-        logout: store.clearAuth,
-    };
-};
-
-export const useAuthenticatedApi = () => {
-    const token = useUserStore((state) => state.token);
-
-    return {
-        getAuthHeaders: () => {
-            if (!token) {
-                throw new Error('No authentication token available');
-            }
-            return {
-                Authorization: `Bearer ${token}`
-            };
-        },
-        isAuthenticated: !!token
-    };
-};

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { gamesApiListRooms } from "../api/sdk.gen";
-import { useRoomStore } from "../stores/gameRoomStore";
+// import { useRoomStore } from "../stores/gameStore.ts";
+import { useRoomStore } from "../stores";
+
+import type {RoomSchema} from "../api/types.gen";
 
 export function LobbyPage() {
     const [roomName, setRoomName] = useState("");
@@ -156,7 +159,7 @@ export function LobbyPage() {
     //     setSecretCode(validatedValue);
     // };
 
-    const getGameTypeString = (type) => {
+    const getGameTypeString = (type: number) => {
         switch (type) {
             case 0:
                 return 'Single Player';
@@ -342,7 +345,7 @@ export function LobbyPage() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {roomState.rooms.map((room) => (
+                                    {roomState.rooms.map((room : RoomSchema) => (
                                         <tr key={room.id}>
                                             <td>{room.id}</td>
                                             <td>{room.name}</td>

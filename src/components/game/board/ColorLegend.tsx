@@ -1,6 +1,5 @@
 export const ColorLegend = ({colors, gameState}) => {
     const numOfColors = gameState.config.num_of_colors;
-    console.log(numOfColors);
     const availableColors = colors.slice(0, numOfColors);
     
     return (

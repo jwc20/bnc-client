@@ -2,7 +2,7 @@ import {ReadyState} from 'react-use-websocket';
 import {BattleBoard} from '../components/game/type/BattleBoard.tsx';
 import {ColorLegend} from '../components/game/board/ColorLegend.tsx';
 import {OtherPlayersFeedback} from '../components/game/board/OtherPlayersFeedback.tsx';
-import {useGameStore} from '../stores/gameRoomStore';
+import {useGameStore} from '../stores/gameStore.ts';
 import {useGameWebSocket} from '../hooks/useGameWebSocket';
 import {MultiplayerInputCode} from '../components/game/board/MultiplayerInputCode';
 import {useAuth} from '../auths/AuthContext'
@@ -35,7 +35,7 @@ const COLORS = [
     {value: 'lavender', label: 'Lavender', color: '#aa88ff'}
 ];
 
-export const BattleGamePage = ({roomId}) => {
+export const BattleGamePage = ({roomId}: { roomId: number }) => {
     const {token: authToken} = useAuth()
     const currentPlayerToken = authToken && authToken.substring(0, 8);
     const {gameState} = useGameStore();
@@ -54,9 +54,11 @@ export const BattleGamePage = ({roomId}) => {
             return true;
         }
 
-        const playerGuessCounts = {};
+        const playerGuessCounts: Record<string, number> = {};
         gameState.guesses.forEach(guess => {
-            playerGuessCounts[guess.player] = (playerGuessCounts[guess.player] || 0) + 1;
+            const playerId = guess.player ?? "";
+            if (!playerId) return;
+            playerGuessCounts[playerId] = (playerGuessCounts[playerId] || 0) + 1;
         });
 
         return gameState.players?.every(guess =>
@@ -116,10 +118,10 @@ export const BattleGamePage = ({roomId}) => {
     const gameEnded = isGameEnded();
     const currentPlayerGuesses = gameState.guesses.filter(guess => guess.player === currentPlayerToken);
 
-    const handleSubmitCode = (codeStr) => {
+    const handleSubmitCode = (codeStr: string) => {
         if (gameState.isLoading || !isConnected || gameEnded) return;
-        const digits = codeStr.split('').map(Number);
-        if (digits.some(d => d < 1 || d > gameState.config.num_of_colors)) {
+        const digits: number[] = codeStr.split('').map(n => Number(n));
+        if (digits.some((d: number) => d < 1 || d > gameState.config.num_of_colors)) {
             alert('Invalid input. Use digits 1-' + gameState.config.num_of_colors + ' only.');
             return;
         }
@@ -154,13 +156,11 @@ export const BattleGamePage = ({roomId}) => {
                 <div className="board-container">
                     <ColorLegend colors={COLORS} gameState={gameState}/>
                     <BattleBoard
-                        roomId={roomId}
                         colors={COLORS}
                         gameState={gameState}
                         currentPlayerToken={currentPlayerToken}
                         length={gameState.config.code_length}
                         numOfGuesses={gameState.config.num_of_guesses}
-                        gameType={gameState.config.game_type}
                     />
                     <OtherPlayersFeedback
                         gameState={gameState}
@@ -175,7 +175,7 @@ export const BattleGamePage = ({roomId}) => {
                             colorsArr={COLORS}
                             loading={gameState.isLoading || !isConnected}
                             onSubmit={handleSubmitCode}
-                            gameType={gameState.config.game_type}
+                            gameType={String(gameState.config.game_type)}
                             gameState={gameState}
                             numOfGuesses={gameState.config.num_of_guesses}
                         />
@@ -188,7 +188,7 @@ export const BattleGamePage = ({roomId}) => {
                         {gameEnded && (
                             <>
                                 <div className="game-over-text">Game Finished!</div>
-                                {gameState.winners?.length > 0 ? (
+                                {gameState.winners && gameState.winners.length > 0 ? (
                                     <div className="winners-list">
                                         Winners: {gameState.winners.join(', ')}
                                     </div>

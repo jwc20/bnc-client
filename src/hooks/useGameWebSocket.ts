@@ -1,9 +1,9 @@
 import {useCallback, useEffect} from 'react'
 import useWebSocket, {ReadyState} from 'react-use-websocket'
-import {useGameStore} from "../stores/gameRoomStore";
+import {useGameStore} from "../stores/gameStore.ts";
 import {useAuth} from '../auths/AuthContext'
 
-export const useGameWebSocket = (roomId) => {
+export const useGameWebSocket = (roomId: string | number) => {
     const {updateGameState, setLoading, removePlayerData} = useGameStore()
     const {token: authToken} = useAuth()
 
@@ -67,13 +67,13 @@ export const useGameWebSocket = (roomId) => {
         }
     }, [lastMessage, updateGameState, removePlayerData])
 
-    const sendGameMessage = useCallback((type, payload) => {
+    const sendGameMessage = useCallback((type: string, payload: unknown) => {
         if (readyState === ReadyState.OPEN) {
             sendMessage(JSON.stringify({type, payload}))
         }
     }, [sendMessage, readyState])
 
-    const submitGuess = useCallback((guess) => {
+    const submitGuess = useCallback((guess: string) => {
         setLoading(true)
         sendGameMessage('make_move', {guess, action: 'submit_guess'})
     }, [sendGameMessage, setLoading])
@@ -82,7 +82,7 @@ export const useGameWebSocket = (roomId) => {
         sendGameMessage('make_move', {action: 'reset_game'})
     }, [sendGameMessage])
 
-    const updateServerGameType = useCallback((gameType) => {
+    const updateServerGameType = useCallback((gameType: string | number) => {
         sendGameMessage('update_config', {game_type: gameType})
     }, [sendGameMessage])
 
