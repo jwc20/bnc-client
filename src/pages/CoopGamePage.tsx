@@ -37,7 +37,7 @@ type CoopGamePageProps = {
     roomId: number
 }
 
-export const CoopGamePage = ({ roomId } : CoopGamePageProps) => {
+export const CoopGamePage = ({ roomId }: CoopGamePageProps) => {
     const { gameState } = useGameStore()
     const {
         submitGuess,
@@ -47,17 +47,17 @@ export const CoopGamePage = ({ roomId } : CoopGamePageProps) => {
         readyState,
         connectionStatus
     } = useGameWebSocket(roomId)
-    
+
     if (!gameState.config || !gameState.config.code_length || !gameState.config.num_of_colors) {
-      return (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-              <div style={{ fontSize: '20px', color: '#666' }}>
-                  Loading game configuration...
-              </div>
-          </div>
-      );
+        return (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+                <div style={{ fontSize: '20px', color: '#666' }}>
+                    Loading game configuration...
+                </div>
+            </div>
+        );
     }
-    
+
     if (readyState === ReadyState.UNINSTANTIATED) {
         return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
@@ -124,7 +124,7 @@ export const CoopGamePage = ({ roomId } : CoopGamePageProps) => {
             <div className='board-layout'>
                 <div className="board-container">
                     <ColorLegend colors={COLORS} gameState={gameState} />
-                    <SingleBoard  colors={COLORS} gameState={gameState} length={gameState.config.code_length} numOfGuesses={gameState.config.num_of_guesses} />
+                    <SingleBoard colors={COLORS} gameState={gameState} length={gameState.config.code_length} numOfGuesses={gameState.config.num_of_guesses} />
                 </div>
                 {!gameState.game_over ? (
                     <div className="input-section">

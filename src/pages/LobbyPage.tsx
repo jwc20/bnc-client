@@ -4,7 +4,7 @@ import { gamesApiListRooms } from "../api/sdk.gen";
 // import { useRoomStore } from "../stores/gameStore.ts";
 import { useRoomStore } from "../stores";
 
-import type {RoomSchema} from "../api/types.gen";
+import type { RoomSchema } from "../api/types.gen";
 
 export function LobbyPage() {
     const [roomName, setRoomName] = useState("");
@@ -345,7 +345,7 @@ export function LobbyPage() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {roomState.rooms.map((room : RoomSchema) => (
+                                    {roomState.rooms.map((room: RoomSchema) => (
                                         <tr key={room.id}>
                                             <td>{room.id}</td>
                                             <td>{room.name}</td>

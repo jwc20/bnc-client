@@ -19,7 +19,7 @@ interface InputCodeProps {
 
 export const InputCode = ({ codeLength, numOfColors, colorsArr, loading, onSubmit }: InputCodeProps) => {
     const colors = colorsArr.slice(0, numOfColors);
-    
+
     const [code, setCode] = useState<string[]>(Array(codeLength).fill(""));
     const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -89,7 +89,7 @@ export const InputCode = ({ codeLength, numOfColors, colorsArr, loading, onSubmi
                 {code.map((num, idx) => {
                     const backgroundColor = getInputBackgroundColor(num);
                     const textColor = getTextColor(backgroundColor);
-                    
+
                     return (
                         <input
                             key={idx}

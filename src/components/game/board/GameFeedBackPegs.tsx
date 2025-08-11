@@ -4,10 +4,10 @@ interface GameFeedBackPegsProps {
     length: number;
 }
 
-export const GameFeedBackPegs = ({ bulls, cows, length}: GameFeedBackPegsProps) => {
+export const GameFeedBackPegs = ({ bulls, cows, length }: GameFeedBackPegsProps) => {
     const totalPegs = length;
     const pegsPerRow = Math.ceil(length / 2); // distribute pegs across 2 rows
-    
+
     if (bulls === undefined && cows === undefined) {
         return (
             <div className="feedback-pegs-container">

@@ -24,15 +24,15 @@ interface InputCodeProps {
 }
 
 export const MultiplayerInputCode = ({
-                                         codeLength,
-                                         numOfColors,
-                                         colorsArr,
-                                         loading,
-                                         onSubmit,
-                                         // gameType,
-                                         gameState,
-                                         numOfGuesses
-                                     }: InputCodeProps) => {
+    codeLength,
+    numOfColors,
+    colorsArr,
+    loading,
+    onSubmit,
+    // gameType,
+    gameState,
+    numOfGuesses
+}: InputCodeProps) => {
     const colors = colorsArr.slice(0, numOfColors);
 
     const [code, setCode] = useState<string[]>(Array(codeLength).fill(""));
@@ -42,16 +42,13 @@ export const MultiplayerInputCode = ({
         setCode(Array(codeLength).fill(""));
     }, [codeLength]);
 
-    // Check if game should end
     const isGameEnded = () => {
         if (!gameState) return false;
 
-        // Game ends if someone won
         if (gameState.game_won) {
             return true;
         }
 
-        // Game ends if all players have used all their guesses
         const playerGuessCounts: Record<string, number> = {};
         gameState.guesses.forEach(guess => {
             const playerId = guess.player ?? "";

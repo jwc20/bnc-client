@@ -8,16 +8,16 @@ type ColorLegendProps = {
 export const ColorLegend = ({ colors, gameState }: ColorLegendProps) => {
     const numOfColors = gameState.config.num_of_colors;
     const availableColors = colors.slice(0, numOfColors);
-    
+
     return (
         <div className="color-legend">
             <div className="legend-title">Color Codes</div>
             <div className="legend-items">
                 {availableColors.map((color: Color, index: number) => (
                     <div key={color.value} className="legend-item">
-                        <div 
-                            className="legend-color-peg" 
-                            style={{backgroundColor: color.color}}
+                        <div
+                            className="legend-color-peg"
+                            style={{ backgroundColor: color.color }}
                         ></div>
                         <span className="legend-code">:{index + 1}</span>
                     </div>

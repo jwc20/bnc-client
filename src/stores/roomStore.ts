@@ -29,7 +29,7 @@ interface RoomStore {
   resetRoomState: () => void
   createRoom: (roomData: CreateRoomRequest) => Promise<RoomSchema | null>
   createQuickPlayRoom: (
-      roomData: CreateRandomSingleplayerRoomRequest
+    roomData: CreateRandomSingleplayerRoomRequest
   ) => Promise<RoomSchema | null>
 }
 
@@ -185,7 +185,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
       }
 
       const errorMessage =
-          error instanceof Error ? error.message : 'Failed to create room'
+        error instanceof Error ? error.message : 'Failed to create room'
 
       set(state => ({
         currentOperation: null,
@@ -253,9 +253,9 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
       }
 
       const errorMessage =
-          error instanceof Error
-              ? error.message
-              : 'Failed to create quick play room'
+        error instanceof Error
+          ? error.message
+          : 'Failed to create quick play room'
 
       set(state => ({
         currentOperation: null,
@@ -273,10 +273,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
 }))
 
 // Export types for use in other files
-export type {
-  RoomState,
-  RoomStore
-}
+export type { RoomState, RoomStore }
 
 // Re-export payload types for convenience
 export type CreateRoomPayload = CreateRoomRequest

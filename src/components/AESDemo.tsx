@@ -18,12 +18,12 @@ export const AESDemo: React.FC = () => {
     const [plaintext, setPlaintext] = useState<string>('Hello, World!');
     const [encryptedText, setEncryptedText] = useState<string>('');
     const [result, setResult] = useState<AESResult>({});
-    
+
     // Base64 states
     const [textToEncode, setTextToEncode] = useState<string>('Hello, World!');
     const [base64TooDecode, setBase64ToDecode] = useState<string>('');
     const [base64Result, setBase64Result] = useState<Base64Result>({});
-    
+
     // Using class instance
     const aesCrypto = new AESCrypto();
 
@@ -65,8 +65,8 @@ export const AESDemo: React.FC = () => {
         }
 
         const wrongDecrypted = aesCrypto.twoWayDecAes('wrongKey', encryptedText);
-        setResult({ 
-            decrypted: wrongDecrypted, 
+        setResult({
+            decrypted: wrongDecrypted,
             error: wrongDecrypted ? undefined : 'Wrong key returned empty string (as expected)'
         });
     };
@@ -110,7 +110,7 @@ export const AESDemo: React.FC = () => {
     return (
         <div style={{ padding: '20px', maxWidth: '600px' }}>
             <h2>AES Encryption/Decryption Demo</h2>
-            
+
             <div style={{ marginBottom: '15px' }}>
                 <label>
                     Key:
@@ -179,9 +179,9 @@ export const AESDemo: React.FC = () => {
 
             {/* Base64 Section */}
             <hr style={{ margin: '30px 0', borderColor: '#ccc' }} />
-            
+
             <h2>Base64 Encoding/Decoding</h2>
-            
+
             <div style={{ marginBottom: '15px' }}>
                 <label>
                     Text to encode:

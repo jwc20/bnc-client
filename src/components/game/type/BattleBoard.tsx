@@ -27,14 +27,11 @@ export const BattleBoard = ({ colors, gameState, length, numOfGuesses, currentPl
         return digits.map((digit: number) => colors[digit - 1]);
     };
 
-    // Check if game should end
     const isGameEnded = (): boolean => {
-        // Game ends if someone won
         if (gameState.game_won) {
             return true;
         }
 
-        // Game ends if all players have used all their guesses
         if (gameState.players && gameState.players.length > 0) {
             const playerGuessCounts: Record<string, number> = {};
             gameState.guesses.forEach((guess: GameGuess) => {
@@ -51,7 +48,6 @@ export const BattleBoard = ({ colors, gameState, length, numOfGuesses, currentPl
         return false;
     };
 
-    // Get current player's guesses and calculate their current row
     const currentPlayerGuesses: GameGuess[] = gameState.guesses.filter(
         (guess: GameGuess) => !!currentPlayerToken && guess.player === currentPlayerToken
     );
