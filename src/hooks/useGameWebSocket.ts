@@ -69,13 +69,13 @@ export const useGameWebSocket = (roomId: string | number) => {
         }
     }, [lastMessage, updateGameState, removePlayerData])
 
-    const sendGameMessage = useCallback((type, payload) => {
+    const sendGameMessage = useCallback((type: string, payload: unknown) => {
         if (readyState === ReadyState.OPEN) {
             sendMessage(JSON.stringify({type, payload}))
         }
     }, [sendMessage, readyState])
 
-    const submitGuess = useCallback((guess) => {
+    const submitGuess = useCallback((guess: string) => {
         setLoading(true)
         sendGameMessage('make_move', {guess, action: 'submit_guess'})
     }, [sendGameMessage, setLoading])
@@ -84,7 +84,7 @@ export const useGameWebSocket = (roomId: string | number) => {
         sendGameMessage('make_move', {action: 'reset_game'})
     }, [sendGameMessage])
 
-    const updateServerGameType = useCallback((gameType) => {
+    const updateServerGameType = useCallback((gameType: string | number) => {
         sendGameMessage('update_config', {game_type: gameType})
     }, [sendGameMessage])
 
