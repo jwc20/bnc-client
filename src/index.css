@@ -44,7 +44,6 @@ input {
 button {
   font-family: var(--family-special);
   justify-content: center;
-  margin: 10px auto 0 auto;
   display: block;
   width: 100%;
   padding: 0.5rem;

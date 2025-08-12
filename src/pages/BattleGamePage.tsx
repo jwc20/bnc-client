@@ -166,10 +166,6 @@ export const BattleGamePage = ({ roomId }: { roomId: number }) => {
                         gameState={gameState}
                         currentPlayerToken={currentPlayerToken}
                     />
-                    <OtherPlayersFeedback
-                        gameState={gameState}
-                        currentPlayerToken={currentPlayerToken}
-                    />
                 </div>
                 {!gameEnded && !currentPlayerReachedMax ? (
                     <div className="input-section">
