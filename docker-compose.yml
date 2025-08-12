@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  vite-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        - VITE_API_URL=http://0.0.0.0:8000
+        - VITE_WS_URL=ws://0.0.0.0:8000
+        # - VITE_API_URL=${VITE_API_URL}
+        # - VITE_API_KEY=${VITE_API_KEY}
+        # - VITE_WS_URL=${VITE_WS_URL}
+    container_name: bnc-client
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+    networks:
+      - vite-network
+
+networks:
+  vite-network:
+    driver: bridge
