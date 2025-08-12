@@ -1,3 +1,4 @@
+
 import { ReadyState } from 'react-use-websocket';
 import { BattleBoard } from '../components/game/type/BattleBoard.tsx';
 import { ColorLegend } from '../components/game/board/ColorLegend.tsx';
@@ -146,24 +147,32 @@ export const BattleGamePage = ({ roomId }: { roomId: number }) => {
                 fontSize: '0.4rem',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: '40%',
+                width: '100%',
                 margin: '0 auto',
-                textAlign: 'center'
+                textAlign: 'center',
+                borderRadius: '4px'
             }}>
                 {connectionStatus}
             </div>
 
             <div className='board-layout center'>
                 <div>
+                    {gameEnded && gameState.secret_code && (
+                        <div className="secret-code-revealed">
+                            Secret code was: {gameState.secret_code}
+                        </div>
+                    )}
                     <div className="board-container">
                         <ColorLegend colors={COLORS} gameState={gameState} />
-                        <BattleBoard
-                            colors={COLORS}
-                            gameState={gameState}
-                            currentPlayerToken={currentPlayerToken}
-                            length={gameState.config.code_length}
-                            numOfGuesses={gameState.config.num_of_guesses}
-                        />
+                        <div>
+                            <BattleBoard
+                                colors={COLORS}
+                                gameState={gameState}
+                                currentPlayerToken={currentPlayerToken}
+                                length={gameState.config.code_length}
+                                numOfGuesses={gameState.config.num_of_guesses}
+                            />
+                        </div>
                         <OtherPlayersFeedback
                             gameState={gameState}
                             currentPlayerToken={currentPlayerToken}
@@ -196,11 +205,6 @@ export const BattleGamePage = ({ roomId }: { roomId: number }) => {
                                         </div>
                                     ) : (
                                         <div className="no-winners">No winners this round</div>
-                                    )}
-                                    {gameState.secret_code && (
-                                        <div style={{ marginTop: '8px', fontSize: '0.5rem', color: '#666' }}>
-                                            Secret code was: {gameState.secret_code}
-                                        </div>
                                     )}
                                     <button
                                         onClick={resetGame}
@@ -279,7 +283,14 @@ const style = `
         display: flex;
         align-items: flex-start;
         justify-content: center;
-        margin-top: 40px;
+        margin-top: 10px;
+    }
+    .secret-code-revealed {
+        text-align: center;
+        font-size: 0.5rem;
+        color: #666;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
     }
     .input-section {
         margin-top: 1.3rem;
