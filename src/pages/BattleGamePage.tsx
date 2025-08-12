@@ -235,7 +235,7 @@ export const BattleGamePage = ({ roomId }: { roomId: number }) => {
                     <div className="connected-players">
                         <div className="other-players-title">Connected Players</div>
                         <div className="players-list">
-                            {gameState.players.map((player, index) => (
+                            {gameState.players.map((player) => (
                                 <div key={player} className="player-item">
                                     {player}
                                     {player === currentPlayerToken && " (You)"}
