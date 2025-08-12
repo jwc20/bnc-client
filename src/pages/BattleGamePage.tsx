@@ -152,76 +152,96 @@ export const BattleGamePage = ({ roomId }: { roomId: number }) => {
             }}>
                 {connectionStatus}
             </div>
-            <div className='board-layout'>
-                <div className="board-container">
-                    <ColorLegend colors={COLORS} gameState={gameState} />
-                    <BattleBoard
-                        colors={COLORS}
-                        gameState={gameState}
-                        currentPlayerToken={currentPlayerToken}
-                        length={gameState.config.code_length}
-                        numOfGuesses={gameState.config.num_of_guesses}
-                    />
-                    <OtherPlayersFeedback
-                        gameState={gameState}
-                        currentPlayerToken={currentPlayerToken}
-                    />
-                </div>
-                {!gameEnded && !currentPlayerReachedMax ? (
-                    <div className="input-section">
-                        <MultiplayerInputCode
-                            codeLength={gameState.config.code_length}
-                            numOfColors={gameState.config.num_of_colors}
-                            colorsArr={COLORS}
-                            loading={gameState.isLoading || !isConnected}
-                            onSubmit={handleSubmitCode}
-                            gameType={String(gameState.config.game_type)}
+
+            <div className='board-layout center'>
+                <div>
+                    <div className="board-container">
+                        <ColorLegend colors={COLORS} gameState={gameState} />
+                        <BattleBoard
+                            colors={COLORS}
                             gameState={gameState}
+                            currentPlayerToken={currentPlayerToken}
+                            length={gameState.config.code_length}
                             numOfGuesses={gameState.config.num_of_guesses}
                         />
-                        <div className="remaining-guesses">
-                            Your remaining guesses: {gameState.config.num_of_guesses - currentPlayerGuesses.length}
-                        </div>
+                        <OtherPlayersFeedback
+                            gameState={gameState}
+                            currentPlayerToken={currentPlayerToken}
+                        />
                     </div>
-                ) : (
-                    <div className="game-over-section">
-                        {gameEnded && (
-                            <>
-                                <div className="game-over-text">Game Finished!</div>
-                                {gameState.winners && gameState.winners.length > 0 ? (
-                                    <div className="winners-list">
-                                        Winners: {gameState.winners.join(', ')}
+                    {!gameEnded && !currentPlayerReachedMax ? (
+                        <div className="input-section">
+                            <MultiplayerInputCode
+                                codeLength={gameState.config.code_length}
+                                numOfColors={gameState.config.num_of_colors}
+                                colorsArr={COLORS}
+                                loading={gameState.isLoading || !isConnected}
+                                onSubmit={handleSubmitCode}
+                                gameType={String(gameState.config.game_type)}
+                                gameState={gameState}
+                                numOfGuesses={gameState.config.num_of_guesses}
+                            />
+                            <div className="remaining-guesses">
+                                Your remaining guesses: {gameState.config.num_of_guesses - currentPlayerGuesses.length}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="game-over-section">
+                            {gameEnded && (
+                                <>
+                                    <div className="game-over-text">Game Finished!</div>
+                                    {gameState.winners && gameState.winners.length > 0 ? (
+                                        <div className="winners-list">
+                                            Winners: {gameState.winners.join(', ')}
+                                        </div>
+                                    ) : (
+                                        <div className="no-winners">No winners this round</div>
+                                    )}
+                                    {gameState.secret_code && (
+                                        <div style={{ marginTop: '8px', fontSize: '0.5rem', color: '#666' }}>
+                                            Secret code was: {gameState.secret_code}
+                                        </div>
+                                    )}
+                                    <button
+                                        onClick={resetGame}
+                                        disabled={!isConnected}
+                                        className="play-again-button"
+                                    >
+                                        Play Again
+                                    </button>
+                                </>
+                            )}
+                            {currentPlayerReachedMax && !gameEnded && (
+                                <>
+                                    <div className="game-over-text">You're finished!</div>
+                                    {gameState.game_won && currentPlayerGuesses.some(g => g.bulls === gameState.config.code_length) ? (
+                                        <div className="win-message">You found the code!</div>
+                                    ) : (
+                                        <div className="lose-message">Out of guesses</div>
+                                    )}
+                                    <div style={{ marginTop: '12px', fontSize: '0.5rem', color: '#666' }}>
+                                        Waiting for other players...
                                     </div>
-                                ) : (
-                                    <div className="no-winners">No winners this round</div>
-                                )}
-                                {gameState.secret_code && (
-                                    <div style={{ marginTop: '8px', fontSize: '0.5rem', color: '#666' }}>
-                                        Secret code was: {gameState.secret_code}
-                                    </div>
-                                )}
-                                <button
-                                    onClick={resetGame}
-                                    disabled={!isConnected}
-                                    className="play-again-button"
-                                >
-                                    Play Again
-                                </button>
-                            </>
-                        )}
-                        {currentPlayerReachedMax && !gameEnded && (
-                            <>
-                                <div className="game-over-text">You're finished!</div>
-                                {gameState.game_won && currentPlayerGuesses.some(g => g.bulls === gameState.config.code_length) ? (
-                                    <div className="win-message">You found the code!</div>
-                                ) : (
-                                    <div className="lose-message">Out of guesses</div>
-                                )}
-                                <div style={{ marginTop: '12px', fontSize: '0.5rem', color: '#666' }}>
-                                    Waiting for other players...
+                                </>
+                            )}
+                        </div>
+                    )}
+
+                </div>
+
+            </div>
+            <div>
+                {gameState.players && gameState.players.length > 0 && (
+                    <div className="connected-players">
+                        <div className="other-players-title">Connected Players</div>
+                        <div className="players-list">
+                            {gameState.players.map((player, index) => (
+                                <div key={player} className="player-item">
+                                    {player}
+                                    {player === currentPlayerToken && " (You)"}
                                 </div>
-                            </>
-                        )}
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>
@@ -255,12 +275,11 @@ const style = `
         align-items: center;
     }
     .board-container {
-        gap: 32px;
+        gap: 0.3rem;
         display: flex;
         align-items: flex-start;
         justify-content: center;
         margin-top: 40px;
-        flex-wrap: wrap;
     }
     .input-section {
         margin-top: 1.3rem;
@@ -300,5 +319,26 @@ const style = `
         margin-top: 12px;
         padding: 8px 16px;
         cursor: pointer;
+    }
+    .connected-players {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .other-players-title {
+        margin: 0 0 8px 0;
+        font-size: 0.4rem;
+        font-weight: bold;
+        text-align: center;
+        color: #333;
+    }
+
+    .player-item {
+        font-size: 0.3rem;
+        color: #666;
     }
 `;

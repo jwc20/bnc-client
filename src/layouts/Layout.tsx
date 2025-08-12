@@ -154,7 +154,6 @@ const styles = `
     }
 
     .main-container {
-
         max-width: 100%;
     }
 `

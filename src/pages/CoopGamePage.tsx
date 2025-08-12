@@ -121,7 +121,7 @@ export const CoopGamePage = ({ roomId }: CoopGamePageProps) => {
             }}>
                 {connectionStatus}
             </div>
-            <div className='board-layout'>
+            <div className='board-layout center'>
                 <div className="board-container">
                     <ColorLegend colors={COLORS} gameState={gameState} />
                     <SingleBoard colors={COLORS} gameState={gameState} length={gameState.config.code_length} numOfGuesses={gameState.config.num_of_guesses} />
@@ -161,6 +161,21 @@ export const CoopGamePage = ({ roomId }: CoopGamePageProps) => {
                         </button>
                     </div>
                 )}
+
+            </div>
+            <div>
+                {gameState.players && gameState.players.length > 0 && (
+                    <div className="connected-players">
+                        <div className="other-players-title">Connected Players</div>
+                        <div className="players-list">
+                            {gameState.players.map((player, index) => (
+                                <div key={player} className="player-item">
+                                    {player}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
             <style>{style}</style>
         </div>
@@ -186,7 +201,7 @@ const style = `
         align-items: center;
     }
     .board-container {
-        gap: 32px;
+        gap: 0.3rem;
         display: flex;
         align-items: flex-start;
         justify-content: center;
@@ -221,5 +236,26 @@ const style = `
         margin-top: 12px;
         padding: 8px 16px;
         cursor: pointer;
+    }
+    .connected-players {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .other-players-title {
+        margin: 0 0 8px 0;
+        font-size: 0.4rem;
+        font-weight: bold;
+        text-align: center;
+        color: #333;
+    }
+
+    .player-item {
+        font-size: 0.3rem;
+        color: #666;
     }
 `;

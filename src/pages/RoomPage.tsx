@@ -102,10 +102,15 @@ export function RoomPage() {
     //     )
     // } 
     if (room?.game_type === 2) {
-        return <BattleGamePage roomId={roomId} />;
+        return (
+          <div>
+              <BattleGamePage roomId={roomId} />
+          </div>
+        )
+        
     } else if (room?.game_type === 1) {
         return (
-            <div className="center">
+            <div>
                 <CoopGamePage roomId={roomId} />
             </div>
             
