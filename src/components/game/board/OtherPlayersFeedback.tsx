@@ -36,7 +36,6 @@ export const OtherPlayersFeedback = ({ gameState, currentPlayerToken }: OtherPla
 
     return (
         <div className="other-players-feedback">
-            <h3 className="other-players-title">Other Players</h3>
             <div className="players-container">
                 {uniquePlayerTokens.map((token: string) => {
                     const guesses: GameGuess[] = playerGuesses[token] ?? [];
@@ -87,12 +86,9 @@ export const OtherPlayersFeedback = ({ gameState, currentPlayerToken }: OtherPla
 
 const styles = `
     .other-players-feedback {
-        background: #f8f9fa;
         border: 2px solid #000;
-        border-radius: 8px;
+        justify-content: center;
         padding: 16px;
-        margin-top: 16px;
-        min-width: 300px;
     }
     .other-players-title {
         margin: 0 0 12px 0;
@@ -105,26 +101,27 @@ const styles = `
         display: flex;
         gap: 16px;
         overflow-x: auto;
+        align-items: center;
+        justify-content: center;
     }
     .player-feedback-section {
         border: 1px solid #ddd;
         border-radius: 6px;
         padding: 12px;
-        background: white;
         min-width: 120px;
         flex-shrink: 0;
     }
     .player-name {
         font-weight: bold;
-        font-size: 0.9rem;
+        font-size: 0.4rem;
         color: #555;
         margin-bottom: 8px;
         text-align: center;
     }
     .player-guesses {
         display: flex;
-        flex-direction: column-reverse; /* Bottom-up display */
-        gap: 6px;
+        flex-direction: column-reverse;
+        align-items: center;
     }
     .guess-feedback {
         display: flex;

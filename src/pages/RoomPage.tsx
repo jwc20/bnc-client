@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router";
 import { gamesApiGetRoom } from "../api/sdk.gen";
 import type { RoomSchema } from "../api/types.gen"
 ;
-import { SinglePlayerGamePage } from "./SinglePlayerGamePage";
+// import { SinglePlayerGamePage } from "./SinglePlayerGamePage";
 import { CoopGamePage } from "./CoopGamePage.tsx";
 import { BattleGamePage } from "./BattleGamePage.tsx";
 
@@ -94,13 +94,14 @@ export function RoomPage() {
         );
     }
 
-    if (room?.game_type === 0) {
-        return (
-            <div className="center">
-                <SinglePlayerGamePage roomId={roomId} />
-            </div>
-        )
-    } else if (room?.game_type === 2) {
+    // if (room?.game_type === 0) {
+    //     return (
+    //         <div className="center">
+    //             <SinglePlayerGamePage roomId={roomId} />
+    //         </div>
+    //     )
+    // } 
+    if (room?.game_type === 2) {
         return <BattleGamePage roomId={roomId} />;
     } else if (room?.game_type === 1) {
         return (
