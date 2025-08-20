@@ -6,10 +6,15 @@ import { LoginPage } from "./pages/LoginPage";
 import { LobbyPage } from "./pages/LobbyPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { RoomPage } from "./pages/RoomPage";
-
 import { client } from "./api/client.gen";
+
+
 // import { AESDemo } from "./components/AESdemo";
+
+
 import "./App.css";
+import LeaderboardPage from "./pages/LeaderboardPage.js";
+import ProfilePage from "./pages/ProfilePage.js";
 
 client.setConfig({
     baseUrl: import.meta.env.VITE_API_URL || "http://localhost:8000/",
@@ -49,6 +54,22 @@ export default function App() {
                         }
                     />
                     <Route
+                        path="/leaderboard"
+                        element={
+                            <RequireAuth>
+                                <LeaderboardPage />
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="/profile"
+                        element={
+                            <RequireAuth>
+                                <ProfilePage />
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
                         path="/room/:roomId"
                         element={
                             <RequireAuth>
@@ -57,22 +78,8 @@ export default function App() {
                         }
                     />
 
-                    {/*<Route*/}
-                    {/*    path="/user"*/}
-                    {/*    element={*/}
-                    {/*        <RequireAuth>*/}
-                    {/*            <UserPage />*/}
-                    {/*        </RequireAuth>*/}
-                    {/*    }*/}
-                    {/*/>*/}
-                    {/*<Route*/}
-                    {/*    path="/canvas"*/}
-                    {/*    element={*/}
-                    {/*        <RequireAuth>*/}
-                    {/*            <GridCanvas />*/}
-                    {/*        </RequireAuth>*/}
-                    {/*    }*/}
-                    {/*/>*/}
+                    
+
 
                     <Route
                         path="/unauthorized"

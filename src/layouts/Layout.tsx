@@ -26,19 +26,21 @@ export function Layout() {
                                             <span>Lobby</span>
                                         </Link>
                                     )}
-                                    {/* {!isActive('/quick-play') && (
-                                        <Link to="/quick-play" className="nav-link">
-                                            <span>Quick Play</span>
+                                    {!isActive('/leaderboard') && (
+                                        <Link to="/leaderboard" className="nav-link">
+                                            <span>Leaderboard</span>
                                         </Link>
                                     )}
-                                    {!isActive('/quick-plays') && (
+                                    {/* {!isActive('/quick') && (
                                         <Link to="/quick-plasy" className="nav-link">
                                             <span>another link</span>
                                         </Link>
                                     )} */}
                                     <div className="nav-right">
                                         <div className="username">
-                                            <span>{auth.user.username}</span>
+                                            <Link to="/profile" className="username-link">
+                                                <span>{auth.user.username}</span>
+                                            </Link>
                                         </div>
                                         <div className="logout">
                                             <button onClick={handleLogout} className="logout-btn">
