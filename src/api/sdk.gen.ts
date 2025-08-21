@@ -4,6 +4,8 @@ import type { Options as ClientOptions, TDataShape, Client } from "./client";
 import type {
   BncapiApiPingData,
   BncapiApiPingResponses,
+  UsersApiGetUserActivitiesData,
+  UsersApiGetUserActivitiesResponses,
   UsersApiMeData,
   UsersApiMeResponses,
   UsersApiListUsersData,
@@ -18,6 +20,8 @@ import type {
   GamesApiListRoomsResponses,
   GamesApiCreateRoomData,
   GamesApiCreateRoomResponses,
+  GamesApiCreateRoomAsyncData,
+  GamesApiCreateRoomAsyncResponses,
   GamesApiGetRoomData,
   GamesApiGetRoomResponses,
   GamesApiCreateRandomSingleplayerRoomData,
@@ -27,6 +31,7 @@ import type {
 } from "./types.gen";
 import { client as _heyApiClient } from "./client.gen";
 import {
+  usersApiGetUserActivitiesResponseTransformer,
   usersApiLoginResponseTransformer,
   usersApiSignupResponseTransformer,
 } from "./transformers.gen";
@@ -60,6 +65,29 @@ export const bncapiApiPing = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     url: "/api/ping",
+    ...options,
+  });
+};
+
+/**
+ * Get user and user's activities
+ */
+export const usersApiGetUserActivities = <ThrowOnError extends boolean = false>(
+  options?: Options<UsersApiGetUserActivitiesData, ThrowOnError>
+) => {
+  return (options?.client ?? _heyApiClient).get<
+    UsersApiGetUserActivitiesResponses,
+    unknown,
+    ThrowOnError
+  >({
+    responseTransformer: usersApiGetUserActivitiesResponseTransformer,
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/api/users/activities",
     ...options,
   });
 };
@@ -221,7 +249,34 @@ export const gamesApiCreateRoom = <ThrowOnError extends boolean = false>(
 };
 
 /**
+ * Create a new room async
+ */
+export const gamesApiCreateRoomAsync = <ThrowOnError extends boolean = false>(
+  options: Options<GamesApiCreateRoomAsyncData, ThrowOnError>
+) => {
+  return (options.client ?? _heyApiClient).post<
+    GamesApiCreateRoomAsyncResponses,
+    unknown,
+    ThrowOnError
+  >({
+    security: [
+      {
+        scheme: "bearer",
+        type: "http",
+      },
+    ],
+    url: "/api/games/rooms-async",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+};
+
+/**
  * Get room by ID
+ * @deprecated
  */
 export const gamesApiGetRoom = <ThrowOnError extends boolean = false>(
   options: Options<GamesApiGetRoomData, ThrowOnError>
@@ -244,6 +299,7 @@ export const gamesApiGetRoom = <ThrowOnError extends boolean = false>(
 
 /**
  * Create a new singleplayer room with random secret code
+ * @deprecated
  */
 export const gamesApiCreateRandomSingleplayerRoom = <
   ThrowOnError extends boolean = false
@@ -263,15 +319,12 @@ export const gamesApiCreateRandomSingleplayerRoom = <
     ],
     url: "/api/games/quick-play",
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
   });
 };
 
 /**
  * Check guess for bulls and cows
+ * @deprecated
  */
 export const gamesApiCheckGame = <ThrowOnError extends boolean = false>(
   options: Options<GamesApiCheckGameData, ThrowOnError>
@@ -289,9 +342,5 @@ export const gamesApiCheckGame = <ThrowOnError extends boolean = false>(
     ],
     url: "/api/games/check",
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
   });
 };
