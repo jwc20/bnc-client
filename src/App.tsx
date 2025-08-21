@@ -14,7 +14,7 @@ import { client } from "./api/client.gen";
 
 import "./App.css";
 import LeaderboardPage from "./pages/LeaderboardPage.js";
-import ProfilePage from "./pages/ProfilePage.js";
+import MePage from "./pages/MePage.js";
 
 client.setConfig({
     baseUrl: import.meta.env.VITE_API_URL || "http://localhost:8000/",
@@ -65,7 +65,7 @@ export default function App() {
                         path="/profile"
                         element={
                             <RequireAuth>
-                                <ProfilePage />
+                                <MePage />
                             </RequireAuth>
                         }
                     />

@@ -1,7 +1,13 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { usersApiLogin, usersApiMe } from '../api/sdk.gen'
-import type { ApiError, UserStore, LoginCredentials, User } from '../stores/authStore'
+import type { MeResponse, ActivityResponseSchema } from '../api/types.gen'
+import type {
+  ApiError,
+  UserStore,
+  LoginCredentials,
+  User
+} from '../stores/authStore'
 
 const STORAGE_KEY = 'user-storage'
 
@@ -18,12 +24,25 @@ export const useUserStore = create<UserStore>()(
       user: null,
       isLoading: false,
       error: null,
+      me: null,
+      activities: [],
 
       // Basic setters
       setToken: (token: string) => set({ token }),
       setUser: (user: User) => set({ user }),
       setLoading: (isLoading: boolean) => set({ isLoading }),
       setError: (error: string | null) => set({ error }),
+      setActivities: (activities: ActivityResponseSchema[]) =>
+        set({ activities }),
+      setMe: (me: MeResponse) =>
+        set({
+          user: {
+            id: me.id ?? null,
+            username: me.username,
+            email: me.email
+          },
+          activities: me.activities ?? []
+        }),
 
       // Auth actions
       login: async (credentials: LoginCredentials): Promise<boolean> => {
@@ -47,7 +66,7 @@ export const useUserStore = create<UserStore>()(
             })
 
             // Fetch full profile after login
-            await get().fetchProfile()
+            await get().fetchProfile(response.data.token)
             return true
           } else {
             throw new Error('No response data received')
@@ -64,14 +83,13 @@ export const useUserStore = create<UserStore>()(
         }
       },
 
-      fetchProfile: async (): Promise<boolean> => {
-        const { token } = get()
-        if (!token) {
-          set({ error: 'No authentication token' })
-          return false
-        }
-
+      fetchProfile: async (token: string | null): Promise<boolean> => {
         try {
+          console.log('token', token)
+          if (!token) {
+            token = get().token
+            console.log('token', token)
+          }
           const response = await usersApiMe({
             headers: {
               Authorization: `Bearer ${token}`
@@ -79,10 +97,10 @@ export const useUserStore = create<UserStore>()(
           })
 
           if (response.data) {
-            set({
-              user: response.data,
-              error: null
-            })
+            console.log('aaaaaaaaaa', response.data)
+            get().setMe(response.data)
+            get().setActivities(response.data.activities)
+            set({ error: null })
             return true
           } else {
             throw new Error('No profile data received')
@@ -121,7 +139,7 @@ export const useUserStore = create<UserStore>()(
       onRehydrateStorage: () => state => {
         if (state?.token && state?.user) {
           // Optionally refresh profile on rehydration
-          state.fetchProfile().catch(() => {
+          state.fetchProfile(state.token).catch(() => {
             state.clearAuth()
           })
         }
