@@ -1,9 +1,5 @@
 import { create } from 'zustand'
-import type {
-  RoomSchema,
-  CreateRoomRequest,
-  CreateRandomSingleplayerRoomRequest
-} from '../api/types.gen'
+import type { RoomSchema, CreateRoomSchema } from '../api/types.gen'
 import {
   gamesApiCreateRoom,
   gamesApiCreateRandomSingleplayerRoom
@@ -27,10 +23,8 @@ interface RoomStore {
   setError: (error: string | null) => void
   clearError: () => void
   resetRoomState: () => void
-  createRoom: (roomData: CreateRoomRequest) => Promise<RoomSchema | null>
-  createQuickPlayRoom: (
-    roomData: CreateRandomSingleplayerRoomRequest
-  ) => Promise<RoomSchema | null>
+  createRoom: (roomData: CreateRoomSchema) => Promise<RoomSchema | null>
+  createQuickPlayRoom: (data: string) => Promise<RoomSchema | null>
 }
 
 const MAX_ROOMS_IN_MEMORY = 100
@@ -201,7 +195,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     }
   },
 
-  createQuickPlayRoom: async roomData => {
+  createQuickPlayRoom: async data => {
     try {
       const currentOp = get().currentOperation
       if (currentOp) {
@@ -216,7 +210,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
       }))
 
       const response = await gamesApiCreateRandomSingleplayerRoom({
-        body: roomData
+        query: { data }
       })
 
       if (controller.signal.aborted) {
@@ -276,5 +270,5 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
 export type { RoomState, RoomStore }
 
 // Re-export payload types for convenience
-export type CreateRoomPayload = CreateRoomRequest
-export type CreateQuickPlayPayload = CreateRandomSingleplayerRoomRequest
+export type CreateRoomPayload = CreateRoomSchema
+export type CreateQuickPlayPayload = string

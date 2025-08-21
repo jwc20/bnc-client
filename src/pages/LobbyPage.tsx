@@ -78,8 +78,7 @@ export function LobbyPage() {
                 game_type: gameType,
                 code_length: codeLength,
                 num_of_colors: numOfColors,
-                num_of_guesses: numOfGuesses,
-                secret_code: secretCode.trim() || null // uise provided code or let server generate random
+                num_of_guesses: numOfGuesses
             };
             console.log("roomData", roomData);
             const newRoom = await createRoom(roomData);
@@ -159,7 +158,7 @@ export function LobbyPage() {
     //     setSecretCode(validatedValue);
     // };
 
-    const getGameTypeString = (type: number) => {
+    const getGameTypeString = (type?: number) => {
         switch (type) {
             // case 0:
             //     return 'Single Player';
