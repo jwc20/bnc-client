@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import { usersApiLogin, usersApiMe } from '../api/sdk.gen'
-import type { MeResponse, ActivityResponseSchema } from '../api/types.gen'
+import { usersApiLogin, usersApiMe, usersApiGetLeaderboard } from '../api/sdk.gen'
+import type { MeResponse, ActivityResponseSchema, UserLeaderboardSchema } from '../api/types.gen'
 import type {
   ApiError,
   UserStore,
@@ -26,6 +26,7 @@ export const useUserStore = create<UserStore>()(
       error: null,
       me: null,
       activities: [],
+      leaderboard: [],
 
       // Basic setters
       setToken: (token: string) => set({ token }),
@@ -34,6 +35,8 @@ export const useUserStore = create<UserStore>()(
       setError: (error: string | null) => set({ error }),
       setActivities: (activities: ActivityResponseSchema[]) =>
         set({ activities }),
+      setLeaderboard: (leaderboard: UserLeaderboardSchema[]) =>
+        set({ leaderboard }),
       setMe: (me: MeResponse) =>
         set({
           user: {
@@ -109,6 +112,24 @@ export const useUserStore = create<UserStore>()(
           const errorMessage =
             handleApiError(error) || 'Failed to fetch profile'
           set({ error: errorMessage })
+          return false
+        }
+      },
+
+      fetchLeaderboard: async (): Promise<boolean> => {
+        try {
+          set({ isLoading: true, error: null })
+          const response = await usersApiGetLeaderboard()
+          if (response.data) {
+            set({ isLoading: false })
+            get().setLeaderboard(response.data)
+            return true
+          } else {
+            throw new Error('No leaderboard data received')
+          }
+        } catch (error: unknown) {
+          const errorMessage = handleApiError(error) || 'Failed to fetch leaderboard'
+          set({ isLoading: false, error: errorMessage })
           return false
         }
       },
