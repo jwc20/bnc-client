@@ -4,6 +4,8 @@ import type { Options as ClientOptions, TDataShape, Client } from "./client";
 import type {
   BncapiApiPingData,
   BncapiApiPingResponses,
+  UsersApiGetLeaderboardData,
+  UsersApiGetLeaderboardResponses,
   UsersApiGetUserActivitiesData,
   UsersApiGetUserActivitiesResponses,
   UsersApiMeData,
@@ -66,6 +68,22 @@ export const bncapiApiPing = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     url: "/api/ping",
+    ...options,
+  });
+};
+
+/**
+ * Get leaderboard
+ */
+export const usersApiGetLeaderboard = <ThrowOnError extends boolean = false>(
+  options?: Options<UsersApiGetLeaderboardData, ThrowOnError>
+) => {
+  return (options?.client ?? _heyApiClient).get<
+    UsersApiGetLeaderboardResponses,
+    unknown,
+    ThrowOnError
+  >({
+    url: "/api/users/leaderboard",
     ...options,
   });
 };

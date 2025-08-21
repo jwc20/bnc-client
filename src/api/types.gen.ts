@@ -220,6 +220,20 @@ export type BncapiApiPingResponses = {
   200: unknown;
 };
 
+export type UsersApiGetLeaderboardData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/users/leaderboard";
+};
+
+export type UsersApiGetLeaderboardResponses = {
+  /**
+   * OK
+   */
+  200: unknown;
+};
+
 export type UsersApiGetUserActivitiesData = {
   body?: never;
   path?: never;
