@@ -15,11 +15,11 @@ export const MePage = () => {
     const stats = useMemo(() => {
         if (!activities || activities.length === 0) return null;
 
-        const activityCounts = activities.reduce((acc, activity) => {
+        const activityCounts = activities.reduce<Record<string, number>>((acc, activity) => {
             const verb = activity.verb || 'unknown';
             acc[verb] = (acc[verb] || 0) + 1;
             return acc;
-        }, {});
+        }, {} as Record<string, number>);
 
         const joinedGames = activityCounts['joined_room'] || 0;
         const wonGames = activityCounts['won_game'] || 0;

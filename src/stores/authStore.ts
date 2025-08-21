@@ -2,6 +2,7 @@
 import type { ActivityResponseSchema as Activity } from '../api/types.gen'
 import type { MeResponse } from '../api/types.gen'
 import type { UserLeaderboardSchema as LeaderboardItem } from '../api/types.gen'
+import type { UserSchema as User, UserLogin as LoginCredentials } from '../api/types.gen'
 
 export interface ApiError {
   detail?: string
