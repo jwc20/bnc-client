@@ -32,6 +32,7 @@ import type {
 import { client as _heyApiClient } from "./client.gen";
 import {
   usersApiGetUserActivitiesResponseTransformer,
+  usersApiMeResponseTransformer,
   usersApiLoginResponseTransformer,
   usersApiSignupResponseTransformer,
 } from "./transformers.gen";
@@ -103,6 +104,7 @@ export const usersApiMe = <ThrowOnError extends boolean = false>(
     unknown,
     ThrowOnError
   >({
+    responseTransformer: usersApiMeResponseTransformer,
     security: [
       {
         scheme: "bearer",

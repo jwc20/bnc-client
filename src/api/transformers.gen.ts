@@ -2,6 +2,7 @@
 
 import type {
   UsersApiGetUserActivitiesResponse,
+  UsersApiMeResponse,
   UsersApiLoginResponse,
   UsersApiSignupResponse,
 } from "./types.gen";
@@ -17,6 +18,20 @@ export const usersApiGetUserActivitiesResponseTransformer = async (
   data = data.map((item: any) => {
     return activityResponseSchemaSchemaResponseTransformer(item);
   });
+  return data;
+};
+
+const meResponseSchemaResponseTransformer = (data: any) => {
+  data.activities = data.activities.map((item: any) => {
+    return activityResponseSchemaSchemaResponseTransformer(item);
+  });
+  return data;
+};
+
+export const usersApiMeResponseTransformer = async (
+  data: any
+): Promise<UsersApiMeResponse> => {
+  data = meResponseSchemaResponseTransformer(data);
   return data;
 };
 

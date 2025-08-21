@@ -113,6 +113,42 @@ export const ActivityResponseSchemaSchema = {
   type: "object",
 } as const;
 
+export const MeResponseSchema = {
+  properties: {
+    id: {
+      anyOf: [
+        {
+          type: "integer",
+        },
+        {
+          type: "null",
+        },
+      ],
+      title: "ID",
+    },
+    email: {
+      maxLength: 254,
+      title: "Email",
+      type: "string",
+    },
+    username: {
+      maxLength: 100,
+      title: "Username",
+      type: "string",
+    },
+    activities: {
+      items: {
+        $ref: "#/components/schemas/ActivityResponseSchema",
+      },
+      title: "Activities",
+      type: "array",
+    },
+  },
+  required: ["email", "username", "activities"],
+  title: "MeResponse",
+  type: "object",
+} as const;
+
 export const UserSchemaSchema = {
   properties: {
     id: {

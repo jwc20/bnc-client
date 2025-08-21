@@ -53,6 +53,28 @@ export type ActivityResponseSchema = {
 };
 
 /**
+ * MeResponse
+ */
+export type MeResponse = {
+  /**
+   * ID
+   */
+  id?: number | null;
+  /**
+   * Email
+   */
+  email: string;
+  /**
+   * Username
+   */
+  username: string;
+  /**
+   * Activities
+   */
+  activities: Array<ActivityResponseSchema>;
+};
+
+/**
  * UserSchema
  */
 export type UserSchema = {
@@ -244,8 +266,10 @@ export type UsersApiMeResponses = {
   /**
    * OK
    */
-  200: unknown;
+  200: MeResponse;
 };
+
+export type UsersApiMeResponse = UsersApiMeResponses[keyof UsersApiMeResponses];
 
 export type UsersApiListUsersData = {
   body?: never;
