@@ -113,7 +113,7 @@ const style = `
     }
 
     .profile-title {
-        font-size: 2rem;
+        font-size: 0.7rem;
         margin-bottom: 1.5rem;
         color: #333;
     }
@@ -139,7 +139,7 @@ const style = `
     }
 
     .stats-title {
-        font-size: 1.5rem;
+        font-size: 0.7rem;
         margin-bottom: 1.5rem;
         color: #444;
     }
@@ -148,13 +148,13 @@ const style = `
         display: flex;
         justify-content: center;
         margin-top: 20px;
+        font-size: 0.4rem;
     }
 
     .stats-box {
         border: 2px solid #ddd;
         border-radius: 8px;
         padding: 20px;
-        background-color: #f9f9f9;
         min-width: 400px;
         max-width: 600px;
         width: 100%;
@@ -203,7 +203,6 @@ const style = `
 
     .win-rate-row {
         border-top: 2px solid #333;
-        background-color: #e8f4f8;
     }
 
     .win-rate-label, .win-rate-value {
