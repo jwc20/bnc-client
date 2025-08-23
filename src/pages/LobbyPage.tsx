@@ -450,4 +450,110 @@ const style = `
         display: block;
         width: 40%;
     }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+        .room-create {
+            padding: 15px;
+            margin: 15px 10px;
+        }
+        
+        .room-list {
+            margin: 20px 10px;
+        }
+        
+        table {
+            font-size: 0.3rem;
+        }
+        
+        table th, table td {
+            padding: 8px 4px;
+            font-size: 0.25rem;
+        }
+        
+        /* Make table scrollable on mobile */
+        .room-table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .room-table {
+            min-width: 500px;
+        }
+        
+        /* Stack form inputs vertically on mobile */
+        .room-create table tbody tr {
+            display: block;
+            margin-bottom: 15px;
+        }
+        
+        .room-create table tbody td {
+            display: block;
+            width: 100%;
+            padding: 5px 0;
+        }
+        
+        .room-create table tbody td:first-child {
+            margin-bottom: 5px;
+        }
+        
+        input[type="text"], input[type="number"], select {
+            padding: 12px;
+            font-size: 16px; /* Prevents zoom on iOS */
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .create-room-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 0.6rem;
+            margin-top: 20px;
+        }
+        
+        /* Improve button touch targets */
+        button {
+            min-height: 44px;
+            font-size: 16px;
+        }
+        
+        /* Better spacing for mobile */
+        h4, h5 {
+            margin: 15px 10px;
+            font-size: 1.2rem;
+        }
+        
+        h5 {
+            font-size: 1rem;
+        }
+    }
+    
+    /* Extra small mobile devices */
+    @media (max-width: 480px) {
+        .room-create {
+            margin: 10px 5px;
+            padding: 10px;
+        }
+        
+        .room-list {
+            margin: 15px 5px;
+        }
+        
+        table th, table td {
+            padding: 6px 2px;
+            font-size: 0.2rem;
+        }
+        
+        .room-table {
+            min-width: 400px;
+        }
+        
+        input[type="text"], input[type="number"], select {
+            padding: 10px;
+        }
+        
+        .create-room-btn {
+            padding: 12px;
+        }
+    }
 `;

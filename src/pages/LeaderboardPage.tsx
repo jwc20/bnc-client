@@ -42,7 +42,7 @@ export const LeaderboardPage = () => {
                                         <td className="left">{row.username}</td>
                                         <td className="right">{row.games_won}</td>
                                         <td className="right">{row.joined_rooms}</td>
-                                        <td className="right">{row.win_rate.toFixed(2)}%</td>
+                                        <td className="right">{(row.win_rate * 100).toFixed(0)}%</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -58,11 +58,11 @@ export const LeaderboardPage = () => {
 const style = `
     .leaderboard-container { display: flex; justify-content: center; padding: 20px; }
     .leaderboard-content { width: 100%; max-width: 800px; }
-    .leaderboard-title { font-size: 2rem; margin-bottom: 1rem; }
+    .leaderboard-title { font-size: 0.7rem; margin-bottom: 1rem; }
     .loading, .error, .no-data { padding: 20px; text-align: center; }
     .error { color: red; }
-    .table-wrapper { overflow-x: auto; }
-    .leaderboard-table { width: 100%; border-collapse: collapse; }
+    .table-wrapper {  }
+    .leaderboard-table { width: 100%; border-collapse: collapse; font-size: 0.5rem;}
     thead tr { border-bottom: 2px solid #ccc; }
     th, td { padding: 10px; }
     .left { text-align: left; }
