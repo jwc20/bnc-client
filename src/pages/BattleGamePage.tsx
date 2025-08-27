@@ -159,7 +159,22 @@ export const BattleGamePage = ({ roomId }: { roomId: number }) => {
                 <div>
                     {gameEnded && gameState.secret_code && (
                         <div className="secret-code-revealed">
-                            Secret code was: {gameState.secret_code}
+                            <div className="secret-code-label">Secret code was:</div>
+                            <div className="secret-code-pegs">
+                                {gameState.secret_code.split('').map((digit, index) => {
+                                    const colorIndex = parseInt(digit) - 1;
+                                    const color = COLORS[colorIndex]?.color || '#999';
+                                    return (
+                                        <div
+                                            key={index}
+                                            className="secret-code-peg"
+                                            style={{ backgroundColor: color }}
+                                        >
+                                            {digit}
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                     )}
                     <div className="board-container">
@@ -351,5 +366,33 @@ const style = `
     .player-item {
         font-size: 0.3rem;
         color: #666;
+    }
+   .secret-code-revealed {
+        text-align: center;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    .secret-code-label {
+        font-size: 0.5rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+    .secret-code-pegs {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    .secret-code-peg {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: black;
+        font-weight: bold;
+        font-size: 0.3rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        border: 2px solid black;
     }
 `;
