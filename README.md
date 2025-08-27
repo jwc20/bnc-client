@@ -37,6 +37,11 @@ Access the site at http://localhost:5173/ or http://0.0.0.0:5173/
 
 <img src="https://github.com/user-attachments/assets/cda6acaf-bc6e-4d97-94d7-70b62d91ee56" alt="CleanShot 2025-08-13 at 07 05 48" width="50%">
 
+![CleanShot 2025-08-27 at 19 47 31@2x](https://github.com/user-attachments/assets/ed46b582-d5dd-4238-8586-6d5a2e9c9c90)
+
+![CleanShot 2025-08-27 at 19 47 19@2x](https://github.com/user-attachments/assets/5ee6d4cd-4a2c-40dc-ac60-5425d706c9ff)
+
+
 ## Dependencies
 
 - [zustand](https://github.com/pmndrs/zustand)
