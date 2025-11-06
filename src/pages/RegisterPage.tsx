@@ -148,6 +148,9 @@ export function RegisterPage() {
                                         {errors.email && (
                                             <div className="field-error">{errors.email}</div>
                                         )}
+                                        <small className="field-hint">
+                                            Note: you do not have to use a real email address for this demo
+                                        </small>
                                     </td>
                                 </tr>
                                 <tr>
