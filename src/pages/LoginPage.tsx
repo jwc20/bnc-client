@@ -109,6 +109,9 @@ export function LoginPage() {
                             >
                                 {isSubmitting ? "Signing in..." : "Sign In"}
                             </button>
+                            <p className="server-info">
+                                Please allow up to 90 seconds for the server to initialize if inactive.
+                            </p>
                         </div>
 
                         {/* <div className="form-footer">
@@ -175,7 +178,12 @@ const styles = `
       margin-top: 2rem;
       text-align: center;
     }
-
+    .server-info {
+      margin-top: 1rem;
+      font-size: 0.55rem;
+      color: #666;
+      line-height: 1.3;
+    }
     .alternative-actions {
       margin-top: 2rem;
       text-align: center;
