@@ -6,10 +6,13 @@ import { useAuth } from '../auths/AuthContext'
 export const useGameWebSocket = (roomId: string | number) => {
   const { updateGameState, setLoading, removePlayerData } = useGameStore()
   const { token: authToken } = useAuth()
+  const wsBaseUrl = import.meta.env.PROD
+    ? `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}`
+    : import.meta.env.VITE_WS_URL
 
   const socketUrl =
     roomId && authToken
-      ? `${import.meta.env.VITE_WS_URL}/ws/game/${roomId}/?token=${authToken}`
+      ? `${wsBaseUrl}/ws/game/${roomId}/?token=${authToken}`
       : null
 
   const {
